@@ -22,7 +22,7 @@ function Biblioteca() {
   if (match({ to: "/biblioteca/$slug", fuzzy: true })) return <Outlet />;
   return (
     <div>
-      <PageTitle title="Library" subtitle="Simple information, with trustworthy sources. Demo content to be reviewed by professionals." />
+      <PageTitle title="Library" subtitle="Health essentials. Demo content for professional review." />
       <ul className="grid gap-3">
         <li>
           <Link to="/consentimento" className="card-base flex items-center gap-3 bg-lilac p-4 text-lilac-foreground">
@@ -31,7 +31,7 @@ function Biblioteca() {
             </span>
             <div className="flex-1">
               <h2 className="text-lg font-semibold">Touch Traffic Light — body safety game</h2>
-              <p className="text-sm opacity-90">An interactive game about boundaries, consent and getting help.</p>
+              <p className="text-sm opacity-90">Your body. Your boundaries.</p>
             </div>
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
           </Link>
@@ -43,7 +43,7 @@ function Biblioteca() {
             </span>
             <div className="flex-1">
               <h2 className="text-lg font-semibold">Game: Contraceptive methods</h2>
-              <p className="text-sm opacity-90">Drag, discover and learn how to prevent an unplanned pregnancy!</p>
+              <p className="text-sm opacity-90">Match methods. Learn prevention.</p>
               <span className="mt-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">PLAY NOW</span>
             </div>
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
@@ -63,7 +63,7 @@ function Biblioteca() {
         <li>
           <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg border bg-secondary p-4 text-secondary-foreground">
             <Gamepad2 className="h-6 w-6 shrink-0" aria-hidden />
-            <div className="flex-1"><h2 className="text-lg font-semibold">STIs — Path of Wisdom</h2><p className="text-sm">Follow the true-or-false trail to the Knowledge Trophy.</p></div>
+            <div className="flex-1"><h2 className="text-lg font-semibold">STIs — Path of Wisdom</h2><p className="text-sm">10 questions. One trophy.</p></div>
             <ChevronRight className="h-5 w-5" aria-hidden />
           </Link>
         </li>
