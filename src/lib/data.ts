@@ -71,7 +71,7 @@ export const articles: Article[] = [
   {
     slug: "consent",
     title: "Consent and healthy relationships",
-    summary: "Consent is a free, clear yes. You can change your mind.",
+    summary: "Consent is a free, clear, informed yes. You can change your mind.",
     explain: ["No pressure, threats or manipulation. Silence is not yes.", "Healthy relationships mean respect, trust and freedom."],
     practical: ["You can say no at any time.", "Ask, and respect the answer you get.", "Excessive jealousy and control are not love."],
     warning: ["Someone controlling your phone or your clothes.", "Threats or blackmail.", "Being kept away from friends and family."],

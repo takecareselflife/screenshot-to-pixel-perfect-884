@@ -53,7 +53,7 @@ function ArticlePage() {
           <span>
             <strong>Play: Touch Traffic Light</strong>
             <br />
-            <span className="text-sm opacity-90">An interactive game about your body, your boundaries and consent.</span>
+            <span className="text-sm opacity-90">Your body. Your boundaries.</span>
           </span>
         </Link>
       )}
@@ -65,15 +65,17 @@ function ArticlePage() {
           <span className="flex-1">
             <strong>Game: Contraceptive methods</strong>
             <br />
-            <span className="text-sm opacity-90">Drag, discover and learn how to prevent an unplanned pregnancy!</span>
+            <span className="text-sm opacity-90">Match methods. Learn prevention.</span>
           </span>
           <span className="rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-bold text-primary">PLAY NOW</span>
         </Link>
       )}
-      {a.explain.map((p) => <p key={p}>{p}</p>)}
+      <ul className="list-disc space-y-2 pl-5">
+        {a.explain.map((p) => <li key={p}>{p}</li>)}
+      </ul>
       {a.slug === "sti" && <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg bg-secondary p-4 text-secondary-foreground">
         <Gamepad2 className="h-7 w-7 shrink-0" aria-hidden />
-        <span><strong>Play: STIs — Path of Wisdom</strong><br /><span className="text-sm">True or false? Follow the trail to the Knowledge Trophy.</span></span>
+        <span><strong>Play: STIs — Path of Wisdom</strong><br /><span className="text-sm">10 questions. One trophy.</span></span>
       </Link>}
       {a.slug === "sti" && (
         <section aria-label="Illustrated prevention guides" className="grid gap-6">
@@ -91,7 +93,10 @@ function ArticlePage() {
       <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
       <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
       <Block title="Where to get help" icon={<MapPin className="h-5 w-5" />} items={a.services} tone="bg-sky" />
-      <Block title="Sources" icon={<BookMarked className="h-5 w-5" />} items={a.sources} tone="bg-muted" />
+      <details className="rounded-2xl bg-muted p-4">
+        <summary className="cursor-pointer text-lg font-semibold"><BookMarked className="mr-2 inline h-5 w-5" aria-hidden />Sources</summary>
+        <ul className="mt-2 list-disc space-y-1 break-words pl-5">{a.sources.map((source) => <li key={source}>{source}</li>)}</ul>
+      </details>
       <div className="flex flex-wrap gap-2 pt-2">
         <Link to="/servicos" className="rounded-full bg-primary px-4 py-2 font-bold text-primary-foreground">Find a service</Link>
         <Link to="/assistente" className="rounded-full border px-4 py-2 font-bold">Ask a question</Link>
