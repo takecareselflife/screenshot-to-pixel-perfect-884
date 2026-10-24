@@ -554,7 +554,7 @@ export function TouchTrafficLight() {
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <div className="sticky top-16 z-10 mt-4 flex flex-wrap items-center justify-center gap-3 bg-background py-2">
             {(["green", "yellow", "red"] as TrafficColor[]).map((c) => (
               <Button
                 variant="ghost"
@@ -595,7 +595,7 @@ export function TouchTrafficLight() {
               </Button>
             ))}
           </div>
-          <p className="mt-2 min-h-10 text-center text-sm text-muted-foreground">
+          <p className="mt-2 min-h-5 text-center text-sm text-muted-foreground">
             {selectedColor
               ? `${colorMeta[selectedColor].label} is picked. Now choose where it goes.`
               : "Pick a circle, then a body part — or drag the circle onto a body part."}
