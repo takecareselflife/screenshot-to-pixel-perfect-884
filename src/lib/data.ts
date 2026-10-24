@@ -26,7 +26,7 @@ export const articles: Article[] = [
     ],
     practical: ["Ask a health professional your questions.", "Take your time. No pressure.", "Look after your hygiene and your sleep."],
     warning: ["Severe pain or unusual bleeding.", "Someone pressuring you to do something you don't want."],
-    services: ["Community health center (UBS)"],
+    services: ["Basic health unit"],
     sources: ["Ministry of Health – Adolescent Health Handbook", "WHO – Adolescent health"],
   },
   {
@@ -81,9 +81,9 @@ export const articles: Article[] = [
     title: "Mental health, anxiety and depression",
     summary: "Sad or anxious? You deserve support.",
     explain: ["Anxiety and depression are common and treatable.", "Sleep, food, movement and close relationships support well-being.", "Isolating, avoiding friends or becoming distant can signal emotional distress. Alone time is normal; ongoing withdrawal deserves support. It is not a diagnosis."],
-    practical: ["Talk to someone you trust.", "Breathe slowly: inhale for 4 seconds, exhale for 6.", "Go to a health center or a psychosocial care center (CAPS)."],
+    practical: ["Talk to someone you trust.", "Breathe slowly: inhale for 4 seconds, exhale for 6.", "Go to a basic health unit or a psychological care center."],
     warning: ["Sadness that lasts for weeks.", "Thoughts of hurting yourself.", "Losing interest in everything.", "Ongoing isolation or distance from friends: talk to someone you trust and seek professional support."],
-    services: ["Health center", "CAPS / CAPSi", "CVV – 188"],
+    services: ["Basic health unit", "Psychological care center", "CVV – 188"],
     sources: ["Ministry of Health – Mental health", "WHO – Adolescent mental health"],
   },
   {
@@ -171,11 +171,11 @@ export type Service = {
 export const services: Service[] = [
   { id: "s1", name: "Jardim Esperança Health Center (fictional)", type: "Health center", city: "Vila Aurora", region: "North", address: "100 Example Street", phone: "(00) 0000-0001", hours: "Mon–Fri, 7am–7pm", access: "Walk-in, no appointment needed", verified: true },
   { id: "s2", name: "Downtown Health Center (fictional)", type: "Health center", city: "Vila Aurora", region: "Downtown", address: "45 Demo Avenue", hours: "Mon–Fri, 7am–5pm", verified: true },
-  { id: "s3", name: "Girassol Adolescent Psychosocial Center (fictional)", type: "Mental health", city: "Vila Aurora", region: "South", address: "12 Model Street", phone: "(00) 0000-0003", hours: "Mon–Fri, 8am–6pm", access: "Open door for adolescents", verified: true },
+  { id: "s3", name: "Girassol Adolescent Psychological Care Center (fictional)", type: "Mental health", city: "Vila Aurora", region: "South", address: "12 Model Street", phone: "(00) 0000-0003", hours: "Mon–Fri, 8am–6pm", access: "Open door for adolescents", verified: true },
   { id: "s4", name: "Rosa Referral Service (fictional)", type: "Violence response", city: "Vila Aurora", region: "Downtown", phone: "(00) 0000-0004", hours: "24 hours", access: "Care without needing a police report", verified: true },
   { id: "s5", name: "East Side Child Protection Council (fictional)", type: "Protection", city: "Vila Aurora", region: "East", address: "8 Test Square", phone: "(00) 0000-0005", verified: true },
   { id: "s6", name: "Bela Vista Health Center (fictional)", type: "Health center", city: "Porto Sereno", region: "North", verified: false },
-  { id: "s7", name: "Ipê Psychosocial Center (fictional)", type: "Mental health", city: "Porto Sereno", region: "Downtown", address: "300 Simulated Street", hours: "Mon–Fri, 8am–5pm", verified: true },
+  { id: "s7", name: "Ipê Psychological Care Center (fictional)", type: "Mental health", city: "Porto Sereno", region: "Downtown", address: "300 Simulated Street", hours: "Mon–Fri, 8am–5pm", verified: true },
   { id: "s8", name: "Porto Sereno Social Assistance Center (fictional)", type: "Protection", city: "Porto Sereno", region: "South", phone: "(00) 0000-0008", verified: true },
 ];
 

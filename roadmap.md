@@ -1,6 +1,8 @@
 # Roadmap
 
 - [x] Show a "Click here" hint above the mood emojis and drop the topic list below them
+- [x] Replace CAPS/CAPSi with "Psychological care center" and UBS with "Basic health unit"
+- [ ] Replace the remaining local names (Disque 100, SaferNet Brazil, CREAS, CTA, Child Protection Council, Ministry of Health, LGPD/ANPD) with international equivalents
 - [x] Remove the Demo notice below "How are you doing?" on the well-being screen
 - [x] Move the STI game shortcut below the other games in the library list
 - [x] Add hormone therapy and primary care outpatient follow-up for trans people to sexual rights

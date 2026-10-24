@@ -70,7 +70,7 @@ export const METHODS: Method[] = [
       hormones: "No hormones.",
       effectiveness: "In typical use, about 87 out of 100 people do not get pregnant in a year. Wrong use, tearing or slipping lower protection.",
       duration: "One condom for each sexual act.",
-      advantages: "Free at health centers (UBS), easy to find, no prescription.",
+      advantages: "Free at basic health units, easy to find, no prescription.",
       sideEffects: "Rare. Some people are allergic to latex: latex-free condoms exist.",
       professional: "Not needed, but health staff can answer questions.",
       sti: "Yes. When used correctly, it helps prevent STIs and pregnancy.",
