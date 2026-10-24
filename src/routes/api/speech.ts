@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/speech")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env.LOVABLE_API_KEY;
+        const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) {
           return Response.json({ error: "Voice playback is not configured on the server." }, { status: 500 });
         }
