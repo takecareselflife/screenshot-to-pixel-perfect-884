@@ -71,6 +71,13 @@ const backZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "feet", d: "M66,344 h38 v20 h-38 z M104,344 h30 v20 h-30 z" },
 ];
 
+/** Every character must be fully covered: Sam and Alex (front), Chris (back). */
+const characterZones: [string, { id: RegionId; d: string; emphasize?: boolean }[]][] = [
+  ["Sam", frontZones],
+  ["Alex", frontZones],
+  ["Chris", backZones],
+];
+
 function Character({
   name,
   skin,
@@ -191,9 +198,9 @@ export function TouchTrafficLight() {
   const dragMoved = useRef(false);
   const activePointer = useRef<number | null>(null);
 
-  const coveredCount = new Set(placements.map((p) => p.region)).size;
-  const totalRegions = REGIONS.length;
-  const progressPct = Math.round((coveredCount / totalRegions) * 100);
+  const totalPlacements = frontZones.length * 2 + backZones.length;
+  const coveredCount = placements.length;
+  const progressPct = Math.round((coveredCount / totalPlacements) * 100);
 
   useEffect(() => {
     if (phase !== "play") return;
@@ -230,8 +237,8 @@ export function TouchTrafficLight() {
       setFeedback({ kind: "info", text: "First pick a circle: green, yellow or red." });
       return;
     }
-    if (placements.some((p) => p.region === region)) {
-      setFeedback({ kind: "info", text: "This body part already has its color. Choose another one!" });
+    if (placements.some((p) => p.region === region && p.character === character)) {
+      setFeedback({ kind: "info", text: "This body part already has its color on this character. Choose another one!" });
       return;
     }
     if (!matchesBodyColor(region, color)) {
@@ -245,10 +252,22 @@ export function TouchTrafficLight() {
     const nextPlacements = [...placements, { color, region, character }];
     setPlacements(nextPlacements);
     setFeedback({ kind: "correct", text: COLOR_FEEDBACK[color] });
-    if (new Set(nextPlacements.map((p) => p.region)).size === totalRegions) {
+    if (nextPlacements.length === totalPlacements) {
       setPhase("final");
       setFeedback(null);
     }
+  };
+
+  /** Tap fallback: fill the first character that still needs this body part. */
+  const activateViaButton = (region: RegionId) => {
+    const target = characterZones.find(([name, zones]) =>
+      zones.some((z) => z.id === region) && !placements.some((p) => p.region === region && p.character === name),
+    );
+    if (!target) {
+      setFeedback({ kind: "info", text: "This body part already has its color on all characters." });
+      return;
+    }
+    activate(selectedColor, region, target[0]);
   };
 
   const restart = () => {
@@ -287,7 +306,7 @@ export function TouchTrafficLight() {
         <div className="card-base mt-4 space-y-2 p-4 text-sm">
           <p className="font-bold">How to play</p>
           <p>1. Drag a circle from the bottom onto a body part — or tap the circle, then a body part.</p>
-          <p>2. Use each color as many times as you need to cover every part.</p>
+          <p>2. Use each color as many times as you need to cover every part of all three characters.</p>
           <p>3. You get a friendly message after every answer. Wrong answers can always be retried.</p>
         </div>
         <button
@@ -350,7 +369,7 @@ export function TouchTrafficLight() {
       <div className="mb-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="rounded-full bg-lilac px-3 py-1 text-xs font-bold text-lilac-foreground">
-            {coveredCount} of {totalRegions} body parts
+            {coveredCount} of {totalPlacements} body parts
           </span>
           <button type="button" onClick={restart} className="inline-flex items-center gap-1 rounded-full border bg-card px-3 py-1 text-xs font-bold">
             <RotateCcw className="h-3.5 w-3.5" aria-hidden /> Restart
@@ -366,7 +385,7 @@ export function TouchTrafficLight() {
 
       <p className="text-lg font-bold">Drag each colored circle onto the matching body parts.</p>
       <p className="mt-1 text-sm text-muted-foreground">
-        Use the same color as many times as you need. Placing on either character counts.
+        Use the same color as many times as you need. Cover every body part of all three characters.
       </p>
 
       <div className="mt-3 grid grid-cols-3 items-end justify-items-center gap-1 sm:gap-8">
@@ -384,7 +403,7 @@ export function TouchTrafficLight() {
         <summary className="cursor-pointer text-sm font-bold">Choose a body part</summary>
         <div className="mt-2 flex flex-wrap gap-2">
           {REGIONS.map((r) => (
-            <Button variant="outline" key={r.id} type="button" onClick={() => activate(selectedColor, r.id)} className="rounded-full border bg-card px-3 py-1.5 text-sm font-bold">
+            <Button variant="outline" key={r.id} type="button" onClick={() => activateViaButton(r.id)} className="rounded-full border bg-card px-3 py-1.5 text-sm font-bold">
               {r.label}
             </Button>
           ))}
