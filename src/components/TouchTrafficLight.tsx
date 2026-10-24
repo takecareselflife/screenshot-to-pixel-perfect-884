@@ -7,23 +7,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Info, LifeBuoy, RotateCcw, Star, Trophy } from "lucide-react";
 import { ListenButton } from "@/components/ListenButton";
 import { Button } from "@/components/ui/button";
-
-type TrafficColor = "green" | "yellow" | "red";
+import { BODY_REGIONS as REGIONS, PRIVATE_REGIONS, matchesBodyColor, type RegionId, type TrafficColor } from "@/lib/body-game";
+export { PRIVATE_REGIONS } from "@/lib/body-game";
 type Phase = "intro" | "l1" | "l2" | "l3" | "trusted" | "final";
 type Feedback = { kind: "correct" | "retry" | "info"; text: string };
-
-const REGIONS = [
-  { id: "head", label: "Head and hair" },
-  { id: "face", label: "Face" },
-  { id: "shoulders", label: "Shoulders" },
-  { id: "arms", label: "Arms and hands" },
-  { id: "chest", label: "Chest" },
-  { id: "abdomen", label: "Abdomen" },
-  { id: "private", label: "Private parts" },
-  { id: "buttocks", label: "Buttocks" },
-  { id: "legs", label: "Legs and feet" },
-] as const;
-type RegionId = (typeof REGIONS)[number]["id"];
 
 const colorMeta: Record<TrafficColor, { label: string; hint: string; chip: string }> = {
   green: { label: "Green", hint: "Safe or welcome touch", chip: "bg-go text-go-foreground" },
@@ -37,15 +24,12 @@ const RED_MSG =
   "Your body belongs to you. No one should involve you in unwanted sexual touching. If someone makes you feel unsafe, tell a trusted adult. It is never your fault.";
 
 /** Private areas (outlined in red on the characters) take the red circle. */
-export const PRIVATE_REGIONS: RegionId[] = ["chest", "private", "buttocks"];
 const isPrivate = (region: RegionId) => PRIVATE_REGIONS.includes(region);
 
 const l1Tasks = REGIONS.map((region) => ({
   target: region.id,
-  requiresRed: isPrivate(region.id),
-  prompt: isPrivate(region.id)
-    ? `Private area: place the RED circle on: ${region.label}.`
-    : `Place a colored circle on: ${region.label}.`,
+  color: region.color,
+  prompt: `Place the ${region.color.toUpperCase()} circle on: ${region.label}.`,
   feedback: isPrivate(region.id)
     ? "You found it! Private areas deserve protection. Nobody should touch them without your consent. Appropriate healthcare must be explained and respectful, with a trusted adult present. Unwanted sexual touching is never your fault."
     : "You found it! Your body belongs to you. Whether a touch is welcome depends on the situation and your consent, not just the body part or color.",
@@ -53,7 +37,7 @@ const l1Tasks = REGIONS.map((region) => ({
 
 const markerPositions: Record<RegionId, [number, number]> = {
   head: [100, 44], face: [100, 80], shoulders: [100, 131], arms: [48, 194],
-  chest: [100, 164], abdomen: [100, 204], private: [100, 240], buttocks: [73, 240], legs: [85, 310],
+  chest: [100, 164], abdomen: [100, 204], private: [100, 240], buttocks: [73, 240], thighs: [85, 278], legs: [85, 326], feet: [85, 356],
 };
 type Placement = { color: TrafficColor; region: RegionId; character: string };
 
@@ -113,9 +97,11 @@ const zoneShapes: { id: RegionId; d: string; emphasize?: boolean }[] = [
     d: "M36,124 h24 v128 h-24 z M140,124 h24 v128 h-24 z M37,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0 M141,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0",
   },
   {
-    id: "legs",
-    d: "M72,254 h26 v100 h-26 z M102,254 h26 v100 h-26 z M66,354 a19,10 0 1 0 38,0 a19,10 0 1 0 -38,0 M96,354 a19,10 0 1 0 38,0 a19,10 0 1 0 -38,0",
+    id: "thighs",
+    d: "M72,258 h26 v44 h-26 z M102,258 h26 v44 h-26 z",
   },
+  { id: "legs", d: "M72,302 h26 v42 h-26 z M102,302 h26 v42 h-26 z" },
+  { id: "feet", d: "M66,344 h38 v20 h-38 z M104,344 h30 v20 h-30 z" },
 ];
 
 function Character({
@@ -308,9 +294,9 @@ export function TouchTrafficLight() {
     if (phase === "l1") {
       const task = l1Tasks[l1Step];
       if (!task) return;
-      if (region === task.target && task.requiresRed && color !== "red") {
+      if (region === task.target && !matchesBodyColor(region, color)) {
         attempts.current += 1;
-        setFeedback({ kind: "retry", text: "Right place! This is a private area, so use the red circle: nobody should touch it without your consent." });
+        setFeedback({ kind: "retry", text: `Right place! Use the ${task.color} circle for this body area. You can refuse unwanted touch anywhere on your body.` });
       } else if (region === task.target) {
         place();
         addPoints();
@@ -433,11 +419,12 @@ export function TouchTrafficLight() {
 
   if (phase === "intro") {
     const instructions =
-      "Touch Traffic Light. Learn about your body, your boundaries, and your right to feel safe. Green means a safe or welcome touch. Yellow means pause and check your boundaries and consent. Red means an unsafe or inappropriate touch: seek help. Read each situation, then drag a colored circle onto the body area it is about, or tap a circle and then tap a body part. You will get a friendly explanation after every answer, and you can always try again. There is no way to lose this game.";
+      "Touch Traffic Light. In My Body, use red for genitals, chest and buttocks; green for head, face, arms, hands, lower legs and feet; yellow for shoulders, abdomen and thighs. These colors are learning cues, not permission to touch. You can refuse unwanted touch anywhere. In My Boundaries, choose the color according to the situation and consent. Drag a circle onto the body area, or tap a circle and then a body part. You can always try again.";
     return (
       <div>
       <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
       <p className="mt-1 text-muted-foreground">Green, yellow or red: learn what each color means before you start.</p>
+        <p className="mt-3 text-sm">My Body: red — genitals, chest and buttocks; green — head, face, arms, hands, lower legs and feet; yellow — thighs, shoulders and abdomen. No color gives permission to touch: your consent always matters.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
