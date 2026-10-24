@@ -9,7 +9,8 @@ afterEach(cleanup);
 
 const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
 const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Genitals (private parts)", "Buttocks", "Thighs", "Lower legs", "Feet"];
-const colors = ["green", "green", "yellow", "green", "red", "yellow", "red", "red", "yellow", "green", "green"];
+// Red: genitals and chest. Yellow: abdomen and thighs. Green: everything else.
+const colors = ["green", "green", "green", "green", "red", "yellow", "red", "green", "yellow", "green", "green"];
 
 function pick(container: HTMLElement, color: string) {
   const circle = container.querySelector(`[data-color="${color}"]`);
@@ -60,7 +61,7 @@ describe("colored body placements", () => {
     });
   });
 
-  it.each(["Chest", "Genitals (private parts)", "Buttocks"])("%s accepts the red circle and not green or yellow", (label) => {
+  it.each(["Chest", "Genitals (private parts)"])("%s accepts the red circle and not green or yellow", (label) => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     const target = regions[labels.indexOf(label)];
@@ -84,6 +85,30 @@ describe("colored body placements", () => {
     expect(container.querySelector(`[data-placed-region="${target}"]`)?.getAttribute("data-placed-color")).toBe("red");
   });
 
+  it.each(["Buttocks", "Shoulders", "Head and hair", "Feet"])("%s accepts the green circle and not red or yellow", (label) => {
+    const { container } = render(<TouchTrafficLight />);
+    fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
+    const index = labels.indexOf(label);
+    const target = regions[index];
+    if (!target) throw new Error("Missing target");
+    for (let i = 0; i < index; i++) {
+      const region = regions[i];
+      const currentLabel = labels[i];
+      if (!region || !currentLabel) throw new Error("Missing region");
+      pick(container, colors[i] ?? "green");
+      fireEvent.click(screen.getByRole("button", { name: currentLabel, hidden: true }));
+      fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    }
+    for (const wrong of ["red", "yellow"]) {
+      pick(container, wrong);
+      fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
+      expect(container.querySelector(`[data-placed-region="${target}"]`)).toBeNull();
+    }
+    pick(container, "green");
+    fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
+    expect(container.querySelector(`[data-placed-region="${target}"]`)?.getAttribute("data-placed-color")).toBe("green");
+  });
+
   it("only accepts the situation color at its matching body region", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
@@ -102,7 +127,7 @@ describe("colored body placements", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     finishLevel1(container);
-    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Genitals (private parts)"], ["red", "Chest"]] as const;
+    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Abdomen"], ["red", "Genitals (private parts)"], ["red", "Chest"]] as const;
     for (const [color, label] of situations) {
       pick(container, color);
       fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
