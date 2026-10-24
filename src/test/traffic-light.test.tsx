@@ -7,10 +7,10 @@ vi.mock("@/components/ListenButton", () => ({ ListenButton: () => null }));
 Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 afterEach(cleanup);
 
-const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
-const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Genitals (private parts)", "Buttocks", "Thighs", "Lower legs", "Feet"];
-// Red: genitals, chest and buttocks. Yellow: abdomen and thighs. Green: everything else.
-const colors = ["green", "green", "green", "green", "red", "yellow", "red", "red", "yellow", "green", "green"];
+const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "upperBack", "lowerBack", "thighs", "legs", "feet"];
+const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Genitals (private parts)", "Buttocks", "Upper back", "Lower back", "Thighs", "Lower legs", "Feet"];
+// Red: genitals, chest and buttocks. Yellow: face, abdomen, lower back and thighs. Green: everything else.
+const colors = ["green", "yellow", "green", "green", "red", "yellow", "red", "red", "green", "yellow", "yellow", "green", "green"];
 
 function pick(container: HTMLElement, color: string) {
   const circle = container.querySelector(`[data-color="${color}"]`);
@@ -47,7 +47,7 @@ describe("colored body placements", () => {
         expect(container.querySelector(`[data-placed-region="${region}"]`)?.getAttribute("data-placed-color")).toBe(colors[index]);
       }
     });
-    expect(screen.getByText("10 of 11 body parts")).toBeInTheDocument();
+    expect(screen.getByText("12 of 13 body parts")).toBeInTheDocument();
   });
 
   it.each(labels.map((label, i) => [label, regions[i], colors[i]] as const))(
