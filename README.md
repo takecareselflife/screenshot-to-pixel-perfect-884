@@ -54,7 +54,7 @@ interface, so they can be unit-tested and reviewed by health professionals.
 - Tailwind CSS v4 with semantic design tokens
 - shadcn/ui components
 - Vitest for unit and component tests
-- Lovable Cloud (Supabase) for auth and the speech endpoint
+- Lovable Cloud for auth and the speech endpoint
 
 ## Getting started
 
