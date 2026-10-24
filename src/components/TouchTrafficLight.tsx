@@ -53,6 +53,24 @@ const frontZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "feet", d: "M66,344 h38 v20 h-38 z M104,344 h30 v20 h-30 z" },
 ];
 
+const backZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
+  { id: "head", d: "M62,64 A38,38 0 0 1 138,64 Z" },
+  { id: "shoulders", d: "M62,118 h76 v26 h-76 z" },
+  { id: "upperBack", d: "M62,144 h76 v42 h-76 z" },
+  { id: "lowerBack", d: "M62,186 h76 v40 h-76 z" },
+  { id: "buttocks", d: "M70,224 h60 v34 h-60 z", emphasize: true },
+  {
+    id: "arms",
+    d: "M36,124 h24 v128 h-24 z M140,124 h24 v128 h-24 z M37,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0 M141,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0",
+  },
+  {
+    id: "thighs",
+    d: "M72,258 h26 v44 h-26 z M102,258 h26 v44 h-26 z",
+  },
+  { id: "legs", d: "M72,302 h26 v42 h-26 z M102,302 h26 v42 h-26 z" },
+  { id: "feet", d: "M66,344 h38 v20 h-38 z M104,344 h30 v20 h-30 z" },
+];
+
 function Character({
   name,
   skin,
@@ -62,6 +80,7 @@ function Character({
   hovered,
   placements,
   onActivate,
+  view = "front",
 }: {
   name: string;
   skin: string;
@@ -71,7 +90,9 @@ function Character({
   hovered: string | null;
   placements: Placement[];
   onActivate: (region: RegionId) => void;
+  view?: "front" | "back";
 }) {
+  const zones = view === "back" ? backZones : frontZones;
   return (
     <div className="text-center">
       <svg data-character={name} viewBox="0 0 200 400" className="h-[270px] w-full sm:h-[400px] sm:w-[200px]" aria-hidden="true">
@@ -92,15 +113,24 @@ function Character({
         <rect x="62" y="224" width="76" height="32" rx="12" fill={outfit} />
         <rect x="62" y="146" width="76" height="24" rx="12" fill={outfit} />
         {/* head and face */}
-        <circle cx="100" cy="64" r="38" fill={skin} />
-        <path d="M62,64 a38,38 0 0 1 76,0 z" fill={hair} />
-        <circle cx="87" cy="72" r="4" fill="#2b2320" />
-        <circle cx="113" cy="72" r="4" fill="#2b2320" />
-        <path d="M87,86 q13,10 26,0" stroke="#2b2320" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        <circle cx="76" cy="82" r="5" fill={skinShade} opacity="0.5" />
-        <circle cx="124" cy="82" r="5" fill={skinShade} opacity="0.5" />
+        {view === "back" ? (
+          <>
+            <circle cx="100" cy="64" r="38" fill={hair} />
+            <path d="M78,96 q22,14 44,0" stroke={skin} strokeWidth="3" fill="none" strokeLinecap="round" />
+          </>
+        ) : (
+          <>
+            <circle cx="100" cy="64" r="38" fill={skin} />
+            <path d="M62,64 a38,38 0 0 1 76,0 z" fill={hair} />
+            <circle cx="87" cy="72" r="4" fill="#2b2320" />
+            <circle cx="113" cy="72" r="4" fill="#2b2320" />
+            <path d="M87,86 q13,10 26,0" stroke="#2b2320" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            <circle cx="76" cy="82" r="5" fill={skinShade} opacity="0.5" />
+            <circle cx="124" cy="82" r="5" fill={skinShade} opacity="0.5" />
+          </>
+        )}
         {/* interactive zones */}
-        {zoneShapes.map((z) => {
+        {zones.map((z) => {
           const active = hovered === z.id;
           const strokeClass = z.emphasize ? "stroke-stop" : active ? "stroke-foreground" : "";
           return (
@@ -231,7 +261,7 @@ export function TouchTrafficLight() {
 
   if (phase === "intro") {
     const instructions =
-      "Touch Traffic Light. Drag the colored circles onto the matching body parts of both characters. Red means private parts: genitals, chest and buttocks. Yellow means attention zones: abdomen and thighs. Green means usually exposed parts: head, face, shoulders, arms, hands, lower legs and feet. Colors are a learning tool, not a rule: nobody may disrespect your boundaries, even on green parts. You can always try again.";
+      "Touch Traffic Light. Drag the colored circles onto the matching body parts of the characters — one of them is seen from the back. Red means private parts: genitals, chest and buttocks. Yellow means attention zones: face, abdomen, lower back and thighs. Green means usually exposed parts: head, shoulders, arms, hands, upper back, lower legs and feet. Colors are a learning tool, not a rule: nobody may disrespect your boundaries, even on green parts. You can always try again.";
     return (
       <div>
         <p className="text-3xl font-semibold">Cover every body part with the right color — no way to lose.</p>
@@ -250,8 +280,8 @@ export function TouchTrafficLight() {
         </ul>
         <div className="card-base mt-4 space-y-2 p-4 text-sm">
           <p><strong>Red — private parts:</strong> genitals, chest and buttocks. Nobody may touch them without a legitimate care or health reason, with privacy, respect and your consent. Abuse is never your fault — find a trusted adult.</p>
-          <p><strong>Yellow — attention:</strong> abdomen and thighs. You set the limits on who can touch you and when. If a touch feels uncomfortable, you can say no and ask for help.</p>
-          <p><strong>Green — usually exposed:</strong> head, shoulders, arms, hands and feet. Friendly social touch can be okay here — always respecting your boundaries and consent.</p>
+          <p><strong>Yellow — attention:</strong> face, abdomen, lower back and thighs. You set the limits on who can touch you and when. If a touch feels uncomfortable, you can say no and ask for help.</p>
+          <p><strong>Green — usually exposed:</strong> head, shoulders, arms, hands, upper back and feet. Friendly social touch can be okay here — always respecting your boundaries and consent.</p>
           <p className="text-muted-foreground">Colors are a learning tool, not an absolute rule: even on green parts, nobody may disrespect your boundaries. Medical and hygiene care can be necessary and must happen with respect, privacy and protection.</p>
         </div>
         <div className="card-base mt-4 space-y-2 p-4 text-sm">
@@ -339,9 +369,10 @@ export function TouchTrafficLight() {
         Use the same color as many times as you need. Placing on either character counts.
       </p>
 
-      <div className="mt-3 grid grid-cols-2 items-end justify-items-center gap-2 sm:gap-8">
+      <div className="mt-3 grid grid-cols-3 items-end justify-items-center gap-1 sm:gap-8">
         <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
         <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
+        <Character name="Chris" view="back" skin="#8a5a3b" skinShade="#75492e" hair="#1d1710" outfit="#7a6fc0" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Chris")} />
       </div>
 
       <div ref={feedbackRef}>
