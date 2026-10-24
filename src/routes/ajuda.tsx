@@ -7,33 +7,33 @@ import { PageTitle } from "@/components/Layout";
 export const Route = createFileRoute("/ajuda")({
   head: () => ({
     meta: [
-      { title: "Preciso de ajuda | Cuida+" },
-      { name: "description", content: "Orientações iniciais de segurança e caminhos para apoio humano." },
-      { property: "og:title", content: "Preciso de ajuda | Cuida+" },
-      { property: "og:description", content: "Você não está sozinho(a). Veja caminhos de apoio." },
+      { title: "I need help | Cuida+" },
+      { name: "description", content: "Initial safety guidance and ways to reach human support." },
+      { property: "og:title", content: "I need help | Cuida+" },
+      { property: "og:description", content: "You are not alone. See ways to get support." },
     ],
   }),
   component: Ajuda,
 });
 
-// Protocolos de demonstração — devem ser revisados por profissionais antes do uso real.
+// Demonstration protocols — must be reviewed by professionals before real use.
 const situations: { label: string; urgent?: boolean; steps: string[] }[] = [
-  { label: "Estou me sentindo inseguro(a)", steps: ["Se puder, vá para um lugar onde se sinta mais seguro(a).", "Fale com um adulto de confiança.", "Você pode pedir contato de um profissional."] },
-  { label: "Alguém está me ameaçando", urgent: true, steps: ["Se o perigo for agora, ligue 190.", "Evite ficar sozinho(a) com essa pessoa.", "Guarde mensagens se for seguro.", "O Disque 100 recebe denúncias."] },
-  { label: "Estou sofrendo violência pela internet", steps: ["Não responda a chantagens nem envie mais nada.", "Faça prints se for seguro.", "Bloqueie e denuncie na plataforma.", "A SaferNet Brasil orienta sobre remoção de conteúdo."] },
-  { label: "Passei por uma situação sexual que me deixou desconfortável", urgent: true, steps: ["Não foi culpa sua.", "Serviços de saúde atendem sem exigir boletim de ocorrência. Ir o quanto antes (idealmente em até 72h) permite cuidados preventivos.", "Você não precisa contar detalhes para pedir ajuda."] },
-  { label: "Tenho medo de alguém", steps: ["Seu medo é válido.", "Conte para alguém de confiança.", "O Conselho Tutelar pode proteger você."] },
-  { label: "Quero conversar com um profissional", steps: ["Você pode ir à UBS mais próxima.", "Ou pedir que entrem em contato com você."] },
-  { label: "Não sei o que está acontecendo, mas preciso de ajuda", steps: ["Tudo bem não saber explicar.", "O CVV (188) escuta 24h, de graça.", "Você pode pedir contato de um profissional."] },
+  { label: "I'm feeling unsafe", steps: ["If you can, go somewhere you feel safer.", "Talk to a trusted adult.", "You can ask a professional to contact you."] },
+  { label: "Someone is threatening me", urgent: true, steps: ["If the danger is right now, call 190.", "Avoid being alone with that person.", "Keep the messages if it is safe to do so.", "Disque 100 takes reports."] },
+  { label: "I'm experiencing violence online", steps: ["Don't answer blackmail or send anything else.", "Take screenshots if it is safe.", "Block and report on the platform.", "SaferNet Brazil gives guidance on removing content."] },
+  { label: "I went through a sexual situation that made me uncomfortable", urgent: true, steps: ["It was not your fault.", "Health services provide care without requiring a police report. Going as soon as possible (ideally within 72 hours) allows preventive care.", "You don't need to tell every detail to ask for help."] },
+  { label: "I'm afraid of someone", steps: ["Your fear is valid.", "Tell someone you trust.", "The Child Protection Council can protect you."] },
+  { label: "I want to talk to a professional", steps: ["You can go to the nearest health center.", "Or ask someone to contact you."] },
+  { label: "I don't know what's happening, but I need help", steps: ["It's fine not to know how to explain it.", "CVV (188) listens 24/7, for free.", "You can ask a professional to contact you."] },
 ];
 
 function Ajuda() {
   const [open, setOpen] = useState<number | null>(null);
   return (
     <div>
-      <PageTitle title="Você não está sozinho(a)" subtitle="Escolha o que mais se parece com o que você está vivendo. Não pedimos detalhes nem provas." />
+      <PageTitle title="You are not alone" subtitle="Pick the one closest to what you're going through. We don't ask for details or proof." />
       <section className="mb-6 rounded-2xl bg-warm p-4 text-warm-foreground">
-        <p className="font-bold">Em perigo agora?</p>
+        <p className="font-bold">In danger right now?</p>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {hotlines.map((h) => (
             <a key={h.number} href={`tel:${h.number}`} className="flex items-center gap-2 rounded-xl bg-card p-3 text-card-foreground">
@@ -42,7 +42,7 @@ function Ajuda() {
             </a>
           ))}
         </div>
-        <p className="mt-2 text-xs opacity-90">Ao tocar, seu celular abre a ligação. O app não faz chamadas por você.</p>
+        <p className="mt-2 text-xs opacity-90">When you tap, your phone opens the call. The app doesn't place calls for you.</p>
       </section>
       <ul className="space-y-2">
         {situations.map((s, i) => (
@@ -52,11 +52,11 @@ function Ajuda() {
             </button>
             {open === i && (
               <div className="border-t bg-muted p-4">
-                {s.urgent && <p className="mb-2 text-sm font-bold text-destructive">Se houver risco imediato, ligue 190 ou 192.</p>}
+                {s.urgent && <p className="mb-2 text-sm font-bold text-destructive">If there is immediate risk, call 190 or 192.</p>}
                 <ul className="list-disc space-y-1 pl-5">{s.steps.map((x) => <li key={x}>{x}</li>)}</ul>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Link to="/solicitar-apoio" className="rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Pedir contato</Link>
-                  <Link to="/servicos" className="rounded-full border bg-card px-4 py-2 text-sm font-bold">Ver serviços</Link>
+                  <Link to="/solicitar-apoio" className="rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Ask to be contacted</Link>
+                  <Link to="/servicos" className="rounded-full border bg-card px-4 py-2 text-sm font-bold">See services</Link>
                 </div>
               </div>
             )}
