@@ -20,8 +20,8 @@ const contacts = ["Telefone (demo)", "E-mail (demo)", "Presencial na UBS"];
 
 function Solicitar() {
   const [step, setStep] = useState(0);
-  const [topic, setTopic] = useState(topics[0]);
-  const [contact, setContact] = useState(contacts[0]);
+  const [topic, setTopic] = useState<string>(topics[0]!);
+  const [contact, setContact] = useState<string>(contacts[0]!);
   const [city, setCity] = useState("Vila Aurora");
   const [agree, setAgree] = useState(false);
   const [id, setId] = useState<string | null>(null);
