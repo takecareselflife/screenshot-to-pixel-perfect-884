@@ -14,6 +14,7 @@
 - Speech playback batches PCM into audible segments and waits for every scheduled segment; shared player ownership uses controller identity to prevent stale cancellations.
 - Standalone interactive modules live as their own route plus a component in src/components, cross-linked from related library articles (e.g. the Touch Traffic Light game at /consentimento, linked from the consent article).
 - Body-game dragging uses captured pointer events, coordinate hit-testing and non-intercepting visual markers so touch and mouse share one placement flow.
+- Body-game feedback stays next to the characters before optional body-part controls; advancing focuses and reveals the new activity so mobile players do not get stranded below it.
 - Draggable method cards disable native touch panning; separate carousel arrows keep every method reachable without cancelling a drag.
 - Mood choices map to existing reflection questionnaires in src/lib/moods.ts, without preselecting answers or affecting clinical scoring.
 - Game rules and educational content (matches, scoring, quizzes) live in pure src/lib/*-game.ts modules separate from the UI, so they can be unit-tested and reviewed by health professionals.
