@@ -419,12 +419,12 @@ export function TouchTrafficLight() {
 
   if (phase === "intro") {
     const instructions =
-      "Touch Traffic Light. In My Body, use red for genitals, chest and buttocks; green for head, face, arms, hands, lower legs and feet; yellow for shoulders, abdomen and thighs. These colors are learning cues, not permission to touch. You can refuse unwanted touch anywhere. In My Boundaries, choose the color according to the situation and consent. Drag a circle onto the body area, or tap a circle and then a body part. You can always try again.";
+      "Touch Traffic Light. Red means genitals, chest and buttocks. Green means head, face, arms, hands, lower legs and feet. Yellow means shoulders, abdomen and thighs. Colors are learning cues, not permission to touch. Drag a circle onto a body area, or tap a circle then a body part. You can always try again.";
     return (
       <div>
       <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
       <p className="mt-1 text-muted-foreground">Green, yellow or red: learn what each color means before you start.</p>
-        <p className="mt-3 text-sm">My Body: red — genitals, chest and buttocks; green — head, face, arms, hands, lower legs and feet; yellow — thighs, shoulders and abdomen. No color gives permission to touch: your consent always matters.</p>
+        <p className="mt-3 text-sm">Red — genitals, chest and buttocks. Green — head, face, arms, hands, feet. Yellow — shoulders, abdomen and thighs. No color gives permission to touch.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
@@ -441,9 +441,9 @@ export function TouchTrafficLight() {
         <div className="card-base mt-4 space-y-2 p-4 text-sm">
           <p className="font-bold">How to play</p>
           <p>1. Read the situation.</p>
-          <p>2. Pick a circle: drag it onto the body area on either character, or tap the circle and then tap a body part. You can also use the body-part buttons.</p>
+          <p>2. Drag a circle onto a body area — or tap the circle, then a body part.</p>
           <p>3. You get a friendly explanation after every answer.</p>
-          <p className="text-muted-foreground">Take your time. If an answer is not right, you can always try again — no rush, no pressure, and nothing about you is saved.</p>
+          <p className="text-muted-foreground">Take your time. Wrong answers can always be retried. Nothing about you is saved.</p>
         </div>
         <button
           type="button"

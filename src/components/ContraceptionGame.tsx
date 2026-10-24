@@ -20,7 +20,7 @@ type Phase = "play" | "quiz" | "end";
 type Feedback = { kind: "correct" | "retry" | "info"; title: string; text: string };
 
 const INSTRUCTIONS =
-  "Where does it go? Discover contraceptive methods. Drag each method card to the place where it is used: a body area, or a special target for methods that are swallowed, injected or based on the cycle calendar. You can also tap a card and then tap a target. Tap a card to read its fact sheet. Wrong answers never lose points: you get a hint and can try again. When every card is placed, start the final challenge.";
+  "Where does it go? Drag each method card to where it is used: a body area, or a special target for pills, injections and cycle methods. You can also tap a card, then a target. Tap a card to read its fact sheet. Wrong answers never lose points — you get a hint and can try again.";
 
 const cardTones = ["bg-lilac text-lilac-foreground", "bg-sky text-sky-foreground", "bg-secondary text-secondary-foreground", "bg-accent text-accent-foreground"];
 
