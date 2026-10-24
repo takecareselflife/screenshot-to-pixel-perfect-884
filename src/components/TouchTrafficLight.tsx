@@ -423,8 +423,7 @@ export function TouchTrafficLight() {
     return (
       <div>
       <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
-      <p className="mt-1 text-muted-foreground">Green, yellow or red: learn what each color means before you start.</p>
-        <p className="mt-3 text-sm">Red — genitals, chest and buttocks. Green — head, face, arms, hands, feet. Yellow — shoulders, abdomen and thighs. No color gives permission to touch.</p>
+        <p className="mt-3 text-sm">Red — genitals, chest, buttocks. Green — head, face, arms, hands, feet. Yellow — shoulders, abdomen, thighs. No color gives permission to touch.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
