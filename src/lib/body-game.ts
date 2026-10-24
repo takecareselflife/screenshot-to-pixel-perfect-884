@@ -15,6 +15,6 @@ export const BODY_REGIONS = [
 ] as const;
 
 export type RegionId = (typeof BODY_REGIONS)[number]["id"];
-export const RED_REGIONS: RegionId[] = ["chest", "private"];
+export const PRIVATE_REGIONS: RegionId[] = ["chest", "private"];
 export const matchesBodyColor = (region: RegionId, color: TrafficColor) =>
   BODY_REGIONS.some((item) => item.id === region && item.color === color);
