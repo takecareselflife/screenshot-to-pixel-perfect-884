@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { questionnaires, scale, hotlines } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
-import { PageTitle, SimBadge } from "@/components/Layout";
+import { PageTitle } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { moods } from "@/lib/moods";
 
