@@ -11,6 +11,31 @@ export function decodePCM(pending: Uint8Array, incoming: Uint8Array) {
   return { samples, pending: bytes.slice(usable) };
 }
 
+/** Coalesce tiny transport deltas instead of creating hundreds of audio nodes. */
+export function createSampleQueue(minSamples = 6000) {
+  let chunks: Float32Array[] = [];
+  let count = 0;
+  return (samples: Float32Array, flush = false): Float32Array | null => {
+    if (samples.length) { chunks.push(samples); count += samples.length; }
+    if (!count || (!flush && count < minSamples)) return null;
+    const joined = new Float32Array(count);
+    let offset = 0;
+    for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.length; }
+    chunks = [];
+    count = 0;
+    return joined;
+  };
+}
+
+function speechError(raw: string) {
+  try {
+    const data = JSON.parse(raw) as { message?: string; error?: string | { message?: string } };
+    return data.message || (typeof data.error === "string" ? data.error : data.error?.message) || "Audio could not be played.";
+  } catch {
+    return "Audio could not be played. Please try again later.";
+  }
+}
+
 /** Streams speech from the app's speech endpoint and plays it as it arrives (24 kHz PCM). */
 export async function streamSpeech(
   endpoint: string,
@@ -26,26 +51,48 @@ export async function streamSpeech(
   let completed = false;
   let samplesPlayed = 0;
   let announced = false;
+  const queueSamples = createSampleQueue();
+  const playback: Promise<void>[] = [];
+  const playbackRate = 0.85;
   const controller = new AbortController();
   const abort = () => {
     controller.abort(signal?.reason);
     for (const source of sources) source.stop();
   };
   signal?.addEventListener("abort", abort, { once: true });
-  let playback: Promise<void> = Promise.resolve();
+  const schedule = (samples: Float32Array | null) => {
+    if (!samples?.length) return;
+    signal?.throwIfAborted();
+    const buffer = context.createBuffer(1, samples.length, 24000);
+    buffer.copyToChannel(new Float32Array(samples), 0);
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = playbackRate;
+    source.connect(context.destination);
+    sources.add(source);
+    playback.push(new Promise<void>((resolve) => {
+      source.onended = () => { sources.delete(source); resolve(); };
+    }));
+    playhead = Math.max(playhead, context.currentTime + 0.15);
+    source.start(playhead);
+    playhead += buffer.duration / playbackRate;
+    if (!announced) { announced = true; onFirstAudio?.(); }
+  };
   try {
     if (context.state === "suspended") await context.resume();
+    signal?.throwIfAborted();
+    if (context.state !== "running") throw new Error("Audio is paused by your device. Tap Listen again to enable sound.");
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
       signal: controller.signal,
     });
-    if (!response.ok || !response.body) throw new Error(`TTS failed: ${response.status} ${await response.text()}`);
+    if (!response.ok || !response.body) throw new Error(speechError(await response.text()));
     const parser = createParser({
       onEvent(event) {
         const payload = JSON.parse(event.data) as { type: string; audio?: string; error?: unknown };
-        if (payload.type === "error" || payload.error) throw new Error(`Speech failed: ${event.data}`);
+        if (payload.type === "error" || payload.type === "denied" || payload.error) throw new Error(speechError(event.data));
         if (payload.type === "speech.audio.done") {
           completed = true;
           return;
@@ -59,26 +106,7 @@ export async function streamSpeech(
         pending = new Uint8Array(decoded.pending);
         if (!decoded.samples.length) return;
         samplesPlayed += decoded.samples.length;
-        const buffer = context.createBuffer(1, decoded.samples.length, 24000);
-        buffer.copyToChannel(decoded.samples, 0);
-        const source = context.createBufferSource();
-        source.buffer = buffer;
-        source.connect(context.destination);
-        sources.add(source);
-        playback = new Promise<void>((resolve) => {
-          source.onended = () => {
-            sources.delete(source);
-            resolve();
-          };
-        });
-        // Device startup can clip audio scheduled exactly at currentTime.
-        playhead = Math.max(playhead, context.currentTime + 0.05);
-        source.start(playhead);
-        playhead += buffer.duration;
-        if (!announced) {
-          announced = true;
-          onFirstAudio?.();
-        }
+        schedule(queueSamples(decoded.samples));
       },
     });
     const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
@@ -93,7 +121,8 @@ export async function streamSpeech(
       reader.releaseLock();
     }
     if (!completed || !samplesPlayed || pending.length) throw new Error("Incomplete speech stream");
-    await playback;
+    schedule(queueSamples(new Float32Array(0), true));
+    await Promise.all(playback);
     signal?.throwIfAborted();
   } finally {
     signal?.removeEventListener("abort", abort);
