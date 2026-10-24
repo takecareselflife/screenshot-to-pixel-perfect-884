@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Move the STI game shortcut below the other games in the library list
+
 - [x] Shorten Library summaries and articles while preserving essential health guidance; verify displayed text and shared Listen content
 
 - [x] Add STI Path of Wisdom game with 10 true/false rounds, feedback, retry without penalty, trophy and results
