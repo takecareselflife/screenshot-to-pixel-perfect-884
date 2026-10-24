@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Demo data lives in src/lib/data.ts and simulated stores in src/lib/*-store.ts; replace these modules with real APIs later so pages stay unchanged.
