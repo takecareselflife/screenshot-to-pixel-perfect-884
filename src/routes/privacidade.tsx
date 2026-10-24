@@ -16,12 +16,12 @@ export const Route = createFileRoute("/privacidade")({
 });
 
 const items = [
-  ["Minimum collection", "We only ask for what is necessary. You can use the library, the assistant and the questionnaires without identifying yourself."],
+  ["Minimum collection", "We only ask for what is necessary. You can use everything without identifying yourself."],
   ["Privacy by default", "Questionnaires and chats with the assistant are not saved in this version."],
   ["Your data is never sold", "We don't use data for advertising or behavioral profiles."],
-  ["No automatic sharing", "Nothing is sent to family, school or third parties automatically. Any sharing follows the law and protection protocols."],
+  ["No automatic sharing", "Nothing is sent to family, school or third parties automatically."],
   ["Limits of confidentiality", "Professionals respect confidentiality, but in situations of serious risk the law may require them to activate the protection network."],
-  ["Security", "In the real version: encryption, role-based access control, administrative access logs and separation between identifiable data and indicators."],
+  ["Security", "In the real version: encryption, access control and access logs."],
   ["Retention and deletion", "Request data will be kept only as long as necessary. You will be able to ask for deletion."],
   ["Incidents", "In case of a security incident, we will follow LGPD procedures, including notifying the ANPD when applicable."],
 ];
