@@ -16,13 +16,15 @@ describe("colored body placements", () => {
     const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Private parts", "Buttocks", "Legs and feet"];
     regions.forEach((region, index) => {
       const color = ["green", "yellow", "red"][index % 3];
+      const label = labels[index];
+      if (!label || !color) throw new Error("Missing region or color");
       const circle = container.querySelector(`[data-color="${color}"]`);
       if (!circle) throw new Error("Missing color circle");
       fireEvent.click(circle);
-      fireEvent.click(screen.getByRole("button", { name: labels[index] }));
+      fireEvent.click(screen.getByRole("button", { name: label }));
       expect(container.querySelector(`[data-placed-region="${region}"]`)?.getAttribute("data-placed-color")).toBe(color);
       // A completed answer cannot award points twice.
-      fireEvent.click(screen.getByRole("button", { name: labels[index] }));
+      fireEvent.click(screen.getByRole("button", { name: label }));
       expect(screen.getByText(`${(index + 1) * 10} points`)).toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: "Next" }));
     });

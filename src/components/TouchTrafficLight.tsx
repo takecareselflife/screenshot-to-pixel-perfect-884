@@ -177,7 +177,7 @@ function Character({
         {placements.filter((p) => p.character === name).map((p) => (
           <g key={p.region} className="pointer-events-none" data-placed-region={p.region} data-placed-color={p.color}>
             <circle cx={markerPositions[p.region][0]} cy={markerPositions[p.region][1]} r="12" className={`${p.color === "green" ? "fill-go" : p.color === "yellow" ? "fill-caution" : "fill-stop"} stroke-card`} strokeWidth="2" />
-            <text x={markerPositions[p.region][0]} y={markerPositions[p.region][1] + 4} textAnchor="middle" className="fill-foreground text-[11px] font-bold">{p.color[0].toUpperCase()}</text>
+            <text x={markerPositions[p.region][0]} y={markerPositions[p.region][1] + 4} textAnchor="middle" className="fill-foreground text-[11px] font-bold">{p.color.charAt(0).toUpperCase()}</text>
           </g>
         ))}
       </svg>
@@ -578,7 +578,7 @@ export function TouchTrafficLight() {
             <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
             <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
           </div>
-          {drag && <div aria-hidden="true" data-drag-preview className={`pointer-events-none fixed z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-card font-bold shadow-soft ${colorMeta[drag.color].chip}`} style={{ left: drag.x - 24, top: drag.y - 24 }}>{drag.color[0].toUpperCase()}</div>}
+          {drag && <div aria-hidden="true" data-drag-preview className={`pointer-events-none fixed z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-card font-bold shadow-soft ${colorMeta[drag.color].chip}`} style={{ left: drag.x - 24, top: drag.y - 24 }}>{drag.color.charAt(0).toUpperCase()}</div>}
           <div className="mt-4">
             <p className="text-sm font-bold">Or tap a body part (keyboard friendly):</p>
             <div className="mt-2 flex flex-wrap gap-2">
