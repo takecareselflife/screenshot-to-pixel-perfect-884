@@ -8,10 +8,18 @@ import { STI_QUESTIONS, answerSti, continueSti, initialStiState, stiAccuracy } f
 export function StiWisdomGame() {
   const [state, setState] = useState(initialStiState);
   const questionRef = useRef<HTMLHeadingElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
   const question = STI_QUESTIONS[state.position];
   const finished = state.position === STI_QUESTIONS.length;
   const visualPosition = state.position + Number(state.answered && state.lastCorrect);
-  useEffect(() => { questionRef.current?.focus({ preventScroll: true }); }, [state.position, state.answered]);
+  useEffect(() => {
+    if (state.answered) {
+      feedbackRef.current?.scrollIntoView({ block: "nearest" });
+    } else {
+      questionRef.current?.focus({ preventScroll: true });
+      questionRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [state.position, state.answered]);
   const restart = () => setState(initialStiState());
   return (
     <div className="space-y-6">
@@ -55,7 +63,7 @@ export function StiWisdomGame() {
           <Button disabled={state.answered} onClick={() => setState(s => answerSti(s, true))} className="h-16 text-lg"><Check className="h-6 w-6" aria-hidden />True</Button>
           <Button disabled={state.answered} variant="outline" onClick={() => setState(s => answerSti(s, false))} className="h-16 text-lg"><X className="h-6 w-6" aria-hidden />False</Button>
         </div>
-        {state.answered && <div aria-live="polite" className={`space-y-3 rounded-lg p-4 ${state.lastCorrect ? "bg-secondary text-secondary-foreground" : "bg-sky text-sky-foreground"}`}>
+        {state.answered && <div ref={feedbackRef} aria-live="polite" className={`space-y-3 rounded-lg p-4 ${state.lastCorrect ? "bg-secondary text-secondary-foreground" : "bg-sky text-sky-foreground"}`}>
           <p className="flex items-center gap-2 font-bold">{state.lastCorrect ? <Sparkles className="h-5 w-5" aria-hidden /> : <HeartPulse className="h-5 w-5" aria-hidden />}{state.lastCorrect ? "That's right! One step closer." : "Almost! Learning is part of the journey."}</p>
           <p className="font-bold">The answer is {question.answer ? "True" : "False"}.</p>
           <p>{question.explanation}</p>

@@ -5,6 +5,7 @@ import { StiWisdomGame } from "@/components/StiWisdomGame";
 vi.mock("@tanstack/react-router", () => ({ Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a> }));
 vi.mock("@/components/ListenButton", () => ({ ListenButton: () => null }));
 afterEach(cleanup);
+Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 
 describe("STI trail rules", () => {
   it("uses the ten answers from the brief", () => {
