@@ -6,7 +6,7 @@ import { TouchTrafficLight } from "@/components/TouchTrafficLight";
 export const Route = createFileRoute("/consentimento")({
   head: () => ({
     meta: [
-      { title: "Touch Traffic Light — Body Safety & Consent game | Cuida+" },
+      { title: "Touch Traffic Light — Body Safety & Consent game | Care+" },
       { name: "description", content: "An interactive game about body autonomy, personal boundaries, consent and how to seek help." },
       { property: "og:type", content: "website" },
       { property: "og:title", content: "Touch Traffic Light — Body Safety & Consent" },

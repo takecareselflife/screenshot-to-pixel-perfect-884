@@ -6,7 +6,7 @@ import { ContraceptionGame } from "@/components/ContraceptionGame";
 export const Route = createFileRoute("/anticoncepcao")({
   head: () => ({
     meta: [
-      { title: "Where does it go? — Contraceptive methods game | Cuida+" },
+      { title: "Where does it go? — Contraceptive methods game | Care+" },
       { name: "description", content: "Drag, discover and learn how to prevent an unplanned pregnancy with 12 contraceptive methods and a final challenge." },
       { property: "og:type", content: "website" },
       { property: "og:title", content: "Where does it go? — Discover contraceptive methods" },

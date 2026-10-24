@@ -8,9 +8,9 @@ import { PageTitle } from "@/components/Layout";
 export const Route = createFileRoute("/ajuda")({
   head: () => ({
     meta: [
-      { title: "I need help | Cuida+" },
+      { title: "I need help | Care+" },
       { name: "description", content: "Initial safety guidance and ways to reach human support." },
-      { property: "og:title", content: "I need help | Cuida+" },
+      { property: "og:title", content: "I need help | Care+" },
       { property: "og:description", content: "You are not alone. See ways to get support." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

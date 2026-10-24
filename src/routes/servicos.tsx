@@ -7,9 +7,9 @@ import { PageTitle, SimBadge } from "@/components/Layout";
 export const Route = createFileRoute("/servicos")({
   head: () => ({
     meta: [
-      { title: "Health services | Cuida+" },
+      { title: "Health services | Care+" },
       { name: "description", content: "Find health centers, mental health care, violence response and protection by city and region." },
-      { property: "og:title", content: "Health services | Cuida+" },
+      { property: "og:title", content: "Health services | Care+" },
       { property: "og:description", content: "Directory of services for adolescents." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
