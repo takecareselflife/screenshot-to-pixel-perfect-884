@@ -8,6 +8,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Trusted information, emotional support and access to health services for adolescents." },
       { property: "og:title", content: "Cuida+ | Teen Health" },
       { property: "og:description", content: "Trusted information, emotional support and access to health services." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Index,

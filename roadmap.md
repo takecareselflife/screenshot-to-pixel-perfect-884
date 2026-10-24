@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Add the uploaded condom and HPV images to Sexually transmitted infections
-- [ ] Diagnose and adjust both games; verify dragging and completion
-- [ ] Add clickable mood emojis that lead into emotional health questions
+- [x] Add the uploaded condom and HPV images to Sexually transmitted infections
+- [x] Diagnose and adjust both games; verify dragging and completion
+- [x] Add clickable mood emojis that lead into emotional health questions
 
 - [x] Fix Listen button: no sound comes out when tapped (iPhone silent-switch routing, native-rate audio, unlock in tap)
 - [x] Touch game: chest / private parts must accept the red circle

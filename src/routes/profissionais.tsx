@@ -11,6 +11,8 @@ export const Route = createFileRoute("/profissionais")({
       { name: "description", content: "Demo area for authorized professionals to follow up requests." },
       { property: "og:title", content: "Professionals' panel | Cuida+" },
       { property: "og:description", content: "Managing intake and referrals." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),

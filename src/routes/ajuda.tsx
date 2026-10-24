@@ -12,6 +12,8 @@ export const Route = createFileRoute("/ajuda")({
       { name: "description", content: "Initial safety guidance and ways to reach human support." },
       { property: "og:title", content: "I need help | Cuida+" },
       { property: "og:description", content: "You are not alone. See ways to get support." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Ajuda,
