@@ -4,7 +4,7 @@
  */
 import { articles } from "./data";
 
-export type Reply = { text: string; sources: string[]; links: { to: string; label: string }[]; risk: boolean };
+export type Reply = { text: string; sources: string[]; links: { to: string; label: string }[]; risk: boolean; guide?: "condom" | "hpv" };
 
 const riskWords = ["kill myself", "suicid", "hurt myself", "end my life", "die", "abuse", "rap", "forced me", "threat", "blackmail", "nude leak", "leaked", "afraid of"];
 
@@ -35,11 +35,13 @@ export function answer(input: string): Reply {
     };
   }
   if (art) {
+    const guideId = art.slug === "contraception" ? "condom" : art.slug === "sti" ? "hpv" : null;
     return {
       risk: false,
       text: `${art.summary} ${art.explain[0]} Tip: ${art.practical[0]}`,
       sources: art.sources,
       links: [{ to: `/biblioteca/${art.slug}`, label: `Read: ${art.title}` }, { to: "/servicos", label: "Find a service" }],
+      ...(guideId ? { guide: guideId } : {}),
     };
   }
   return {
