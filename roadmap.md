@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Diagnose and repair inclusive audio playback; verify actual playback
+- [ ] Remove the two library topics shown in the uploaded screenshot
+
 - [x] Translate the whole app to English (screens, texts, buttons, data)
 - [x] Add the two uploaded infographics (condom, HPV vaccine) to the "ask your questions" assistant area
   - [x] Upload both images as app media
