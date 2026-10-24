@@ -94,8 +94,8 @@ const trustedOptions = [
 ];
 
 const zoneShapes: { id: RegionId; d: string; emphasize?: boolean }[] = [
-  { id: "head", d: "M62,64 a38,38 0 0 1 76,0 z" },
-  { id: "face", d: "M62,64 a38,38 0 0 0 76,0 z" },
+  { id: "head", d: "M62,64 A38,38 0 0 1 138,64 Z" },
+  { id: "face", d: "M62,64 A38,38 0 0 0 138,64 Z" },
   { id: "shoulders", d: "M62,118 h76 v26 h-76 z" },
   { id: "chest", d: "M62,144 h76 v42 h-76 z", emphasize: true },
   { id: "abdomen", d: "M62,186 h76 v40 h-76 z" },
@@ -169,7 +169,7 @@ function Character({
               fill="transparent"
               strokeWidth={z.emphasize || active ? 3 : 0}
               strokeDasharray="6 5"
-              className={`cursor-pointer pointer-events-auto ${strokeClass} ${active ? "fill-primary/20" : ""}`}
+              className={`cursor-pointer [pointer-events:fill] ${strokeClass} ${active ? "fill-primary/20" : ""}`}
               onClick={() => onActivate(z.id)}
             />
           );
