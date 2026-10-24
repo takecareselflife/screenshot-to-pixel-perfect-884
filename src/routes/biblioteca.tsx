@@ -36,6 +36,19 @@ function Biblioteca() {
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
           </Link>
         </li>
+        <li>
+          <Link to="/anticoncepcao" className="card-base flex items-center gap-3 bg-sky p-4 text-sky-foreground">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-foreground/10">
+              <Gamepad2 className="h-6 w-6" aria-hidden />
+            </span>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold">Game: Contraceptive methods</h2>
+              <p className="text-sm opacity-90">Drag, discover and learn how to prevent an unplanned pregnancy!</p>
+              <span className="mt-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">PLAY NOW</span>
+            </div>
+            <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
+          </Link>
+        </li>
         {libraryArticles.map((a) => (
           <li key={a.slug}>
             <Link to="/biblioteca/$slug" params={{ slug: a.slug }} className="card-base flex items-center gap-3 p-4">

@@ -54,6 +54,19 @@ function ArticlePage() {
           </span>
         </Link>
       )}
+      {a.slug === "contraception" && (
+        <Link to="/anticoncepcao" className="card-base flex items-center gap-4 bg-primary p-4 text-primary-foreground transition hover:-translate-y-0.5">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/20">
+            <Gamepad2 className="h-6 w-6" aria-hidden />
+          </span>
+          <span className="flex-1">
+            <strong>Game: Contraceptive methods</strong>
+            <br />
+            <span className="text-sm opacity-90">Drag, discover and learn how to prevent an unplanned pregnancy!</span>
+          </span>
+          <span className="rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-bold text-primary">PLAY NOW</span>
+        </Link>
+      )}
       {a.explain.map((p) => <p key={p}>{p}</p>)}
       <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
       <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
