@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { questionnaires, scale, hotlines } from "@/lib/data";
+import { ListenButton } from "@/components/ListenButton";
 import { PageTitle, SimBadge } from "@/components/Layout";
 
 export const Route = createFileRoute("/bem-estar")({
@@ -50,10 +51,14 @@ function BemEstar() {
   const safetyFlag = q.id === "relacoes" && ((a[1] ?? 0) >= 2 || (a[2] ?? 0) >= 2);
 
   if (done) {
+    const reflection = high
+      ? "It looks like things are weighing heavily on you. That deserves care, and you don't have to go through it alone."
+      : "It's good that you stopped to look at yourself. Keep taking care of you.";
     return (
       <div className="space-y-4">
         <h1 className="text-3xl font-semibold">Thanks for sharing</h1>
-        <p>{high ? "It looks like things are weighing heavily on you. That deserves care, and you don't have to go through it alone." : "It's good that you stopped to look at yourself. Keep taking care of you."}</p>
+        <p>{reflection}</p>
+        <ListenButton text={`Thanks for sharing. ${reflection} This is not a diagnosis. Only a professional can make an assessment.`} />
         <p className="text-sm text-muted-foreground">This is not a diagnosis. Only a professional can make an assessment.</p>
         {(high || safetyFlag) && (
           <div className="rounded-2xl bg-accent p-4">

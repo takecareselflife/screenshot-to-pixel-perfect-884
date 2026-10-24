@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Phone } from "lucide-react";
 import { hotlines } from "@/lib/data";
+import { ListenButton } from "@/components/ListenButton";
 import { PageTitle } from "@/components/Layout";
 
 export const Route = createFileRoute("/ajuda")({
@@ -53,6 +54,10 @@ function Ajuda() {
             {open === i && (
               <div className="border-t bg-muted p-4">
                 {s.urgent && <p className="mb-2 text-sm font-bold text-destructive">If there is immediate risk, call 190 or 192.</p>}
+                <ListenButton
+                  text={`${s.label}. ${s.urgent ? "If there is immediate risk, call 190 or 192. " : ""}${s.steps.join(" ")}`}
+                  className="mb-2"
+                />
                 <ul className="list-disc space-y-1 pl-5">{s.steps.map((x) => <li key={x}>{x}</li>)}</ul>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Link to="/solicitar-apoio" className="rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Ask to be contacted</Link>

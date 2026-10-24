@@ -4,6 +4,7 @@ import { Send, Image as ImageIcon } from "lucide-react";
 import { answer, type Reply } from "@/lib/assistant";
 import { guides, guideById, type Guide } from "@/lib/guides";
 import { GuideViewer } from "@/components/GuideViewer";
+import { ListenButton } from "@/components/ListenButton";
 import { PageTitle, SimBadge } from "@/components/Layout";
 
 export const Route = createFileRoute("/assistente")({
@@ -45,6 +46,7 @@ function Assistente() {
         {msgs.map((m, i) => (
           <div key={i} className={`max-w-[85%] rounded-2xl p-3 ${m.from === "user" ? "ml-auto bg-primary text-primary-foreground" : m.reply?.risk ? "bg-accent" : "card-base"}`}>
             <p>{m.text}</p>
+            {m.from === "bot" && <ListenButton text={m.text} className="mt-2" />}
             {m.reply && m.reply.sources.length > 0 && <p className="mt-2 text-xs opacity-80">Sources: {m.reply.sources.join("; ")}</p>}
             {m.reply?.guide && guideById(m.reply.guide) && (
               <button onClick={() => setOpenGuide(guideById(m.reply!.guide)!)} className="mt-2 flex items-center gap-2 rounded-full bg-warm px-3 py-1 text-sm font-bold text-warm-foreground">
