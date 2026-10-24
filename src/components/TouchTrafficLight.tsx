@@ -71,6 +71,13 @@ const backZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "feet", d: "M66,344 h38 v20 h-38 z M104,344 h30 v20 h-30 z" },
 ];
 
+/** Every character must be fully covered: Sam and Alex (front), Chris (back). */
+const characterZones: [string, { id: RegionId; d: string; emphasize?: boolean }[]][] = [
+  ["Sam", frontZones],
+  ["Alex", frontZones],
+  ["Chris", backZones],
+];
+
 function Character({
   name,
   skin,
@@ -191,9 +198,9 @@ export function TouchTrafficLight() {
   const dragMoved = useRef(false);
   const activePointer = useRef<number | null>(null);
 
-  const coveredCount = new Set(placements.map((p) => p.region)).size;
-  const totalRegions = REGIONS.length;
-  const progressPct = Math.round((coveredCount / totalRegions) * 100);
+  const totalPlacements = frontZones.length * 2 + backZones.length;
+  const coveredCount = placements.length;
+  const progressPct = Math.round((coveredCount / totalPlacements) * 100);
 
   useEffect(() => {
     if (phase !== "play") return;
