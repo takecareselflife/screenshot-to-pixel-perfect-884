@@ -60,6 +60,13 @@ function Biblioteca() {
             </Link>
           </li>
         ))}
+        <li>
+          <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg border bg-secondary p-4 text-secondary-foreground">
+            <Gamepad2 className="h-6 w-6 shrink-0" aria-hidden />
+            <div className="flex-1"><h2 className="text-lg font-semibold">STIs — Path of Wisdom</h2><p className="text-sm">Follow the true-or-false trail to the Knowledge Trophy.</p></div>
+            <ChevronRight className="h-5 w-5" aria-hidden />
+          </Link>
+        </li>
       </ul>
     </div>
   );

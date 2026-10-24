@@ -27,4 +27,8 @@ describe("App routing", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes("/anticoncepcao").at(-1)?.routeId).not.toBe(rootRouteId);
   });
+  it("matches the STI wisdom game route", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes("/ist-jogo").at(-1)?.routeId).toBe("/ist-jogo");
+  });
 });

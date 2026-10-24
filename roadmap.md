@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Add STI Path of Wisdom game with 10 true/false rounds, feedback, retry without penalty, trophy and results
+- [x] Link the STI game from the library and STI article; verify completion and restart
+
 - [x] Correct body-game color matching and separate thighs from feet; verify the requested colors with tests and dragging
 
 - [x] Add isolation, avoiding friends and withdrawal as possible emotional distress signs in the library
