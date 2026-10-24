@@ -419,11 +419,11 @@ export function TouchTrafficLight() {
 
   if (phase === "intro") {
     const instructions =
-      "Touch Traffic Light. Red means genitals and chest. Yellow means abdomen and thighs. Green means everything else: head, face, shoulders, arms, hands, buttocks, lower legs and feet. Colors are learning cues, not permission to touch. Drag a circle onto a body area, or tap a circle then a body part. You can always try again.";
+      "Touch Traffic Light. Red means genitals, chest and buttocks. Yellow means abdomen and thighs. Green means everything else: head, face, shoulders, arms, hands, lower legs and feet. Colors are learning cues, not permission to touch. Drag a circle onto a body area, or tap a circle then a body part. You can always try again.";
     return (
       <div>
       <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
-        <p className="mt-3 text-sm">Red — genitals and chest. Yellow — abdomen and thighs. Green — everything else. No color gives permission to touch.</p>
+        <p className="mt-3 text-sm">Red — genitals, chest and buttocks. Yellow — abdomen and thighs. Green — everything else. No color gives permission to touch.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
