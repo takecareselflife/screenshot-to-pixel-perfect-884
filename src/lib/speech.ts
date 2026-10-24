@@ -179,6 +179,7 @@ export async function streamSpeech(
     signal?.removeEventListener("abort", abort);
     controller.abort();
     for (const source of sources) source.stop();
+    releaseMedia();
     await context.close();
   }
 }
