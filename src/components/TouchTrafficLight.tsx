@@ -39,8 +39,7 @@ const frontZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "shoulders", d: "M62,118 h76 v26 h-76 z" },
   { id: "chest", d: "M62,144 h76 v42 h-76 z", emphasize: true },
   { id: "abdomen", d: "M62,186 h76 v40 h-76 z" },
-  { id: "private", d: "M84,224 h32 v34 h-32 z", emphasize: true },
-  { id: "buttocks", d: "M62,224 h22 v34 h-22 z M116,224 h22 v34 h-22 z", emphasize: true },
+  { id: "private", d: "M62,224 h76 v34 h-76 z", emphasize: true },
   {
     id: "arms",
     d: "M36,124 h24 v128 h-24 z M140,124 h24 v128 h-24 z M37,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0 M141,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0",
