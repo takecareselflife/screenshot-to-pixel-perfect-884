@@ -9,8 +9,8 @@ afterEach(cleanup);
 
 const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
 const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Genitals (private parts)", "Buttocks", "Thighs", "Lower legs", "Feet"];
-// Red: genitals and chest. Yellow: abdomen and thighs. Green: everything else.
-const colors = ["green", "green", "green", "green", "red", "yellow", "red", "green", "yellow", "green", "green"];
+// Red: genitals, chest and buttocks. Yellow: abdomen and thighs. Green: everything else.
+const colors = ["green", "green", "green", "green", "red", "yellow", "red", "red", "yellow", "green", "green"];
 
 function pick(container: HTMLElement, color: string) {
   const circle = container.querySelector(`[data-color="${color}"]`);
@@ -85,7 +85,7 @@ describe("colored body placements", () => {
     expect(container.querySelector(`[data-placed-region="${target}"]`)?.getAttribute("data-placed-color")).toBe("red");
   });
 
-  it.each(["Buttocks", "Shoulders", "Head and hair", "Feet"])("%s accepts the green circle and not red or yellow", (label) => {
+  it.each(["Shoulders", "Head and hair", "Feet"])("%s accepts the green circle and not red or yellow", (label) => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     const index = labels.indexOf(label);
