@@ -33,7 +33,10 @@ export function BemEstar() {
       <div>
         <PageTitle title="How are you doing?" subtitle="Answering is optional. You can skip any question or stop whenever you want." />
         <section aria-label="Mood" className="mb-6">
-          <h2 className="mb-3 text-lg font-semibold">How do you feel today?</h2>
+          <h2 className="mb-2 text-lg font-semibold">How do you feel today?</h2>
+          <p className="mb-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+            <span aria-hidden="true">👇</span> Click here
+          </p>
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
             {moods.map((item) => (
               <Button key={item.id} variant="outline" aria-label={`I feel ${item.label.toLowerCase()}`} onClick={() => { setMood(item); setActive(item.questionnaire); setDone(false); }} className="h-24 flex-col gap-2 rounded-lg">
@@ -44,16 +47,6 @@ export function BemEstar() {
           </div>
           <ListenButton className="mt-3" text="How do you feel today? Happy, okay, sad, anxious, tired, or lonely?" />
         </section>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {questionnaires.map((x) => (
-            <li key={x.id}>
-              <Button variant="outline" onClick={() => { setMood(null); setActive(x.id); setDone(false); }} className="card-base h-auto w-full flex-col items-start p-4 text-left whitespace-normal">
-                <h2 className="text-lg font-semibold">{x.title}</h2>
-                <p className="text-sm text-muted-foreground">{x.questions.length} questions · about 1 min</p>
-              </Button>
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
