@@ -10,33 +10,153 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AjudaRouteImport } from './routes/ajuda'
+import { Route as AssistenteRouteImport } from './routes/assistente'
+import { Route as BemEstarRouteImport } from './routes/bem-estar'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ProfissionaisRouteImport } from './routes/profissionais'
+import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as SolicitarApoioRouteImport } from './routes/solicitar-apoio'
+import { Route as BibliotecaSlugRouteImport } from './routes/biblioteca.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AjudaRoute = AjudaRouteImport.update({
+  id: '/ajuda',
+  path: '/ajuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistenteRoute = AssistenteRouteImport.update({
+  id: '/assistente',
+  path: '/assistente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BemEstarRoute = BemEstarRouteImport.update({
+  id: '/bem-estar',
+  path: '/bem-estar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfissionaisRoute = ProfissionaisRouteImport.update({
+  id: '/profissionais',
+  path: '/profissionais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolicitarApoioRoute = SolicitarApoioRouteImport.update({
+  id: '/solicitar-apoio',
+  path: '/solicitar-apoio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliotecaSlugRoute = BibliotecaSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BibliotecaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
+  '/assistente': typeof AssistenteRoute
+  '/bem-estar': typeof BemEstarRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/privacidade': typeof PrivacidadeRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
+  '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
+  '/assistente': typeof AssistenteRoute
+  '/bem-estar': typeof BemEstarRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/privacidade': typeof PrivacidadeRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
+  '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ajuda': typeof AjudaRoute
+  '/assistente': typeof AssistenteRoute
+  '/bem-estar': typeof BemEstarRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/privacidade': typeof PrivacidadeRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
+  '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ajuda'
+    | '/assistente'
+    | '/bem-estar'
+    | '/biblioteca'
+    | '/privacidade'
+    | '/profissionais'
+    | '/servicos'
+    | '/solicitar-apoio'
+    | '/biblioteca/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ajuda'
+    | '/assistente'
+    | '/bem-estar'
+    | '/biblioteca'
+    | '/privacidade'
+    | '/profissionais'
+    | '/servicos'
+    | '/solicitar-apoio'
+    | '/biblioteca/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/ajuda'
+    | '/assistente'
+    | '/bem-estar'
+    | '/biblioteca'
+    | '/privacidade'
+    | '/profissionais'
+    | '/servicos'
+    | '/solicitar-apoio'
+    | '/biblioteca/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AjudaRoute: typeof AjudaRoute
+  AssistenteRoute: typeof AssistenteRoute
+  BemEstarRoute: typeof BemEstarRoute
+  BibliotecaRoute: typeof BibliotecaRouteWithChildren
+  PrivacidadeRoute: typeof PrivacidadeRoute
+  ProfissionaisRoute: typeof ProfissionaisRoute
+  ServicosRoute: typeof ServicosRoute
+  SolicitarApoioRoute: typeof SolicitarApoioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +168,94 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ajuda': {
+      id: '/ajuda'
+      path: '/ajuda'
+      fullPath: '/ajuda'
+      preLoaderRoute: typeof AjudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistente': {
+      id: '/assistente'
+      path: '/assistente'
+      fullPath: '/assistente'
+      preLoaderRoute: typeof AssistenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bem-estar': {
+      id: '/bem-estar'
+      path: '/bem-estar'
+      fullPath: '/bem-estar'
+      preLoaderRoute: typeof BemEstarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profissionais': {
+      id: '/profissionais'
+      path: '/profissionais'
+      fullPath: '/profissionais'
+      preLoaderRoute: typeof ProfissionaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solicitar-apoio': {
+      id: '/solicitar-apoio'
+      path: '/solicitar-apoio'
+      fullPath: '/solicitar-apoio'
+      preLoaderRoute: typeof SolicitarApoioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/biblioteca/$slug': {
+      id: '/biblioteca/$slug'
+      path: '/$slug'
+      fullPath: '/biblioteca/$slug'
+      preLoaderRoute: typeof BibliotecaSlugRouteImport
+      parentRoute: typeof BibliotecaRoute
+    }
   }
 }
 
+interface BibliotecaRouteChildren {
+  BibliotecaSlugRoute: typeof BibliotecaSlugRoute
+}
+
+const BibliotecaRouteChildren: BibliotecaRouteChildren = {
+  BibliotecaSlugRoute: BibliotecaSlugRoute,
+}
+
+const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
+  BibliotecaRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AjudaRoute: AjudaRoute,
+  AssistenteRoute: AssistenteRoute,
+  BemEstarRoute: BemEstarRoute,
+  BibliotecaRoute: BibliotecaRouteWithChildren,
+  PrivacidadeRoute: PrivacidadeRoute,
+  ProfissionaisRoute: ProfissionaisRoute,
+  ServicosRoute: ServicosRoute,
+  SolicitarApoioRoute: SolicitarApoioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
