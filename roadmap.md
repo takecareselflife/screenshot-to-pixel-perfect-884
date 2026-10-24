@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Add the uploaded condom and HPV images to Sexually transmitted infections
+- [ ] Diagnose and adjust both games; verify dragging and completion
+
 - [x] Fix Listen button: no sound comes out when tapped (iPhone silent-switch routing, native-rate audio, unlock in tap)
 - [x] Touch game: chest / private parts must accept the red circle
 - [x] Build "Where does it go?" contraception drag-and-drop game (uploaded brief): card, 12 methods, special targets, method fact sheets, final 5-question challenge, safety messages, tests
