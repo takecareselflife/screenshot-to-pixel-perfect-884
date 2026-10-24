@@ -10,6 +10,8 @@ export const Route = createFileRoute("/solicitar-apoio")({
       { name: "description", content: "Ask a service or professional to get in touch with you." },
       { property: "og:title", content: "Ask for support | Cuida+" },
       { property: "og:description", content: "Request contact from a professional safely." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Solicitar,

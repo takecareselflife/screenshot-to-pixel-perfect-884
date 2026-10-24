@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, AlertTriangle, CheckCircle2, MapPin, BookMarked, Gamepad2 } from "lucide-react";
 import { articles } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
+import { guides } from "@/lib/guides";
 
 export const Route = createFileRoute("/biblioteca/$slug")({
   loader: ({ params }) => {
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/biblioteca/$slug")({
           { name: "description", content: loaderData.article.summary },
           { property: "og:title", content: loaderData.article.title },
           { property: "og:description", content: loaderData.article.summary },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary" },
         ]
       : [{ title: "Content not found | Cuida+" }, { name: "robots", content: "noindex" }],
   }),
@@ -68,6 +71,19 @@ function ArticlePage() {
         </Link>
       )}
       {a.explain.map((p) => <p key={p}>{p}</p>)}
+      {a.slug === "sti" && (
+        <section aria-label="Illustrated prevention guides" className="grid gap-6">
+          {guides.map((guide) => (
+            <figure key={guide.id} className="space-y-2">
+              <figcaption className="text-lg font-semibold">{guide.title}</figcaption>
+              <a href={guide.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size ${guide.title}`} className="block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">
+                <img src={guide.src} alt={guide.alt} className="h-auto w-full rounded-lg" />
+              </a>
+              <ListenButton text={guide.alt} />
+            </figure>
+          ))}
+        </section>
+      )}
       <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
       <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
       <Block title="Where to get help" icon={<MapPin className="h-5 w-5" />} items={a.services} tone="bg-sky" />

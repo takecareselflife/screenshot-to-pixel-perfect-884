@@ -76,4 +76,26 @@ describe("colored body placements", () => {
     fireEvent.click(screen.getByRole("button", { name: "Shoulders" }));
     expect(container.querySelector('[data-placed-region="shoulders"]')?.getAttribute("data-placed-color")).toBe("green");
   });
+
+  it("awards the trusted-adult activity only once", () => {
+    const { container } = render(<TouchTrafficLight />);
+    fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
+    finishLevel1(container);
+    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Private parts"], ["red", "Chest"]] as const;
+    for (const [color, label] of situations) {
+      pick(container, color);
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    }
+    for (const name of ["Say no and choose another greeting.", "Tell a trusted adult.", "The professional should explain the examination, respect your privacy, and follow appropriate safeguards."]) {
+      fireEvent.click(screen.getByRole("button", { name }));
+      fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    }
+    for (const name of ["A parent or family member you trust", "A teacher or school counselor", "A doctor or nurse", "A coach or club leader"]) fireEvent.click(screen.getByRole("button", { name }));
+    const check = screen.getByRole("button", { name: "Check my choices" });
+    fireEvent.click(check);
+    expect(screen.getByText("190 points")).toBeInTheDocument();
+    fireEvent.click(check);
+    expect(screen.getByText("190 points")).toBeInTheDocument();
+  });
 });

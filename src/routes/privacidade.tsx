@@ -8,6 +8,8 @@ export const Route = createFileRoute("/privacidade")({
       { name: "description", content: "How we protect your data, in line with the LGPD and the ECA." },
       { property: "og:title", content: "Privacy | Cuida+" },
       { property: "og:description", content: "Transparency about data, confidentiality and your rights." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Privacidade,
