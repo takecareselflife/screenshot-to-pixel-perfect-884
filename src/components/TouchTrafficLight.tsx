@@ -36,11 +36,18 @@ const YELLOW_MSG = "Pay attention to how you feel. You can say NO, move away, an
 const RED_MSG =
   "Your body belongs to you. No one should involve you in unwanted sexual touching. If someone makes you feel unsafe, tell a trusted adult. It is never your fault.";
 
+/** Private areas (outlined in red on the characters) take the red circle. */
+export const PRIVATE_REGIONS: RegionId[] = ["chest", "private", "buttocks"];
+const isPrivate = (region: RegionId) => PRIVATE_REGIONS.includes(region);
+
 const l1Tasks = REGIONS.map((region) => ({
   target: region.id,
-  prompt: `Place a colored circle on: ${region.label}.`,
-  feedback: region.id === "private" || region.id === "buttocks" || region.id === "chest"
-    ? "You found it! Private areas deserve protection. Appropriate healthcare must be explained and respectful. Unwanted sexual touching is never your fault. A color alone does not make a touch safe."
+  requiresRed: isPrivate(region.id),
+  prompt: isPrivate(region.id)
+    ? `Private area: place the RED circle on: ${region.label}.`
+    : `Place a colored circle on: ${region.label}.`,
+  feedback: isPrivate(region.id)
+    ? "You found it! Private areas deserve protection. Nobody should touch them without your consent. Appropriate healthcare must be explained and respectful, with a trusted adult present. Unwanted sexual touching is never your fault."
     : "You found it! Your body belongs to you. Whether a touch is welcome depends on the situation and your consent, not just the body part or color.",
 }));
 
@@ -287,7 +294,10 @@ export function TouchTrafficLight() {
     if (phase === "l1") {
       const task = l1Tasks[l1Step];
       if (!task) return;
-      if (region === task.target) {
+      if (region === task.target && task.requiresRed && color !== "red") {
+        attempts.current += 1;
+        setFeedback({ kind: "retry", text: "Right place! This is a private area, so use the red circle: nobody should touch it without your consent." });
+      } else if (region === task.target) {
         place();
         addPoints();
         setFeedback({ kind: "correct", text: task.feedback });
@@ -305,7 +315,8 @@ export function TouchTrafficLight() {
       setFeedback({ kind: "retry", text: "Not quite. Ask yourself: is this touch welcome (green), something to pause and check (yellow), or unsafe (red)? Try again!" });
       return;
     }
-    if (region !== sit.region) {
+    const regionFits = region === sit.region || (sit.color === "red" && isPrivate(sit.region) && isPrivate(region));
+    if (!regionFits) {
       attempts.current += 1;
       setFeedback({ kind: "info", text: "Right color! Now place it on the body area the situation is about." });
       return;
