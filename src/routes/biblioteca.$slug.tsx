@@ -50,11 +50,12 @@ function ArticlePage() {
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/20">
             <Gamepad2 className="h-6 w-6" aria-hidden />
           </span>
-          <span>
+          <span className="flex-1">
             <strong>Play: Touch Traffic Light</strong>
             <br />
             <span className="text-sm opacity-90">Your body. Your boundaries.</span>
           </span>
+          <span className="rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-bold text-primary">PLAY NOW</span>
         </Link>
       )}
       {a.slug === "contraception" && (
@@ -75,7 +76,8 @@ function ArticlePage() {
       </ul>
       {a.slug === "sti" && <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg bg-secondary p-4 text-secondary-foreground">
         <Gamepad2 className="h-7 w-7 shrink-0" aria-hidden />
-        <span><strong>Play: STIs — Path of Wisdom</strong><br /><span className="text-sm">10 questions. One trophy.</span></span>
+        <span className="flex-1"><strong>Play: STIs — Path of Wisdom</strong><br /><span className="text-sm">10 questions. One trophy.</span></span>
+        <span className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground">PLAY NOW</span>
       </Link>}
       {a.slug === "sti" && (
         <section aria-label="Illustrated prevention guides" className="grid gap-6">

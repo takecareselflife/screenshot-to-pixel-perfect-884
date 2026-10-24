@@ -32,6 +32,7 @@ function Biblioteca() {
             <div className="flex-1">
               <h2 className="text-lg font-semibold">Touch Traffic Light — body safety game</h2>
               <p className="text-sm opacity-90">Your body. Your boundaries.</p>
+              <span className="mt-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">PLAY NOW</span>
             </div>
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
           </Link>
@@ -57,6 +58,7 @@ function Biblioteca() {
             <div className="flex-1">
               <h2 className="text-lg font-semibold">STIs — Path of Wisdom</h2>
               <p className="text-sm opacity-90">10 questions. One trophy.</p>
+              <span className="mt-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">PLAY NOW</span>
             </div>
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
           </Link>

@@ -2,6 +2,9 @@
 
 - [x] Move the STI game shortcut below the other games in the library list
 - [x] Add hormone therapy and primary care outpatient follow-up for trans people to sexual rights
+- [ ] Add a PLAY NOW shortcut to all three games
+- [x] Remove SUS and ECA references so the material can be adapted internationally by UNICEF
+- [ ] Summarize the places with too much text
 
 - [x] Shorten Library summaries and articles while preserving essential health guidance; verify displayed text and shared Listen content
 
