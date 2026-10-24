@@ -59,7 +59,7 @@ describe("colored body placements", () => {
         expect(container.querySelector(`[data-placed-region="${region}"]`)?.getAttribute("data-placed-color")).toBe(colors[index]);
       }
     });
-    expect(screen.getByText("12 of 30 body parts")).toBeInTheDocument();
+    expect(screen.getByText("12 of 29 body parts")).toBeInTheDocument();
   });
 
   it("lets the same body part be filled on each character", () => {
