@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Body game: buttocks red (private area), shoulders green; verified drag works on all 11 regions
 - [x] Show a "Click here" hint above the mood emojis and drop the topic list below them
 - [x] Replace CAPS/CAPSi with "Psychological care center" and UBS with "Basic health unit"
 - [ ] Replace the remaining local names (Disque 100, SaferNet Brazil, CREAS, CTA, Child Protection Council, Ministry of Health, LGPD/ANPD) with international equivalents
