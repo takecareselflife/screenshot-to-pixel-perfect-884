@@ -15,5 +15,6 @@
 - Standalone interactive modules live as their own route plus a component in src/components, cross-linked from related library articles (e.g. the Touch Traffic Light game at /consentimento, linked from the consent article).
 - Body-game dragging uses captured pointer events, coordinate hit-testing and non-intercepting visual markers so touch and mouse share one placement flow.
 - Draggable method cards disable native touch panning; separate carousel arrows keep every method reachable without cancelling a drag.
+- Mood choices map to existing reflection questionnaires in src/lib/moods.ts, without preselecting answers or affecting clinical scoring.
 - Game rules and educational content (matches, scoring, quizzes) live in pure src/lib/*-game.ts modules separate from the UI, so they can be unit-tested and reviewed by health professionals.
 - Speech playback unlocks media output inside the user's tap (audio-session "playback", silent looping media element, native-rate AudioContext) because iPhones otherwise mute Web Audio on silent mode.

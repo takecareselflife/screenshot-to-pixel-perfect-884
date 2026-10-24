@@ -3,6 +3,8 @@ import { useState } from "react";
 import { questionnaires, scale, hotlines } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
 import { PageTitle, SimBadge } from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { moods } from "@/lib/moods";
 
 export const Route = createFileRoute("/bem-estar")({
   head: () => ({
@@ -11,32 +13,47 @@ export const Route = createFileRoute("/bem-estar")({
       { name: "description", content: "Voluntary questions to reflect on mood, sleep, stress and safety." },
       { property: "og:title", content: "Emotional well-being | Cuida+" },
       { property: "og:description", content: "A space to reflect on how you are doing." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: BemEstar,
 });
 
 /** Answers stay only in page memory: nothing is saved or sent. */
-function BemEstar() {
+export function BemEstar() {
   const [active, setActive] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, (number | null)[]>>({});
   const [done, setDone] = useState(false);
+  const [mood, setMood] = useState<(typeof moods)[number] | null>(null);
   const q = questionnaires.find((x) => x.id === active);
 
   if (!q) {
     return (
       <div>
         <PageTitle title="How are you doing?" subtitle="Answering is optional. You can skip any question or stop whenever you want." />
+        <section aria-label="Mood" className="mb-6">
+          <h2 className="mb-3 text-lg font-semibold">How do you feel today?</h2>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            {moods.map((item) => (
+              <Button key={item.id} variant="outline" aria-label={`I feel ${item.label.toLowerCase()}`} onClick={() => { setMood(item); setActive(item.questionnaire); setDone(false); }} className="h-24 flex-col gap-2 rounded-lg">
+                <span aria-hidden="true" className="text-4xl">{item.emoji}</span>
+                <span>{item.label}</span>
+              </Button>
+            ))}
+          </div>
+          <ListenButton className="mt-3" text="How do you feel today? Happy, okay, sad, anxious, tired, or lonely?" />
+        </section>
         <p className="mb-4 rounded-xl bg-muted p-3 text-sm">
           <SimBadge>Demo</SimBadge> These questions are for self-reflection and <strong>are not a clinical test and give no diagnosis</strong>. Your answers are not saved or sent.
         </p>
         <ul className="grid gap-3 sm:grid-cols-2">
           {questionnaires.map((x) => (
             <li key={x.id}>
-              <button onClick={() => { setActive(x.id); setDone(false); }} className="card-base w-full p-4 text-left">
+              <Button variant="outline" onClick={() => { setMood(null); setActive(x.id); setDone(false); }} className="card-base h-auto w-full flex-col items-start p-4 text-left whitespace-normal">
                 <h2 className="text-lg font-semibold">{x.title}</h2>
                 <p className="text-sm text-muted-foreground">{x.questions.length} questions · about 1 min</p>
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
@@ -83,6 +100,8 @@ function BemEstar() {
     <div>
       <button onClick={() => setActive(null)} className="mb-4 text-sm text-primary">← Back</button>
       <PageTitle title={q.title} subtitle="Think about the last two weeks." />
+      {mood && <p className="mb-4 flex items-center gap-2 text-sm font-semibold"><span aria-hidden="true" className="text-2xl">{mood.emoji}</span>{mood.label}</p>}
+      <ListenButton className="mb-4" text={[q.title, "Think about the last two weeks.", ...q.questions, "Answer choices: Never, Sometimes, Often, Almost always. You can skip any question."].join(" ")} />
       <ol className="space-y-5">
         {q.questions.map((text, i) => (
           <li key={text} className="card-base p-4">
