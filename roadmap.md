@@ -1,6 +1,6 @@
 # Roadmap
 
-- [x] Move the STI game shortcut below the other games in the library list
+- [x] Remove the Demo notice below "How are you doing?" on the well-being screen
 - [x] Add hormone therapy and primary care outpatient follow-up for trans people to sexual rights
 - [x] Add a PLAY NOW shortcut to all three games
 - [x] Remove SUS and ECA references so the material can be adapted internationally by UNICEF
