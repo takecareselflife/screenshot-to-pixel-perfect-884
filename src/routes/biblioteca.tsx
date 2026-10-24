@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { ChevronRight, Gamepad2 } from "lucide-react";
-import { articles } from "@/lib/data";
+import { libraryArticles } from "@/lib/library";
 import { PageTitle } from "@/components/Layout";
 
 export const Route = createFileRoute("/biblioteca")({
@@ -10,6 +10,8 @@ export const Route = createFileRoute("/biblioteca")({
       { name: "description", content: "Content on sexuality, mental health, violence, digital safety and rights." },
       { property: "og:title", content: "Health library | Cuida+" },
       { property: "og:description", content: "Clear content with trustworthy sources for adolescents." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Biblioteca,
@@ -34,7 +36,7 @@ function Biblioteca() {
             <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
           </Link>
         </li>
-        {articles.map((a) => (
+        {libraryArticles.map((a) => (
           <li key={a.slug}>
             <Link to="/biblioteca/$slug" params={{ slug: a.slug }} className="card-base flex items-center gap-3 p-4">
               <div className="flex-1">
