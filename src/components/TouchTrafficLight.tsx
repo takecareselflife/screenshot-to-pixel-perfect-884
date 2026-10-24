@@ -127,6 +127,7 @@ function Character({
   hovered,
   placements,
   onActivate,
+  targetRegion,
 }: {
   name: string;
   skin: string;
@@ -136,6 +137,7 @@ function Character({
   hovered: string | null;
   placements: Placement[];
   onActivate: (region: RegionId) => void;
+  targetRegion: RegionId | undefined;
 }) {
   return (
     <div className="text-center">
@@ -166,7 +168,7 @@ function Character({
         <circle cx="124" cy="82" r="5" fill={skinShade} opacity="0.5" />
         {/* interactive zones */}
         {zoneShapes.map((z) => {
-          const active = hovered === z.id;
+          const active = hovered === z.id || targetRegion === z.id;
           const strokeClass = z.emphasize ? "stroke-stop" : active ? "stroke-foreground" : "";
           return (
             <path
@@ -366,6 +368,7 @@ export function TouchTrafficLight() {
   };
 
   const checkTrusted = () => {
+    if (feedback?.kind === "correct") return;
     const safeIds = trustedOptions.filter((o) => o.safe).map((o) => o.id);
     const ok = trustedPicked.length === safeIds.length && safeIds.every((id) => trustedPicked.includes(id));
     if (ok) {
@@ -586,8 +589,8 @@ export function TouchTrafficLight() {
               : "Pick a circle, then a body part — or drag the circle onto a body part."}
           </p>
           <div className="mt-3 grid grid-cols-2 items-end justify-items-center gap-2 sm:gap-8">
-            <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
-            <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
+            <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} targetRegion={phase === "l1" ? l1Tasks[l1Step]?.target : l2Situations[l2Step]?.region} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
+            <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} targetRegion={phase === "l1" ? l1Tasks[l1Step]?.target : l2Situations[l2Step]?.region} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
           </div>
           {drag && <div aria-hidden="true" data-drag-preview className={`pointer-events-none fixed z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-card font-bold shadow-soft ${colorMeta[drag.color].chip}`} style={{ left: drag.x - 24, top: drag.y - 24 }}>{drag.color.charAt(0).toUpperCase()}</div>}
           <div className="mt-4">
@@ -625,19 +628,19 @@ export function TouchTrafficLight() {
           <p className="text-sm text-muted-foreground">Choose every person who could be a safe adult to go to for help. You can change your choices before checking.</p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {trustedOptions.map((o) => (
-              <button key={o.id} type="button" aria-pressed={trustedPicked.includes(o.id)} onClick={() => toggleTrusted(o.id)} className={`card-base p-3 text-left font-bold transition ${trustedPicked.includes(o.id) ? "ring-2 ring-ring" : ""}`}>
+              <Button variant="outline" key={o.id} type="button" disabled={feedback?.kind === "correct"} aria-pressed={trustedPicked.includes(o.id)} onClick={() => toggleTrusted(o.id)} className={`card-base h-auto whitespace-normal justify-start p-3 text-left font-bold transition ${trustedPicked.includes(o.id) ? "ring-2 ring-ring" : ""}`}>
                 {o.label}
-              </button>
+              </Button>
             ))}
           </div>
-          <button
+          <Button
             type="button"
             onClick={checkTrusted}
-            disabled={trustedPicked.length === 0}
+            disabled={trustedPicked.length === 0 || feedback?.kind === "correct"}
             className="mt-3 rounded-full bg-primary px-5 py-2.5 font-bold text-primary-foreground shadow-soft disabled:opacity-50"
           >
             Check my choices
-          </button>
+          </Button>
         </div>
       )}
 

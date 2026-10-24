@@ -1,6 +1,6 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, CheckCircle2, Info, Lightbulb, ListChecks, RotateCcw, ShieldCheck, Syringe, Trophy, Pill } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Info, Lightbulb, ListChecks, RotateCcw, ShieldCheck, Syringe, Trophy, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
 import {
@@ -84,18 +84,18 @@ function DropTarget({ id, label, className, style, active, count, onTap, childre
   id: TargetId; label: string; className?: string | undefined; style?: React.CSSProperties | undefined; active: boolean; count: number; onTap: () => void; children?: ReactNode;
 }) {
   return (
-    <button
+    <Button variant="ghost"
       type="button"
       data-target={id}
       onClick={onTap}
       aria-label={`Target: ${label}${count ? `, ${count} placed` : ""}`}
       style={style}
-      className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-dashed p-1 text-center text-[11px] font-bold leading-tight transition ${active ? "scale-105 border-primary bg-primary/25" : "border-foreground/40 bg-card/70"} ${className ?? ""}`}
+      className={`flex h-auto whitespace-normal flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-dashed p-1 text-center text-[11px] font-bold leading-tight transition ${active ? "scale-105 border-primary bg-primary/25" : "border-foreground/40 bg-card/70"} ${className ?? ""}`}
     >
       {children}
       <span className="pointer-events-none">{label}</span>
       {count > 0 && <span className="pointer-events-none rounded-full bg-go px-1.5 text-[10px] text-go-foreground">✓ {count}</span>}
-    </button>
+    </Button>
   );
 }
 
@@ -182,6 +182,7 @@ export function ContraceptionGame() {
   const [quizCorrect, setQuizCorrect] = useState(0);
   const wrong = useRef<Partial<Record<MethodId, number>>>({});
   const pointer = useRef<{ id: number; x: number; y: number; moved: boolean } | null>(null);
+  const cards = useRef<HTMLUListElement>(null);
 
   const doneCount = Object.keys(matched).length;
   const allDone = doneCount === METHODS.length;
@@ -190,6 +191,9 @@ export function ContraceptionGame() {
     setPhase("play"); setMatched({}); setSelected(null); setSheet(null); setFeedback(null);
     setPoints(0); setFirstTry(0); setQuizStep(0); setQuizPick(null); setQuizCorrect(0);
     wrong.current = {};
+    pointer.current = null;
+    setDrag(null); setHovered(null);
+    cards.current?.scrollTo({ left: 0 });
   };
 
   const tryMatch = (methodId: MethodId | null, targetId: TargetId) => {
@@ -262,12 +266,13 @@ export function ContraceptionGame() {
 
   const count = (t: TargetId) => Object.values(matched).filter((v) => v === t).length;
   const target = (id: TargetId, className: string, style?: React.CSSProperties, icon?: ReactNode) => (
-    <DropTarget id={id} label={TARGETS.find((t) => t.id === id)!.label} className={className} style={style}
+    <DropTarget id={id} label={TARGETS.find((t) => t.id === id)?.label ?? id} className={className} style={style}
       active={hovered === id} count={count(id)} onTap={() => tryMatch(selected, id)}>{icon}</DropTarget>
   );
 
   if (phase === "quiz") {
-    const q = QUIZ[quizStep]!;
+    const q = QUIZ[quizStep];
+    if (!q) return null;
     const answered = quizPick !== null;
     return (
       <div>
@@ -366,12 +371,16 @@ export function ContraceptionGame() {
         {target("calendar", "min-h-16", undefined, <CalendarDays className="h-6 w-6" aria-hidden />)}
       </div>
 
-      <ul className="-mx-4 mt-3 flex snap-x gap-2 overflow-x-auto px-4 pb-2" aria-label="Method cards">
+      <div className="mt-3 flex justify-end gap-2">
+        <Button type="button" variant="outline" size="icon" aria-label="Previous methods" onClick={() => cards.current?.scrollBy({ left: -208, behavior: "smooth" })}><ChevronLeft aria-hidden /></Button>
+        <Button type="button" variant="outline" size="icon" aria-label="Next methods" onClick={() => cards.current?.scrollBy({ left: 208, behavior: "smooth" })}><ChevronRight aria-hidden /></Button>
+      </div>
+      <ul ref={cards} className="-mx-4 mt-2 flex snap-x gap-2 overflow-x-auto px-4 pb-2" aria-label="Method cards">
         {METHODS.map((m, i) => {
           const done = !!matched[m.id];
           return (
             <li key={m.id} className="snap-start">
-              <button
+              <Button variant="ghost"
                 type="button"
                 data-method={m.id}
                 aria-pressed={selected === m.id}
@@ -379,16 +388,16 @@ export function ContraceptionGame() {
                 onPointerDown={onDown(m.id)}
                 onPointerMove={onMove(m.id)}
                 onPointerUp={onUp(m.id)}
-                onPointerCancel={endDrag}
+                onPointerCancel={() => { pointer.current = null; endDrag(); }}
                 onLostPointerCapture={endDrag}
                 onClick={() => onCardClick(m.id)}
-                className={`relative flex h-32 w-24 touch-pan-x select-none flex-col items-center gap-1 rounded-2xl p-2 text-center shadow-soft transition ${cardTones[i % cardTones.length]} ${selected === m.id ? "ring-4 ring-ring" : ""} ${done ? "opacity-60" : "cursor-grab active:cursor-grabbing"} ${drag?.id === m.id ? "scale-95 opacity-50" : ""}`}
+                className={`relative flex h-40 w-24 touch-none select-none flex-col items-center justify-start gap-1 whitespace-normal rounded-2xl p-2 text-center shadow-soft transition ${cardTones[i % cardTones.length]} ${selected === m.id ? "ring-4 ring-ring" : ""} ${done ? "opacity-60" : "cursor-grab active:cursor-grabbing"} ${drag?.id === m.id ? "scale-95 opacity-50" : ""}`}
               >
                 {done && <CheckCircle2 className="absolute right-1.5 top-1.5 h-5 w-5 text-go" aria-hidden />}
                 <MethodArt id={m.id} />
                 <span className="text-sm font-bold leading-tight">{m.name}</span>
                 <span className="text-[11px] leading-tight opacity-90">{m.short}</span>
-              </button>
+              </Button>
             </li>
           );
         })}
