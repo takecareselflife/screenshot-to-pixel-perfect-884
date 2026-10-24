@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AjudaRouteImport } from './routes/ajuda'
+import { Route as AnticoncepcaoRouteImport } from './routes/anticoncepcao'
 import { Route as AssistenteRouteImport } from './routes/assistente'
 import { Route as BemEstarRouteImport } from './routes/bem-estar'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const AjudaRoute = AjudaRouteImport.update({
   id: '/ajuda',
   path: '/ajuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnticoncepcaoRoute = AnticoncepcaoRouteImport.update({
+  id: '/anticoncepcao',
+  path: '/anticoncepcao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssistenteRoute = AssistenteRouteImport.update({
@@ -86,6 +92,7 @@ const BibliotecaSlugRoute = BibliotecaSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
+  '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
+  '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ajuda': typeof AjudaRoute
+  '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ajuda'
+    | '/anticoncepcao'
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ajuda'
+    | '/anticoncepcao'
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ajuda'
+    | '/anticoncepcao'
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
@@ -174,6 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AjudaRoute: typeof AjudaRoute
+  AnticoncepcaoRoute: typeof AnticoncepcaoRoute
   AssistenteRoute: typeof AssistenteRoute
   BemEstarRoute: typeof BemEstarRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
@@ -199,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/ajuda'
       fullPath: '/ajuda'
       preLoaderRoute: typeof AjudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/anticoncepcao': {
+      id: '/anticoncepcao'
+      path: '/anticoncepcao'
+      fullPath: '/anticoncepcao'
+      preLoaderRoute: typeof AnticoncepcaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assistente': {
@@ -289,6 +309,7 @@ const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AjudaRoute: AjudaRoute,
+  AnticoncepcaoRoute: AnticoncepcaoRoute,
   AssistenteRoute: AssistenteRoute,
   BemEstarRoute: BemEstarRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
