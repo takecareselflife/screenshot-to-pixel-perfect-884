@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Shorten Library summaries and articles while preserving essential health guidance; verify reading and audio content
+- [x] Shorten Library summaries and articles while preserving essential health guidance; verify displayed text and shared Listen content
 
 - [x] Add STI Path of Wisdom game with 10 true/false rounds, feedback, retry without penalty, trophy and results
 - [x] Link the STI game from the library and STI article; verify completion and restart
