@@ -2,10 +2,11 @@
  * Touch Traffic Light — interactive body safety and consent game.
  * Educational only; never stores or sends anything the player does.
  */
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Info, LifeBuoy, RotateCcw, Star, Trophy } from "lucide-react";
 import { ListenButton } from "@/components/ListenButton";
+import { Button } from "@/components/ui/button";
 
 type TrafficColor = "green" | "yellow" | "red";
 type Phase = "intro" | "l1" | "l2" | "l3" | "trusted" | "final";
@@ -35,24 +36,19 @@ const YELLOW_MSG = "Pay attention to how you feel. You can say NO, move away, an
 const RED_MSG =
   "Your body belongs to you. No one should involve you in unwanted sexual touching. If someone makes you feel unsafe, tell a trusted adult. It is never your fault.";
 
-const l1Tasks: { target: RegionId; prompt: string; feedback: string }[] = [
-  {
-    target: "head",
-    prompt: "Tap the head and hair on either character.",
-    feedback: "Your head and hair are yours. Touches there can be okay when they are welcome and respectful.",
-  },
-  {
-    target: "arms",
-    prompt: "Now tap the arms and hands.",
-    feedback: "High-fives, handshakes and hugs you actually want are welcome touches. You decide who touches you.",
-  },
-  {
-    target: "private",
-    prompt: "Last one: tap the private parts.",
-    feedback:
-      "These areas are private and deserve special protection. Only appropriate care — like a medical exam that is explained to you and done with respect and privacy — should ever involve them. Nobody should touch them in games or secrets. If someone does, it is never your fault.",
-  },
-];
+const l1Tasks = REGIONS.map((region) => ({
+  target: region.id,
+  prompt: `Place a colored circle on: ${region.label}.`,
+  feedback: region.id === "private" || region.id === "buttocks" || region.id === "chest"
+    ? "You found it! Private areas deserve protection. Appropriate healthcare must be explained and respectful. Unwanted sexual touching is never your fault. A color alone does not make a touch safe."
+    : "You found it! Your body belongs to you. Whether a touch is welcome depends on the situation and your consent, not just the body part or color.",
+}));
+
+const markerPositions: Record<RegionId, [number, number]> = {
+  head: [100, 44], face: [100, 80], shoulders: [100, 131], arms: [48, 194],
+  chest: [100, 164], abdomen: [100, 204], private: [100, 240], buttocks: [73, 240], legs: [85, 310],
+};
+type Placement = { color: TrafficColor; region: RegionId; character: string };
 
 const l2Situations: { text: string; color: TrafficColor; region: RegionId; feedback: string }[] = [
   { text: "A hug from someone you are happy to hug", color: "green", region: "shoulders", feedback: GREEN_MSG },
@@ -122,6 +118,7 @@ function Character({
   hair,
   outfit,
   hovered,
+  placements,
   onActivate,
 }: {
   name: string;
@@ -130,11 +127,12 @@ function Character({
   hair: string;
   outfit: string;
   hovered: string | null;
-  onActivate: (region: string) => void;
+  placements: Placement[];
+  onActivate: (region: RegionId) => void;
 }) {
   return (
     <div className="text-center">
-      <svg viewBox="0 0 200 400" className="h-auto w-full max-w-[190px] sm:max-w-[220px]" aria-hidden="true">
+      <svg data-character={name} viewBox="0 0 200 400" className="h-[270px] w-full sm:h-[400px] sm:w-[200px]" aria-hidden="true">
         {/* legs and feet */}
         <rect x="72" y="254" width="26" height="100" rx="13" fill={skin} />
         <rect x="102" y="254" width="26" height="100" rx="13" fill={skin} />
@@ -171,11 +169,17 @@ function Character({
               fill="transparent"
               strokeWidth={z.emphasize || active ? 3 : 0}
               strokeDasharray="6 5"
-              className={`cursor-pointer ${strokeClass}`}
+              className={`cursor-pointer pointer-events-auto ${strokeClass} ${active ? "fill-primary/20" : ""}`}
               onClick={() => onActivate(z.id)}
             />
           );
         })}
+        {placements.filter((p) => p.character === name).map((p) => (
+          <g key={p.region} className="pointer-events-none" data-placed-region={p.region} data-placed-color={p.color}>
+            <circle cx={markerPositions[p.region][0]} cy={markerPositions[p.region][1]} r="12" className={`${p.color === "green" ? "fill-go" : p.color === "yellow" ? "fill-caution" : "fill-stop"} stroke-card`} strokeWidth="2" />
+            <text x={markerPositions[p.region][0]} y={markerPositions[p.region][1] + 4} textAnchor="middle" className="fill-foreground text-[11px] font-bold">{p.color[0].toUpperCase()}</text>
+          </g>
+        ))}
       </svg>
       <p className="mt-1 text-sm font-bold">{name}</p>
     </div>
@@ -243,46 +247,48 @@ export function TouchTrafficLight() {
   const [selectedColor, setSelectedColor] = useState<TrafficColor | null>(null);
   const [drag, setDrag] = useState<{ color: TrafficColor; x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [placements, setPlacements] = useState<Placement[]>([]);
   const [showTrustedPanel, setShowTrustedPanel] = useState(false);
   const attempts = useRef(0);
   const dragStart = useRef<{ x: number; y: number } | null>(null);
   const dragMoved = useRef(false);
-
-  useEffect(() => {
-    if (!drag) return;
-    const move = (e: PointerEvent) => {
-      const start = dragStart.current;
-      if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 8) dragMoved.current = true;
-      setDrag((d) => (d ? { ...d, x: e.clientX, y: e.clientY } : d));
-      const el = document.elementFromPoint(e.clientX, e.clientY);
-      setHovered(el?.closest("[data-region]")?.getAttribute("data-region") ?? null);
-    };
-    const up = (e: PointerEvent) => {
-      const color = drag.color;
-      const el = document.elementFromPoint(e.clientX, e.clientY);
-      const region = el?.closest("[data-region]")?.getAttribute("data-region") ?? null;
-      setDrag(null);
-      setHovered(null);
-      if (region) activate(color, region);
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drag]);
+  const activePointer = useRef<number | null>(null);
+  const hitRegion = (x: number, y: number) => {
+    const el = document.elementFromPoint(x, y)?.closest("[data-region]");
+    const region = REGIONS.find((r) => r.id === el?.getAttribute("data-region"))?.id;
+    const character = el?.closest("[data-character]")?.getAttribute("data-character");
+    return region && character ? { region, character } : null;
+  };
+  const clearDrag = () => {
+    activePointer.current = null;
+    setDrag(null);
+    setHovered(null);
+  };
+  const moveDrag = (e: ReactPointerEvent<HTMLButtonElement>) => {
+    if (activePointer.current !== e.pointerId) return;
+    const start = dragStart.current;
+    if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 8) dragMoved.current = true;
+    setDrag((d) => d ? { ...d, x: e.clientX, y: e.clientY } : null);
+    setHovered(hitRegion(e.clientX, e.clientY)?.region ?? null);
+  };
 
   const addPoints = () => {
     setPoints((p) => p + (attempts.current === 0 ? 10 : 5));
     attempts.current = 0;
   };
 
-  const activate = (color: TrafficColor | null, region: string) => {
+  const activate = (color: TrafficColor | null, region: RegionId, character = "Sam") => {
+    if (feedback?.kind === "correct") return;
+    if (!color) {
+      setFeedback({ kind: "info", text: "First pick a circle: green, yellow or red." });
+      return;
+    }
+    const place = () => setPlacements((prev) => [...prev.filter((p) => p.region !== region || p.character !== character), { color, region, character }]);
     if (phase === "l1") {
-      const task = l1Tasks[l1Step]!;
+      const task = l1Tasks[l1Step];
+      if (!task) return;
       if (region === task.target) {
+        place();
         addPoints();
         setFeedback({ kind: "correct", text: task.feedback });
       } else {
@@ -292,11 +298,8 @@ export function TouchTrafficLight() {
       return;
     }
     if (phase !== "l2") return;
-    const sit = l2Situations[l2Step]!;
-    if (!color) {
-      setFeedback({ kind: "info", text: "First pick a circle: green, yellow or red." });
-      return;
-    }
+    const sit = l2Situations[l2Step];
+    if (!sit) return;
     if (color !== sit.color) {
       attempts.current += 1;
       setFeedback({ kind: "retry", text: "Not quite. Ask yourself: is this touch welcome (green), something to pause and check (yellow), or unsafe (red)? Try again!" });
@@ -307,6 +310,7 @@ export function TouchTrafficLight() {
       setFeedback({ kind: "info", text: "Right color! Now place it on the body area the situation is about." });
       return;
     }
+    place();
     addPoints();
     setFeedback({ kind: "correct", text: `Great job! ${sit.feedback}` });
   };
@@ -321,6 +325,7 @@ export function TouchTrafficLight() {
       if (l1Step < l1Tasks.length - 1) setL1Step(l1Step + 1);
       else {
         awardStar(0);
+        setPlacements([]);
         setPhase("l2");
         setFeedback({ kind: "info", text: "Level 1 complete — you earned a star! Now: My Boundaries." });
       }
@@ -338,7 +343,8 @@ export function TouchTrafficLight() {
   };
 
   const answerScenario = (i: number) => {
-    const sc = scenarios[l3Step]!;
+    const sc = scenarios[l3Step];
+    if (!sc || feedback?.kind === "correct") return;
     if (i === sc.answer) {
       addPoints();
       setFeedback({ kind: "correct", text: sc.feedback });
@@ -377,6 +383,8 @@ export function TouchTrafficLight() {
     setFeedback(null);
     setSelectedColor(null);
     setShowTrustedPanel(false);
+    setPlacements([]);
+    clearDrag();
     attempts.current = 0;
   };
 
@@ -384,11 +392,11 @@ export function TouchTrafficLight() {
     let done = 0;
     if (phase === "intro") done = 0;
     else if (phase === "l1") done = l1Step;
-    else if (phase === "l2") done = 3 + l2Step;
-    else if (phase === "l3") done = 9 + l3Step;
-    else if (phase === "trusted") done = 12;
-    else done = 13;
-    return Math.round((done / 13) * 100);
+    else if (phase === "l2") done = l1Tasks.length + l2Step;
+    else if (phase === "l3") done = l1Tasks.length + l2Situations.length + l3Step;
+    else if (phase === "trusted") done = l1Tasks.length + l2Situations.length + scenarios.length;
+    else done = l1Tasks.length + l2Situations.length + scenarios.length + 1;
+    return Math.round((done / (l1Tasks.length + l2Situations.length + scenarios.length + 1)) * 100);
   })();
 
   const levelLabel =
@@ -507,50 +515,58 @@ export function TouchTrafficLight() {
       {(phase === "l1" || phase === "l2") && (
         <div>
           {phase === "l1" ? (
-            <p className="text-lg font-bold">{l1Tasks[l1Step]!.prompt}</p>
+            <p className="text-lg font-bold">{l1Tasks[l1Step]?.prompt}</p>
           ) : (
             <div className="card-base p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Situation {l2Step + 1} of {l2Situations.length}
               </p>
-              <p className="mt-1 text-lg font-bold">{l2Situations[l2Step]!.text}</p>
+              <p className="mt-1 text-lg font-bold">{l2Situations[l2Step]?.text}</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Which color fits, and which body area is it about? Drag the circle onto a character, or tap a circle and then tap a body part.
               </p>
             </div>
           )}
 
-          <div className="mt-4 flex items-end justify-center gap-2 sm:gap-8">
-            <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} onActivate={(r) => activate(selectedColor, r)} />
-            <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} onActivate={(r) => activate(selectedColor, r)} />
-          </div>
-
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             {(["green", "yellow", "red"] as TrafficColor[]).map((c) => (
-              <button
+              <Button
+                variant="ghost"
                 key={c}
                 type="button"
+                data-color={c}
                 aria-pressed={selectedColor === c}
                 aria-label={`${colorMeta[c].label}: ${colorMeta[c].hint}`}
                 onPointerDown={(e) => {
-                  e.preventDefault();
+                  if (!e.isPrimary || e.button !== 0 || feedback?.kind === "correct") return;
+                  activePointer.current = e.pointerId;
                   dragStart.current = { x: e.clientX, y: e.clientY };
                   dragMoved.current = false;
-                  (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  setSelectedColor(c);
                   setDrag({ color: c, x: e.clientX, y: e.clientY });
                 }}
-                onClick={() => {
+                onPointerMove={moveDrag}
+                onPointerUp={(e) => {
+                  if (activePointer.current !== e.pointerId) return;
+                  const target = hitRegion(e.clientX, e.clientY);
+                  if (dragMoved.current && target) activate(c, target.region, target.character);
+                  else if (dragMoved.current) setFeedback({ kind: "info", text: "Place the circle directly on a body region. Try again." });
+                  clearDrag();
+                }}
+                onPointerCancel={clearDrag}
+                onLostPointerCapture={clearDrag}
+                onClick={(e) => {
                   if (dragMoved.current) {
                     dragMoved.current = false;
                     return;
                   }
-                  setSelectedColor((s) => (s === c ? null : c));
+                  if (e.detail === 0) setSelectedColor(c);
                 }}
-                className={`h-16 w-16 rounded-full text-sm font-bold shadow-soft ${colorMeta[c].chip} ${selectedColor === c ? "scale-105 ring-4 ring-ring" : ""}`}
-                style={{ touchAction: "none" }}
+                className={`h-16 w-16 shrink-0 touch-none select-none rounded-full p-0 text-sm font-bold shadow-soft cursor-grab active:cursor-grabbing ${colorMeta[c].chip} ${selectedColor === c ? "ring-4 ring-ring" : ""}`}
               >
                 {colorMeta[c].label}
-              </button>
+              </Button>
             ))}
           </div>
           <p className="mt-2 text-center text-sm text-muted-foreground">
@@ -558,13 +574,18 @@ export function TouchTrafficLight() {
               ? `${colorMeta[selectedColor].label} is picked. Now choose where it goes.`
               : "Pick a circle, then a body part — or drag the circle onto a body part."}
           </p>
+          <div className="mt-3 grid grid-cols-2 items-end justify-items-center gap-2 sm:gap-8">
+            <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
+            <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
+          </div>
+          {drag && <div aria-hidden="true" data-drag-preview className={`pointer-events-none fixed z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-card font-bold shadow-soft ${colorMeta[drag.color].chip}`} style={{ left: drag.x - 24, top: drag.y - 24 }}>{drag.color[0].toUpperCase()}</div>}
           <div className="mt-4">
             <p className="text-sm font-bold">Or tap a body part (keyboard friendly):</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {REGIONS.map((r) => (
-                <button key={r.id} type="button" onClick={() => activate(selectedColor, r.id)} className="rounded-full border bg-card px-3 py-1.5 text-sm font-bold">
+                <Button variant="outline" key={r.id} type="button" onClick={() => activate(selectedColor, r.id)} className="rounded-full border bg-card px-3 py-1.5 text-sm font-bold">
                   {r.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -576,9 +597,9 @@ export function TouchTrafficLight() {
           <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Situation {l3Step + 1} of {scenarios.length}
           </p>
-          <p className="mt-1 text-lg font-bold">{scenarios[l3Step]!.q}</p>
+          <p className="mt-1 text-lg font-bold">{scenarios[l3Step]?.q}</p>
           <div className="mt-3 grid gap-2">
-            {scenarios[l3Step]!.options.map((opt, i) => (
+            {scenarios[l3Step]?.options.map((opt, i) => (
               <button key={opt} type="button" onClick={() => answerScenario(i)} className="card-base p-3 text-left font-bold transition hover:-translate-y-0.5">
                 {opt}
               </button>

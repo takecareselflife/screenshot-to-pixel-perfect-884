@@ -13,3 +13,4 @@
 - Library card visibility is selected in src/lib/library.ts independently from safety content, so hiding a card does not remove help flows.
 - Speech playback batches PCM into audible segments and waits for every scheduled segment; shared player ownership uses controller identity to prevent stale cancellations.
 - Standalone interactive modules live as their own route plus a component in src/components, cross-linked from related library articles (e.g. the Touch Traffic Light game at /consentimento, linked from the consent article).
+- Body-game dragging uses captured pointer events, coordinate hit-testing and non-intercepting visual markers so touch and mouse share one placement flow.
