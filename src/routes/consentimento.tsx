@@ -26,7 +26,7 @@ function GamePage() {
       <div className="mt-3">
         <PageTitle
           title="Touch Traffic Light"
-          subtitle="Body Safety & Consent — an interactive game about body autonomy, boundaries, consent and how to seek help."
+          subtitle="A game about body autonomy, boundaries, consent and how to seek help."
         />
       </div>
       <TouchTrafficLight />
