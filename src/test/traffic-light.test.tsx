@@ -81,7 +81,7 @@ describe("colored body placements", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     finishLevel1(container);
-    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Private parts"], ["red", "Chest"]];
+    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Private parts"], ["red", "Chest"]] as const;
     for (const [color, label] of situations) {
       pick(container, color);
       fireEvent.click(screen.getByRole("button", { name: label }));
