@@ -36,6 +36,46 @@ function speechError(raw: string) {
   }
 }
 
+/** A short silent WAV, looped through an <audio> element while speech plays. */
+function silentWavUrl() {
+  const samples = 4000;
+  const bytes = new Uint8Array(44 + samples);
+  const view = new DataView(bytes.buffer);
+  const write = (offset: number, s: string) => { for (let i = 0; i < s.length; i++) bytes[offset + i] = s.charCodeAt(i); };
+  write(0, "RIFF"); view.setUint32(4, 36 + samples, true); write(8, "WAVE"); write(12, "fmt ");
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+  view.setUint32(24, 8000, true); view.setUint32(28, 8000, true); view.setUint16(32, 1, true); view.setUint16(34, 8, true);
+  write(36, "data"); view.setUint32(40, samples, true);
+  bytes.fill(128, 44);
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+
+/**
+ * iPhones mute Web Audio when the ringer switch is on silent. Marking the session as
+ * "playback" and keeping a silent media element playing routes speech to the speaker.
+ * Must run synchronously inside the tap that started playback.
+ */
+function unlockMediaPlayback(): () => void {
+  try {
+    const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+    if (session) session.type = "playback";
+  } catch { /* unsupported */ }
+  if (typeof Audio === "undefined") return () => {};
+  let element: HTMLAudioElement | null = null;
+  try {
+    element = new Audio(silentWavUrl());
+    element.loop = true;
+    element.setAttribute("playsinline", "");
+    void element.play()?.catch(() => {});
+  } catch { element = null; }
+  return () => {
+    if (!element) return;
+    try { element.pause(); element.removeAttribute("src"); element.load(); } catch { /* ignore */ }
+  };
+}
+
 /** Streams speech from the app's speech endpoint and plays it as it arrives (24 kHz PCM). */
 export async function streamSpeech(
   endpoint: string,
@@ -44,7 +84,18 @@ export async function streamSpeech(
   onFirstAudio?: () => void,
 ): Promise<void> {
   signal?.throwIfAborted();
-  const context = new AudioContext({ sampleRate: 24000 });
+  const releaseMedia = unlockMediaPlayback();
+  // Use the device's native rate (fixed 24 kHz contexts are unreliable on some phones);
+  // buffers below are tagged 24 kHz and resampled by the browser.
+  const AudioCtx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  const context = new AudioCtx();
+  // Play a tiny silent buffer inside the tap so the browser unlocks sound output.
+  try {
+    const unlock = context.createBufferSource();
+    unlock.buffer = context.createBuffer(1, 1, 24000);
+    unlock.connect(context.destination);
+    unlock.start(0);
+  } catch { /* ignore */ }
   const sources = new Set<AudioBufferSourceNode>();
   let playhead = 0;
   let pending = new Uint8Array(0);
