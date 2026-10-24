@@ -29,10 +29,11 @@ const COLOR_FEEDBACK: Record<TrafficColor, string> = {
 
 const markerPositions: Record<RegionId, [number, number]> = {
   head: [100, 44], face: [100, 80], shoulders: [100, 131], arms: [48, 194],
-  chest: [100, 164], abdomen: [100, 204], private: [100, 240], buttocks: [73, 240], thighs: [85, 278], legs: [85, 326], feet: [85, 356],
+  chest: [100, 164], abdomen: [100, 204], private: [100, 240], buttocks: [73, 240],
+  upperBack: [100, 165], lowerBack: [100, 206], thighs: [85, 278], legs: [85, 326], feet: [85, 356],
 };
 
-const zoneShapes: { id: RegionId; d: string; emphasize?: boolean }[] = [
+const frontZones: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "head", d: "M62,64 A38,38 0 0 1 138,64 Z" },
   { id: "face", d: "M62,64 A38,38 0 0 0 138,64 Z" },
   { id: "shoulders", d: "M62,118 h76 v26 h-76 z" },
