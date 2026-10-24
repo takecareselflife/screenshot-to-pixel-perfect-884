@@ -2,7 +2,7 @@
  * Touch Traffic Light — interactive body safety and consent game.
  * Educational only; never stores or sends anything the player does.
  */
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Info, LifeBuoy, RotateCcw, Star, Trophy } from "lucide-react";
 import { ListenButton } from "@/components/ListenButton";
@@ -235,9 +235,9 @@ function FeedbackBox({ feedback, onNext, nextLabel }: { feedback: Feedback | nul
         {feedback.text}
       </p>
       {feedback.kind === "correct" && onNext && (
-        <button type="button" onClick={onNext} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
+        <Button type="button" onClick={onNext} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
           {nextLabel ?? "Next"} <ArrowRight className="h-4 w-4" aria-hidden />
-        </button>
+        </Button>
       )}
       {feedback.kind === "retry" && <p className="mt-2 text-sm">No worries — try again. You cannot lose here.</p>}
     </div>
@@ -245,6 +245,8 @@ function FeedbackBox({ feedback, onNext, nextLabel }: { feedback: Feedback | nul
 }
 
 export function TouchTrafficLight() {
+  const activityRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>("intro");
   const [points, setPoints] = useState(0);
   const [stars, setStars] = useState<boolean[]>([false, false, false]);
@@ -262,6 +264,16 @@ export function TouchTrafficLight() {
   const dragStart = useRef<{ x: number; y: number } | null>(null);
   const dragMoved = useRef(false);
   const activePointer = useRef<number | null>(null);
+  useEffect(() => {
+    if (phase === "intro" || phase === "final") return;
+    activityRef.current?.focus({ preventScroll: true });
+    activityRef.current?.scrollIntoView({ block: "start" });
+  }, [phase, l1Step, l2Step, l3Step]);
+  useEffect(() => {
+    if (feedback?.kind === "correct" || feedback?.kind === "retry") {
+      feedbackRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [feedback]);
   const hitRegion = (x: number, y: number) => {
     const el = document.elementFromPoint(x, y)?.closest("[data-region]");
     const region = REGIONS.find((r) => r.id === el?.getAttribute("data-region"))?.id;
@@ -523,7 +535,7 @@ export function TouchTrafficLight() {
   }
 
   return (
-    <div>
+    <div ref={activityRef} tabIndex={-1} className="scroll-mt-20 outline-none">
       <PlayHeader levelLabel={levelLabel} points={points} stars={stars} progressPct={progressPct} />
 
       {(phase === "l1" || phase === "l2") && (
@@ -588,13 +600,18 @@ export function TouchTrafficLight() {
               ? `${colorMeta[selectedColor].label} is picked. Now choose where it goes.`
               : "Pick a circle, then a body part — or drag the circle onto a body part."}
           </p>
+          <ListenButton text={phase === "l1" ? l1Tasks[l1Step]?.prompt ?? "" : l2Situations[l2Step]?.text ?? ""} />
           <div className="mt-3 grid grid-cols-2 items-end justify-items-center gap-2 sm:gap-8">
             <Character name="Sam" skin="#b97a56" skinShade="#a5684a" hair="#2f2318" outfit="#e8b13c" hovered={hovered} targetRegion={phase === "l1" ? l1Tasks[l1Step]?.target : l2Situations[l2Step]?.region} placements={placements} onActivate={(r) => activate(selectedColor, r, "Sam")} />
             <Character name="Alex" skin="#f0c39b" skinShade="#ddae87" hair="#5d3a1a" outfit="#4f8a8b" hovered={hovered} targetRegion={phase === "l1" ? l1Tasks[l1Step]?.target : l2Situations[l2Step]?.region} placements={placements} onActivate={(r) => activate(selectedColor, r, "Alex")} />
           </div>
           {drag && <div aria-hidden="true" data-drag-preview className={`pointer-events-none fixed z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-card font-bold shadow-soft ${colorMeta[drag.color].chip}`} style={{ left: drag.x - 24, top: drag.y - 24 }}>{drag.color.charAt(0).toUpperCase()}</div>}
-          <div className="mt-4">
-            <p className="text-sm font-bold">Or tap a body part (keyboard friendly):</p>
+          <div ref={feedbackRef}>
+            <FeedbackBox feedback={feedback} onNext={next} />
+            {feedback && <ListenButton text={feedback.text} className="mt-2" />}
+          </div>
+          <details className="mt-4">
+            <summary className="cursor-pointer text-sm font-bold">Choose a body part</summary>
             <div className="mt-2 flex flex-wrap gap-2">
               {REGIONS.map((r) => (
                 <Button variant="outline" key={r.id} type="button" onClick={() => activate(selectedColor, r.id)} className="rounded-full border bg-card px-3 py-1.5 text-sm font-bold">
@@ -602,7 +619,7 @@ export function TouchTrafficLight() {
                 </Button>
               ))}
             </div>
-          </div>
+          </details>
         </div>
       )}
 
@@ -644,7 +661,12 @@ export function TouchTrafficLight() {
         </div>
       )}
 
-      <FeedbackBox feedback={feedback} onNext={phase === "trusted" ? finish : next} nextLabel={phase === "trusted" ? "Finish Game" : "Next"} />
+      {phase !== "l1" && phase !== "l2" && (
+        <div ref={feedbackRef}>
+          <FeedbackBox feedback={feedback} onNext={phase === "trusted" ? finish : next} nextLabel={phase === "trusted" ? "Finish Game" : "Next"} />
+          {feedback && <ListenButton text={feedback.text} className="mt-2" />}
+        </div>
+      )}
 
       <p className="mt-6 text-center text-sm">
         <Link to="/biblioteca/$slug" params={{ slug: "consent" }} className="font-bold text-primary underline">

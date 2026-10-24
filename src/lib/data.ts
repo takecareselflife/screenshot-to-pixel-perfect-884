@@ -60,7 +60,7 @@ export const articles: Article[] = [
       "Use a new condom for each act of vaginal, anal or oral sex. For oral contact with the vulva or anus, use a dental dam or a condom cut into a flat barrier. Barriers reduce risk but cannot fully prevent infections spread by uncovered skin.",
       "For anal sex, use condoms and plenty of water- or silicone-based lubricant to reduce friction and tearing. Oil-based products can damage latex condoms.",
       "Before switching from anal to vaginal sex, put on a new condom and clean hands and sex toys; use a new condom on the toy too. Never transfer the same condom from the anus to the vagina.",
-      "If you have a vulva, you can try urinating after sex and avoid holding urine. This is a low-risk habit, but evidence that it prevents UTIs is limited: it is not a guarantee and does not prevent STIs or pregnancy.",
+      "If you have a vulva, urinating after sex may help reduce UTI risk; avoid holding urine. It is not a guarantee and does not prevent STIs or pregnancy.",
       "Get tested at a health service even if you have no symptoms. Tell the professional about oral, vaginal or anal contact so they can advise which tests and sample sites you need and when to test. Some tests need repeating after a recent exposure.",
       "Go to a health center for any new or unusual genital lesion, such as a sore, blister, wart or lump. Do not try to diagnose it yourself; avoid sexual contact involving the affected area until assessed.",
     ],
