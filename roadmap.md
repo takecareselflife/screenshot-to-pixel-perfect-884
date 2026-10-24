@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Repair colored-circle dragging on body regions; verify touch and mouse placement
+
 - [x] Diagnose and repair inclusive audio playback; verify all generated segments finish in the browser
 - [x] Remove the two library topics shown in the uploaded screenshot
 
