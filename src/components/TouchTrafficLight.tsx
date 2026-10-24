@@ -136,17 +136,18 @@ function Character({
             <circle cx="124" cy="82" r="5" fill={skinShade} opacity="0.5" />
           </>
         )}
-        {/* interactive zones */}
+        {/* interactive zones: dashed outlines show the parts still missing */}
         {zones.map((z) => {
+          const covered = placements.some((p) => p.region === z.id && p.character === name);
           const active = hovered === z.id;
-          const strokeClass = z.emphasize ? "stroke-stop" : active ? "stroke-foreground" : "";
+          const strokeClass = covered ? "" : z.emphasize ? "stroke-stop" : active ? "stroke-foreground" : "stroke-muted-foreground";
           return (
             <path
               key={z.id}
               d={z.d}
               data-region={z.id}
               fill="transparent"
-              strokeWidth={z.emphasize || active ? 3 : 0}
+              strokeWidth={covered ? 0 : z.emphasize || active ? 3 : 2}
               strokeDasharray="6 5"
               className={`cursor-pointer [pointer-events:fill] ${strokeClass} ${active ? "fill-primary/20" : ""}`}
               onClick={() => onActivate(z.id)}
@@ -385,7 +386,7 @@ export function TouchTrafficLight() {
 
       <p className="text-lg font-bold">Drag each colored circle onto the matching body parts.</p>
       <p className="mt-1 text-sm text-muted-foreground">
-        Use the same color as many times as you need. Cover every body part of all three characters.
+        Use the same color as many times as you need. Cover every body part of all three characters — dashed outlines show the parts still missing.
       </p>
 
       <div className="mt-3 grid grid-cols-3 items-end justify-items-center gap-1 sm:gap-8">
