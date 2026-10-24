@@ -6,9 +6,9 @@ import { PageTitle } from "@/components/Layout";
 export const Route = createFileRoute("/biblioteca")({
   head: () => ({
     meta: [
-      { title: "Health library | Cuida+" },
+      { title: "Health library | Care+" },
       { name: "description", content: "Content on sexuality, mental health, violence, digital safety and rights." },
-      { property: "og:title", content: "Health library | Cuida+" },
+      { property: "og:title", content: "Health library | Care+" },
       { property: "og:description", content: "Clear content with trustworthy sources for adolescents." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

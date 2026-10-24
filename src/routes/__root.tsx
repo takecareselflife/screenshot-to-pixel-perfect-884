@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cuida+ | Teen Health" },
+      { title: "Care+ | Teen Health" },
       { name: "description", content: "Integrated adolescent health platform: trusted information, emotional support and access to services." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

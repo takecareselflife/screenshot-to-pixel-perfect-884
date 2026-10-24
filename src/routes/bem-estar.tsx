@@ -9,9 +9,9 @@ import { moods } from "@/lib/moods";
 export const Route = createFileRoute("/bem-estar")({
   head: () => ({
     meta: [
-      { title: "Emotional well-being | Cuida+" },
+      { title: "Emotional well-being | Care+" },
       { name: "description", content: "Voluntary questions to reflect on mood, sleep, stress and safety." },
-      { property: "og:title", content: "Emotional well-being | Cuida+" },
+      { property: "og:title", content: "Emotional well-being | Care+" },
       { property: "og:description", content: "A space to reflect on how you are doing." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

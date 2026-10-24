@@ -10,9 +10,9 @@ import { PageTitle, SimBadge } from "@/components/Layout";
 export const Route = createFileRoute("/assistente")({
   head: () => ({
     meta: [
-      { title: "Health Assistant | Cuida+" },
+      { title: "Health Assistant | Care+" },
       { name: "description", content: "Ask health questions and get simple answers, sources and illustrated guides." },
-      { property: "og:title", content: "Health Assistant | Cuida+" },
+      { property: "og:title", content: "Health Assistant | Care+" },
       { property: "og:description", content: "Health questions answered in plain language, with illustrated guides." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

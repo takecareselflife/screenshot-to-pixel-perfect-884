@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/" className="font-display text-lg font-semibold text-primary">
-            Cuida<span className="text-warm">+</span>
+            Care<span className="text-warm">+</span>
           </Link>
           <QuickExit />
         </div>

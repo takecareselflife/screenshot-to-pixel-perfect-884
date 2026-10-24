@@ -4,9 +4,9 @@ import { Heart, Smile, HelpCircle, CloudRain, LifeBuoy, MapPin, MessageCircle, I
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cuida+ | Health, support and information for teens" },
+      { title: "Care+ | Health, support and information for teens" },
       { name: "description", content: "Trusted information, emotional support and access to health services for adolescents." },
-      { property: "og:title", content: "Cuida+ | Teen Health" },
+      { property: "og:title", content: "Care+ | Teen Health" },
       { property: "og:description", content: "Trusted information, emotional support and access to health services." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

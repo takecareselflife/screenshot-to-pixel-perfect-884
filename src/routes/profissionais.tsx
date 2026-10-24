@@ -7,9 +7,9 @@ import { PageTitle, SimBadge } from "@/components/Layout";
 export const Route = createFileRoute("/profissionais")({
   head: () => ({
     meta: [
-      { title: "Professionals' panel | Cuida+" },
+      { title: "Professionals' panel | Care+" },
       { name: "description", content: "Demo area for authorized professionals to follow up requests." },
-      { property: "og:title", content: "Professionals' panel | Cuida+" },
+      { property: "og:title", content: "Professionals' panel | Care+" },
       { property: "og:description", content: "Managing intake and referrals." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

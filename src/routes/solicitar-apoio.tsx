@@ -6,9 +6,9 @@ import { PageTitle, SimBadge } from "@/components/Layout";
 export const Route = createFileRoute("/solicitar-apoio")({
   head: () => ({
     meta: [
-      { title: "Ask for support | Cuida+" },
+      { title: "Ask for support | Care+" },
       { name: "description", content: "Ask a service or professional to get in touch with you." },
-      { property: "og:title", content: "Ask for support | Cuida+" },
+      { property: "og:title", content: "Ask for support | Care+" },
       { property: "og:description", content: "Request contact from a professional safely." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

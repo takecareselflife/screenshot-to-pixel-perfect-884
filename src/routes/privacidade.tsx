@@ -4,9 +4,9 @@ import { PageTitle } from "@/components/Layout";
 export const Route = createFileRoute("/privacidade")({
   head: () => ({
     meta: [
-      { title: "Privacy and data protection | Cuida+" },
+      { title: "Privacy and data protection | Care+" },
       { name: "description", content: "How we protect your data, in line with the LGPD and children's rights." },
-      { property: "og:title", content: "Privacy | Cuida+" },
+      { property: "og:title", content: "Privacy | Care+" },
       { property: "og:description", content: "Transparency about data, confidentiality and your rights." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

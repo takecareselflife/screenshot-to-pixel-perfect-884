@@ -13,14 +13,14 @@ export const Route = createFileRoute("/biblioteca/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.article.title} | Cuida+` },
+          { title: `${loaderData.article.title} | Care+` },
           { name: "description", content: loaderData.article.summary },
           { property: "og:title", content: loaderData.article.title },
           { property: "og:description", content: loaderData.article.summary },
           { property: "og:type", content: "website" },
           { name: "twitter:card", content: "summary" },
         ]
-      : [{ title: "Content not found | Cuida+" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Content not found | Care+" }, { name: "robots", content: "noindex" }],
   }),
   notFoundComponent: () => <p>Content not found. <Link to="/biblioteca" className="underline">Go back</Link></p>,
   component: ArticlePage,
