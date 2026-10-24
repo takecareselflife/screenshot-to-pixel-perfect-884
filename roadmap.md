@@ -1,5 +1,6 @@
 # Roadmap
 
+- [ ] Body game: show dashed outlines on still-missing body parts so players can complete the progress bar
 - [x] Body game: each character must be fully covered (31 placements) — fixes circles not filling on Alex
 - [x] Body game: face yellow; add back-view character on the right (upper back green, lower back yellow, buttocks red, thighs yellow); 13 regions total
 - [x] Rebuild consent game per new Body Traffic Light brief: free placement of colored circles (bottom bar) on all 11 regions, per-color educational feedback, restart button, trophy final screen with trusted-adult guidance
