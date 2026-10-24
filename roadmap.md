@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Correct body-game color matching and separate thighs from feet; verify the requested colors with tests and dragging
+- [x] Correct body-game color matching and separate thighs from feet; verify the requested colors with tests and dragging
 
 - [x] Add isolation, avoiding friends and withdrawal as possible emotional distress signs in the library
 
