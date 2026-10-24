@@ -467,7 +467,7 @@ export function TouchTrafficLight() {
             <button type="button" onClick={() => setShowTrustedPanel((s) => !s)} className="rounded-full bg-primary px-5 py-2.5 font-bold text-primary-foreground shadow-soft">
               Meet My Trusted Adults
             </button>
-            <Link to="/biblioteca/consent" className="rounded-full border bg-card px-5 py-2.5 font-bold">
+            <Link to="/biblioteca/$slug" params={{ slug: "consent" }} className="rounded-full border bg-card px-5 py-2.5 font-bold">
               Learn More
             </Link>
             <button type="button" onClick={restart} className="rounded-full border bg-card px-5 py-2.5 font-bold">
@@ -507,7 +507,7 @@ export function TouchTrafficLight() {
       {(phase === "l1" || phase === "l2") && (
         <div>
           {phase === "l1" ? (
-            <p className="text-lg font-bold">{l1Tasks[l1Step].prompt}</p>
+            <p className="text-lg font-bold">{l1Tasks[l1Step]!.prompt}</p>
           ) : (
             <div className="card-base p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">

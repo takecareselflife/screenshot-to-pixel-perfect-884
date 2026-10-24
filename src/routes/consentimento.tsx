@@ -20,7 +20,7 @@ export const Route = createFileRoute("/consentimento")({
 function GamePage() {
   return (
     <div>
-      <Link to="/biblioteca/consent" className="inline-flex items-center gap-1 text-sm text-primary">
+      <Link to="/biblioteca/$slug" params={{ slug: "consent" }} className="inline-flex items-center gap-1 text-sm text-primary">
         <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Consent and healthy relationships
       </Link>
       <div className="mt-3">
