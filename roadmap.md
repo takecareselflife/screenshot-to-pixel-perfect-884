@@ -14,4 +14,4 @@
 - [x] Scenario challenges, trusted-adults activity, final "You are the boss of your body" screen
 - [x] Add route /consentimento and link it from the consent article and the library list
 - [x] Verify build
-- [ ] Verify end-to-end in the browser (play through all levels)
+- [x] Verify end-to-end in the browser (all levels, drag-and-drop, retry path, final screen)
