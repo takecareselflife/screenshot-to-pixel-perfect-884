@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Rebuild consent game per new Body Traffic Light brief: free placement of colored circles (bottom bar) on all 11 regions, per-color educational feedback, restart button, trophy final screen with trusted-adult guidance
 - [x] Body game: buttocks red (private area), shoulders green; verified drag works on all 11 regions
 - [x] Show a "Click here" hint above the mood emojis and drop the topic list below them
 - [x] Replace CAPS/CAPSi with "Psychological care center" and UBS with "Basic health unit"
