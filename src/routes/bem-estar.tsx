@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { questionnaires, scale, hotlines } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
-import { PageTitle, SimBadge } from "@/components/Layout";
+import { PageTitle } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { moods } from "@/lib/moods";
 
@@ -44,9 +44,6 @@ export function BemEstar() {
           </div>
           <ListenButton className="mt-3" text="How do you feel today? Happy, okay, sad, anxious, tired, or lonely?" />
         </section>
-        <p className="mb-4 rounded-xl bg-muted p-3 text-sm">
-          <SimBadge>Demo</SimBadge> These questions are for self-reflection and <strong>are not a clinical test and give no diagnosis</strong>. Your answers are not saved or sent.
-        </p>
         <ul className="grid gap-3 sm:grid-cols-2">
           {questionnaires.map((x) => (
             <li key={x.id}>
