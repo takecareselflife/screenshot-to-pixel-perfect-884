@@ -33,16 +33,16 @@ describe("STI trail rules", () => {
   });
   it("requires feedback before moving and can restart after the trophy", () => {
     render(<StiWisdomGame />);
-    fireEvent.click(screen.getByRole("button", { name: "False", exact: true }));
-    expect(screen.getByRole("button", { name: "True", exact: true })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "False" }));
+    expect(screen.getByRole("button", { name: "True" })).toBeDisabled();
     fireEvent.click(screen.getByRole("button", { name: "Try again" }));
     for (const q of STI_QUESTIONS) {
-      fireEvent.click(screen.getByRole("button", { name: q.answer ? "True" : "False", exact: true }));
+      fireEvent.click(screen.getByRole("button", { name: q.answer ? "True" : "False" }));
       fireEvent.click(screen.getByRole("button", { name: q === STI_QUESTIONS.at(-1) ? "Collect trophy" : "Next question" }));
     }
     expect(screen.getByText("91%")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Play again" }));
-    expect(screen.getByRole("button", { name: "True", exact: true })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "True" })).toBeEnabled();
     expect(screen.getByText("10 steps to the trophy")).toBeInTheDocument();
   });
 });
