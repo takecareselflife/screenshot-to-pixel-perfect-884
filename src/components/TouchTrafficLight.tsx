@@ -306,7 +306,7 @@ export function TouchTrafficLight() {
         <div className="card-base mt-4 space-y-2 p-4 text-sm">
           <p className="font-bold">How to play</p>
           <p>1. Drag a circle from the bottom onto a body part — or tap the circle, then a body part.</p>
-          <p>2. Use each color as many times as you need to cover every part.</p>
+          <p>2. Use each color as many times as you need to cover every part of all three characters.</p>
           <p>3. You get a friendly message after every answer. Wrong answers can always be retried.</p>
         </div>
         <button

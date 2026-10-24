@@ -25,8 +25,20 @@ function place(container: HTMLElement, index: number) {
   fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
 }
 
+const FRONT = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
+const BACK = ["head", "shoulders", "arms", "upperBack", "lowerBack", "buttocks", "thighs", "legs", "feet"];
+
+/** Tap buttons fill the first character still missing that part: Sam, then Alex, then Chris. */
 function coverAll(container: HTMLElement) {
-  regions.forEach((_, index) => place(container, index));
+  [FRONT, FRONT, BACK].forEach((ids) => {
+    for (const id of ids) {
+      const index = regions.indexOf(id);
+      const label = labels[index];
+      if (!label) throw new Error("Missing body label");
+      pick(container, colors[index] ?? "green");
+      fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
+    }
+  });
 }
 
 describe("colored body placements", () => {
