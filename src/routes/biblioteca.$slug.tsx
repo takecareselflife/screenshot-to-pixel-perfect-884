@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, AlertTriangle, CheckCircle2, MapPin, BookMarked } from "lucide-react";
+import { ArrowLeft, AlertTriangle, CheckCircle2, MapPin, BookMarked, Gamepad2 } from "lucide-react";
 import { articles } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
 
@@ -42,6 +42,18 @@ function ArticlePage() {
       <ListenButton
         text={[a.title, a.summary, ...a.explain, "In practice.", ...a.practical, "Warning signs.", ...a.warning, "Where to get help.", ...a.services].join(" ")}
       />
+      {a.slug === "consent" && (
+        <Link to="/consentimento" className="card-base flex items-center gap-4 bg-primary p-4 text-primary-foreground transition hover:-translate-y-0.5">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/20">
+            <Gamepad2 className="h-6 w-6" aria-hidden />
+          </span>
+          <span>
+            <strong>Play: Touch Traffic Light</strong>
+            <br />
+            <span className="text-sm opacity-90">An interactive game about your body, your boundaries and consent.</span>
+          </span>
+        </Link>
+      )}
       {a.explain.map((p) => <p key={p}>{p}</p>)}
       <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
       <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
