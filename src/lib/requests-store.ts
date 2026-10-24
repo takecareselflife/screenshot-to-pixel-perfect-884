@@ -1,6 +1,6 @@
 /**
- * Armazenamento SIMULADO de solicitações, em memória da sessão do navegador.
- * Nada é enviado a servidores. Substituir por API segura na integração real.
+ * SIMULATED storage of requests, held in browser session memory.
+ * Nothing is sent to servers. Replace with a secure API in the real integration.
  */
 import { demoRequests, type SupportRequest } from "./data";
 
@@ -17,7 +17,7 @@ export function createRequest(input: Pick<SupportRequest, "topic" | "contact" | 
     ...input,
     id: `SOL-${String(counter).padStart(4, "0")}`,
     createdAt: new Date().toISOString().slice(0, 10),
-    status: "Nova",
+    status: "New",
     notes: [],
   };
   store = [req, ...store];

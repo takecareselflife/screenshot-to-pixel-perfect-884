@@ -6,10 +6,10 @@ import { PageTitle } from "@/components/Layout";
 export const Route = createFileRoute("/biblioteca")({
   head: () => ({
     meta: [
-      { title: "Biblioteca de saúde | Cuida+" },
-      { name: "description", content: "Conteúdos sobre sexualidade, saúde mental, violência, segurança digital e direitos." },
-      { property: "og:title", content: "Biblioteca de saúde | Cuida+" },
-      { property: "og:description", content: "Conteúdos claros e com fontes confiáveis para adolescentes." },
+      { title: "Health library | Cuida+" },
+      { name: "description", content: "Content on sexuality, mental health, violence, digital safety and rights." },
+      { property: "og:title", content: "Health library | Cuida+" },
+      { property: "og:description", content: "Clear content with trustworthy sources for adolescents." },
     ],
   }),
   component: Biblioteca,
@@ -20,7 +20,7 @@ function Biblioteca() {
   if (match({ to: "/biblioteca/$slug", fuzzy: true })) return <Outlet />;
   return (
     <div>
-      <PageTitle title="Biblioteca" subtitle="Informação simples, com fontes confiáveis. Conteúdo de demonstração a ser revisado por profissionais." />
+      <PageTitle title="Library" subtitle="Simple information, with trustworthy sources. Demo content to be reviewed by professionals." />
       <ul className="grid gap-3">
         {articles.map((a) => (
           <li key={a.slug}>

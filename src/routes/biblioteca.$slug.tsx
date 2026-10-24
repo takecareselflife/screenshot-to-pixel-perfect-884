@@ -16,9 +16,9 @@ export const Route = createFileRoute("/biblioteca/$slug")({
           { property: "og:title", content: loaderData.article.title },
           { property: "og:description", content: loaderData.article.summary },
         ]
-      : [{ title: "Conteúdo não encontrado | Cuida+" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Content not found | Cuida+" }, { name: "robots", content: "noindex" }],
   }),
-  notFoundComponent: () => <p>Conteúdo não encontrado. <Link to="/biblioteca" className="underline">Voltar</Link></p>,
+  notFoundComponent: () => <p>Content not found. <Link to="/biblioteca" className="underline">Go back</Link></p>,
   component: ArticlePage,
 });
 
@@ -35,17 +35,17 @@ function ArticlePage() {
   const { article: a } = Route.useLoaderData();
   return (
     <article className="space-y-4">
-      <Link to="/biblioteca" className="inline-flex items-center gap-1 text-sm text-primary"><ArrowLeft className="h-4 w-4" />Biblioteca</Link>
+      <Link to="/biblioteca" className="inline-flex items-center gap-1 text-sm text-primary"><ArrowLeft className="h-4 w-4" />Library</Link>
       <h1 className="text-3xl font-semibold">{a.title}</h1>
       <p className="text-lg text-muted-foreground">{a.summary}</p>
       {a.explain.map((p) => <p key={p}>{p}</p>)}
-      <Block title="Na prática" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
-      <Block title="Sinais de alerta" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
-      <Block title="Onde buscar apoio" icon={<MapPin className="h-5 w-5" />} items={a.services} tone="bg-sky" />
-      <Block title="Fontes" icon={<BookMarked className="h-5 w-5" />} items={a.sources} tone="bg-muted" />
+      <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
+      <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
+      <Block title="Where to get help" icon={<MapPin className="h-5 w-5" />} items={a.services} tone="bg-sky" />
+      <Block title="Sources" icon={<BookMarked className="h-5 w-5" />} items={a.sources} tone="bg-muted" />
       <div className="flex flex-wrap gap-2 pt-2">
-        <Link to="/servicos" className="rounded-full bg-primary px-4 py-2 font-bold text-primary-foreground">Encontrar serviço</Link>
-        <Link to="/assistente" className="rounded-full border px-4 py-2 font-bold">Tirar dúvida</Link>
+        <Link to="/servicos" className="rounded-full bg-primary px-4 py-2 font-bold text-primary-foreground">Find a service</Link>
+        <Link to="/assistente" className="rounded-full border px-4 py-2 font-bold">Ask a question</Link>
       </div>
     </article>
   );
