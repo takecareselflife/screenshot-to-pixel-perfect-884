@@ -59,7 +59,21 @@ describe("colored body placements", () => {
         expect(container.querySelector(`[data-placed-region="${region}"]`)?.getAttribute("data-placed-color")).toBe(colors[index]);
       }
     });
-    expect(screen.getByText("12 of 13 body parts")).toBeInTheDocument();
+    expect(screen.getByText("12 of 31 body parts")).toBeInTheDocument();
+  });
+
+  it("lets the same body part be filled on each character", () => {
+    const { container } = render(<TouchTrafficLight />);
+    fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
+    for (let i = 0; i < 3; i++) {
+      pick(container, "green");
+      fireEvent.click(screen.getByRole("button", { name: "Head and hair", hidden: true }));
+    }
+    expect(container.querySelectorAll('[data-placed-region="head"]')).toHaveLength(3);
+    pick(container, "green");
+    fireEvent.click(screen.getByRole("button", { name: "Head and hair", hidden: true }));
+    expect(container.querySelectorAll('[data-placed-region="head"]')).toHaveLength(3);
+    expect(screen.getByText("This body part already has its color on all characters.")).toBeInTheDocument();
   });
 
   it.each(labels.map((label, i) => [label, regions[i], colors[i]] as const))(
@@ -79,15 +93,17 @@ describe("colored body placements", () => {
     },
   );
 
-  it("does not place a second circle on an already covered body part", () => {
+  it("does not place a second circle on a body part already covered on that character", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
-    place(container, 0); // head, green
+    place(container, 0); // head on Sam, green
+    const samHead = container.querySelector('[data-character="Sam"] [data-region="head"]');
+    if (!samHead) throw new Error("Missing Sam head zone");
     pick(container, "red");
-    fireEvent.click(screen.getByRole("button", { name: "Head and hair", hidden: true }));
+    fireEvent.click(samHead);
     expect(container.querySelectorAll('[data-placed-region="head"]')).toHaveLength(1);
     expect(container.querySelector('[data-placed-region="head"]')?.getAttribute("data-placed-color")).toBe("green");
-    expect(screen.getByText("This body part already has its color. Choose another one!")).toBeInTheDocument();
+    expect(screen.getByText("This body part already has its color on this character. Choose another one!")).toBeInTheDocument();
   });
 
   it("shows the trophy screen with the trusted-adult guidance once every region is covered", () => {
