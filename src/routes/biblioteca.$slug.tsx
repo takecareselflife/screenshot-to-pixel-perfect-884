@@ -71,6 +71,10 @@ function ArticlePage() {
         </Link>
       )}
       {a.explain.map((p) => <p key={p}>{p}</p>)}
+      {a.slug === "sti" && <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg bg-secondary p-4 text-secondary-foreground">
+        <Gamepad2 className="h-7 w-7 shrink-0" aria-hidden />
+        <span><strong>Play: STIs — Path of Wisdom</strong><br /><span className="text-sm">True or false? Follow the trail to the Knowledge Trophy.</span></span>
+      </Link>}
       {a.slug === "sti" && (
         <section aria-label="Illustrated prevention guides" className="grid gap-6">
           {guides.map((guide) => (

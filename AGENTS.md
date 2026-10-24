@@ -19,4 +19,5 @@
 - Mood choices map to existing reflection questionnaires in src/lib/moods.ts, without preselecting answers or affecting clinical scoring.
 - Game rules and educational content (matches, scoring, quizzes) live in pure src/lib/*-game.ts modules separate from the UI, so they can be unit-tested and reviewed by health professionals.
 - Body-region color matching uses src/lib/body-game.ts; thighs and feet have distinct hit zones, and situation-level consent remains independent of anatomical learning colors.
+- STI trail rules and educational questions live in src/lib/sti-game.ts; the UI keeps anonymous session-only state and requires reading feedback before retrying or advancing.
 - Speech playback unlocks media output inside the user's tap (audio-session "playback", silent looping media element, native-rate AudioContext) because iPhones otherwise mute Web Audio on silent mode.

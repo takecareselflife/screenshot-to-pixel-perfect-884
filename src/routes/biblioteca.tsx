@@ -60,6 +60,24 @@ function Biblioteca() {
             </Link>
           </li>
         ))}
+        <li>
+          <Link to="/ist-jogo" className="flex items-center gap-3 rounded-lg border bg-secondary p-4 text-secondary-foreground">
+            <Gamepad2 className="h-6 w-6 shrink-0" aria-hidden />
+            <div className="flex-1"><h2 className="text-lg font-semibold">STIs — Path of Wisdom</h2><p className="text-sm">Follow the true-or-false trail to the Knowledge Trophy.</p></div>
+            <ChevronRight className="h-5 w-5" aria-hidden />
+          </Link>
+        </li>
+        {[] .map((a: {slug: string; title: string; summary: string}) => (
+          <li key={a.slug}>
+            <Link to="/biblioteca/$slug" params={{ slug: a.slug }} className="card-base flex items-center gap-3 p-4">
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold">{a.title}</h2>
+                <p className="text-sm text-muted-foreground">{a.summary}</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" aria-hidden />
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
