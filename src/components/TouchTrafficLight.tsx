@@ -45,7 +45,7 @@ const l2Situations: { text: string; color: TrafficColor; region: RegionId; feedb
   { text: "A hug from someone you are happy to hug", color: "green", region: "shoulders", feedback: GREEN_MSG },
   { text: "A high-five that both people welcome", color: "green", region: "arms", feedback: GREEN_MSG },
   { text: "Someone keeps tickling you after you asked them to stop", color: "yellow", region: "abdomen", feedback: YELLOW_MSG },
-  { text: "Someone insists on hugging you when you do not want a hug", color: "yellow", region: "shoulders", feedback: YELLOW_MSG },
+  { text: "Someone insists on hugging you when you do not want a hug", color: "yellow", region: "abdomen", feedback: YELLOW_MSG },
   { text: "Someone touches your private parts and says it is a secret", color: "red", region: "private", feedback: RED_MSG },
   { text: "Someone touches your chest without your consent", color: "red", region: "chest", feedback: RED_MSG },
 ];
@@ -91,7 +91,7 @@ const zoneShapes: { id: RegionId; d: string; emphasize?: boolean }[] = [
   { id: "chest", d: "M62,144 h76 v42 h-76 z", emphasize: true },
   { id: "abdomen", d: "M62,186 h76 v40 h-76 z" },
   { id: "private", d: "M84,224 h32 v34 h-32 z", emphasize: true },
-  { id: "buttocks", d: "M62,224 h22 v34 h-22 z M116,224 h22 v34 h-22 z", emphasize: true },
+  { id: "buttocks", d: "M62,224 h22 v34 h-22 z M116,224 h22 v34 h-22 z" },
   {
     id: "arms",
     d: "M36,124 h24 v128 h-24 z M140,124 h24 v128 h-24 z M37,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0 M141,262 a11,11 0 1 0 22,0 a11,11 0 1 0 -22,0",
@@ -419,11 +419,11 @@ export function TouchTrafficLight() {
 
   if (phase === "intro") {
     const instructions =
-      "Touch Traffic Light. Red means genitals, chest and buttocks. Green means head, face, arms, hands, lower legs and feet. Yellow means shoulders, abdomen and thighs. Colors are learning cues, not permission to touch. Drag a circle onto a body area, or tap a circle then a body part. You can always try again.";
+      "Touch Traffic Light. Red means genitals and chest. Yellow means abdomen and thighs. Green means everything else: head, face, shoulders, arms, hands, buttocks, lower legs and feet. Colors are learning cues, not permission to touch. Drag a circle onto a body area, or tap a circle then a body part. You can always try again.";
     return (
       <div>
       <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
-        <p className="mt-3 text-sm">Red — genitals, chest, buttocks. Green — head, face, arms, hands, feet. Yellow — shoulders, abdomen, thighs. No color gives permission to touch.</p>
+        <p className="mt-3 text-sm">Red — genitals and chest. Yellow — abdomen and thighs. Green — everything else. No color gives permission to touch.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
