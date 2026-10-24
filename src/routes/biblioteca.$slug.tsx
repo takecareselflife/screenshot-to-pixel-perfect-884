@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, AlertTriangle, CheckCircle2, MapPin, BookMarked } from "lucide-react";
 import { articles } from "@/lib/data";
+import { ListenButton } from "@/components/ListenButton";
 
 export const Route = createFileRoute("/biblioteca/$slug")({
   loader: ({ params }) => {
@@ -38,6 +39,9 @@ function ArticlePage() {
       <Link to="/biblioteca" className="inline-flex items-center gap-1 text-sm text-primary"><ArrowLeft className="h-4 w-4" />Library</Link>
       <h1 className="text-3xl font-semibold">{a.title}</h1>
       <p className="text-lg text-muted-foreground">{a.summary}</p>
+      <ListenButton
+        text={[a.title, a.summary, ...a.explain, "In practice.", ...a.practical, "Warning signs.", ...a.warning, "Where to get help.", ...a.services].join(" ")}
+      />
       {a.explain.map((p) => <p key={p}>{p}</p>)}
       <Block title="In practice" icon={<CheckCircle2 className="h-5 w-5" />} items={a.practical} tone="bg-secondary" />
       <Block title="Warning signs" icon={<AlertTriangle className="h-5 w-5" />} items={a.warning} tone="bg-accent" />
