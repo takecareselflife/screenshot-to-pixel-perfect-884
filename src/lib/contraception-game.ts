@@ -19,7 +19,7 @@ export type MethodId =
 export type Target = { id: TargetId; label: string; group: "female" | "inside" | "male" | "special" };
 
 export const TARGETS: Target[] = [
-  { id: "arm", label: "Arm (under the skin)", group: "female" },
+  { id: "arm", label: "Upper arm", group: "female" },
   { id: "skin", label: "Skin", group: "female" },
   { id: "uterus", label: "Uterus", group: "inside" },
   { id: "cervix", label: "Cervix", group: "inside" },

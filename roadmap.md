@@ -2,7 +2,7 @@
 
 - [x] Fix Listen button: no sound comes out when tapped (iPhone silent-switch routing, native-rate audio, unlock in tap)
 - [x] Touch game: chest / private parts must accept the red circle
-- [ ] Build "Where does it go?" contraception drag-and-drop game (uploaded brief): card, 12 methods, special targets, method fact sheets, final 5-question challenge, safety messages, tests
+- [x] Build "Where does it go?" contraception drag-and-drop game (uploaded brief): card, 12 methods, special targets, method fact sheets, final 5-question challenge, safety messages, tests
 
 
 - [x] Repair colored-circle dragging on body regions; verify touch and mouse placement
