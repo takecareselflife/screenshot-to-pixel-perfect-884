@@ -402,8 +402,8 @@ export function TouchTrafficLight() {
       "Touch Traffic Light. Learn about your body, your boundaries, and your right to feel safe. Green means a safe or welcome touch. Yellow means pause and check your boundaries and consent. Red means an unsafe or inappropriate touch: seek help. Read each situation, then drag a colored circle onto the body area it is about, or tap a circle and then tap a body part. You will get a friendly explanation after every answer, and you can always try again. There is no way to lose this game.";
     return (
       <div>
-        <h2 className="text-2xl font-semibold">Touch Traffic Light</h2>
-        <p className="mt-1 text-muted-foreground">Learn about your body, your boundaries, and your right to feel safe.</p>
+      <p className="text-3xl font-semibold">Three levels, stars and friendly explanations — no way to lose.</p>
+      <p className="mt-1 text-muted-foreground">Green, yellow or red: learn what each color means before you start.</p>
         <ListenButton text={instructions} className="mt-3" />
         <ul className="mt-4 grid gap-2 sm:grid-cols-3">
           {(Object.keys(colorMeta) as TrafficColor[]).map((c) => (
