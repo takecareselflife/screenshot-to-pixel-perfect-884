@@ -22,4 +22,9 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches the contraception game route", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes("/anticoncepcao").at(-1)?.routeId).not.toBe(rootRouteId);
+  });
 });

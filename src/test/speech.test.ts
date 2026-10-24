@@ -43,13 +43,14 @@ describe("Speech playback", () => {
     ].map((event) => `data: ${JSON.stringify(event)}\n\n`).join("");
     vi.stubGlobal("fetch", vi.fn(async () => new Response(data)));
     const result = streamSpeech("/api/speech", "Welcome.");
-    await vi.waitFor(() => expect(sources).toHaveLength(2));
-    sources[1]?.onended?.();
+    // sources[0] is the silent unlock blip played inside the tap.
+    await vi.waitFor(() => expect(sources).toHaveLength(3));
+    sources[2]?.onended?.();
     await Promise.resolve();
     expect(close).not.toHaveBeenCalled();
-    sources[0]?.onended?.();
+    sources[1]?.onended?.();
     await result;
     expect(close).toHaveBeenCalledOnce();
-    expect(sources[0]?.playbackRate.value).toBe(0.85);
+    expect(sources[1]?.playbackRate.value).toBe(0.85);
   });
 });
