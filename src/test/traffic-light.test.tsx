@@ -25,7 +25,7 @@ function place(container: HTMLElement, index: number) {
   fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
 }
 
-const FRONT = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
+const FRONT = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "thighs", "legs", "feet"];
 const BACK = ["head", "shoulders", "arms", "upperBack", "lowerBack", "buttocks", "thighs", "legs", "feet"];
 
 /** Tap buttons fill the first character still missing that part: Sam, then Alex, then Chris. */
@@ -59,7 +59,7 @@ describe("colored body placements", () => {
         expect(container.querySelector(`[data-placed-region="${region}"]`)?.getAttribute("data-placed-color")).toBe(colors[index]);
       }
     });
-    expect(screen.getByText("12 of 31 body parts")).toBeInTheDocument();
+    expect(screen.getByText("12 of 30 body parts")).toBeInTheDocument();
   });
 
   it("lets the same body part be filled on each character", () => {
