@@ -244,7 +244,7 @@ export function ContraceptionGame() {
     if (pointer.current?.moved) { pointer.current = null; return; }
     pointer.current = null;
     setSheet(id);
-    if (!matched[id]) setSelected((s) => (s === id ? null : id));
+    if (!matched[id]) setSelected(id);
   };
 
   const showHint = () => {
