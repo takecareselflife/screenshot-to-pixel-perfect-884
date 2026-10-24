@@ -7,9 +7,9 @@ vi.mock("@/components/ListenButton", () => ({ ListenButton: () => null }));
 Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 afterEach(cleanup);
 
-const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "legs"];
-const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Private parts", "Buttocks", "Legs and feet"];
-const privateRegions = ["chest", "private", "buttocks"];
+const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "thighs", "legs", "feet"];
+const labels = ["Head and hair", "Face", "Shoulders", "Arms and hands", "Chest", "Abdomen", "Genitals (private parts)", "Buttocks", "Thighs", "Lower legs", "Feet"];
+const colors = ["green", "green", "yellow", "green", "red", "yellow", "red", "red", "yellow", "green", "green"];
 
 function pick(container: HTMLElement, color: string) {
   const circle = container.querySelector(`[data-color="${color}"]`);
@@ -19,7 +19,7 @@ function pick(container: HTMLElement, color: string) {
 
 function finishLevel1(container: HTMLElement) {
   regions.forEach((region, index) => {
-    pick(container, privateRegions.includes(region) ? "red" : "green");
+    pick(container, colors[index] ?? "green");
     const label = labels[index];
     if (!label) throw new Error("Missing body label");
     fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
@@ -47,7 +47,7 @@ describe("colored body placements", () => {
     fireEvent.click(screen.getByRole("button", { name: "Head and hair", hidden: true }));
     expect(container.querySelectorAll("[data-placed-region]")).toHaveLength(0);
     regions.forEach((region, index) => {
-      const color = privateRegions.includes(region) ? "red" : index % 2 === 0 ? "green" : "yellow";
+      const color = colors[index] ?? "green";
       const label = labels[index];
       if (!label) throw new Error("Missing body label");
       pick(container, color);
@@ -60,7 +60,7 @@ describe("colored body placements", () => {
     });
   });
 
-  it.each(["Chest", "Private parts", "Buttocks"])("%s accepts the red circle and not green or yellow", (label) => {
+  it.each(["Chest", "Genitals (private parts)", "Buttocks"])("%s accepts the red circle and not green or yellow", (label) => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     const target = regions[labels.indexOf(label)];
@@ -70,7 +70,7 @@ describe("colored body placements", () => {
       const region = regions[i];
       const currentLabel = labels[i];
       if (!region || !currentLabel) throw new Error("Missing region");
-      pick(container, privateRegions.includes(region) ? "red" : "green");
+      pick(container, colors[i] ?? "green");
       fireEvent.click(screen.getByRole("button", { name: currentLabel, hidden: true }));
       fireEvent.click(screen.getByRole("button", { name: "Next" }));
     }
@@ -102,7 +102,7 @@ describe("colored body placements", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     finishLevel1(container);
-    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Private parts"], ["red", "Chest"]] as const;
+    const situations = [["green", "Shoulders"], ["green", "Arms and hands"], ["yellow", "Abdomen"], ["yellow", "Shoulders"], ["red", "Genitals (private parts)"], ["red", "Chest"]] as const;
     for (const [color, label] of situations) {
       pick(container, color);
       fireEvent.click(screen.getByRole("button", { name: label, hidden: true }));
@@ -115,8 +115,8 @@ describe("colored body placements", () => {
     for (const name of ["A parent or family member you trust", "A teacher or school counselor", "A doctor or nurse", "A coach or club leader"]) fireEvent.click(screen.getByRole("button", { name }));
     const check = screen.getByRole("button", { name: "Check my choices" });
     fireEvent.click(check);
-    expect(screen.getByText("190 points")).toBeInTheDocument();
+    expect(screen.getByText("210 points")).toBeInTheDocument();
     fireEvent.click(check);
-    expect(screen.getByText("190 points")).toBeInTheDocument();
+    expect(screen.getByText("210 points")).toBeInTheDocument();
   });
 });
