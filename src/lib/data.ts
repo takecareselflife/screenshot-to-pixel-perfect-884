@@ -34,7 +34,7 @@ export const articles: Article[] = [
     title: "Contraceptive methods",
     summary: "Prevent pregnancy. Use condoms to reduce STI risk too.",
     explain: [
-      "Options: condoms, pill, injection, IUD and implant. Some are free through SUS.",
+      "Options: condoms, pill, injection, IUD and implant. Some are free in public health services.",
       "Condoms are the only contraceptive method that also reduces STI risk.",
       "Morning-after pill: use after unprotected sex or method failure. It delays ovulation, does not end a pregnancy and does not prevent STIs.",
       "Act quickly: levonorgestrel works best within 72 hours; up to 5 days is possible, with lower effectiveness. Ulipristal works up to 5 days where available. A copper IUD fitted within 5 days is the most effective emergency option.",
@@ -50,7 +50,7 @@ export const articles: Article[] = [
     title: "Sexually transmitted infections",
     summary: "Many STIs have no symptoms. Use protection and get tested.",
     explain: [
-      "STIs include HIV, syphilis, HPV and chlamydia. SUS offers free rapid tests and HPV vaccination for eligible adolescents.",
+      "STIs include HIV, syphilis, HPV and chlamydia. Public health services offer free rapid tests and HPV vaccination for eligible adolescents.",
       "Oral sex can transmit gonorrhea, syphilis, herpes and HPV, including to the mouth or throat.",
       "Receiving anal sex has a higher HIV risk: the thin rectal lining can tear, allowing exposure to blood and body fluids.",
       "No symptoms does not mean no STI. Use condoms and get tested even when both partners feel well.",
@@ -76,7 +76,7 @@ export const articles: Article[] = [
     practical: ["You can say no at any time.", "Ask, and respect the answer you get.", "Excessive jealousy and control are not love."],
     warning: ["Someone controlling your phone or your clothes.", "Threats or blackmail.", "Being kept away from friends and family."],
     services: ["Health center", "Social assistance center (CREAS)", "Child Protection Council"],
-    sources: ["ECA (Child and Adolescent Statute, Law 8.069/1990)", "UNICEF Brazil"],
+    sources: ["UN Convention on the Rights of the Child", "UNICEF"],
   },
   {
     slug: "mental-health",
@@ -106,7 +106,7 @@ export const articles: Article[] = [
     practical: ["Go somewhere safe.", "Health services treat violence cases, including emergency prevention — the sooner the better (ideally within 72 hours).", "You can ask for help without telling every detail."],
     warning: ["Someone asks you to keep a physical contact secret.", "Requests for intimate photos."],
     services: ["Sexual violence referral service", "Child Protection Council", "Disque 100"],
-    sources: ["Ministry of Health – Care for people in situations of sexual violence", "ECA"],
+    sources: ["WHO – Care for people in situations of sexual violence", "UN Convention on the Rights of the Child"],
   },
   {
     slug: "grooming",
@@ -133,9 +133,9 @@ export const articles: Article[] = [
     title: "Sexual rights, gender and how to get help",
     summary: "You have a right to health, respect and care for your gender.",
     explain: [
-      "The ECA guarantees full protection. Health services must respect your privacy, within legal limits.",
+      "The UN Convention on the Rights of the Child guarantees full protection. Health services must respect your privacy, within legal limits.",
       "Sexual rights mean being informed, respected and free from coercion — whatever your orientation or gender identity.",
-      "Trans and gender-diverse people have the right to hormone therapy in the SUS, with prescription and medical follow-up.",
+      "Trans and gender-diverse people have the right to hormone therapy in public health services, with prescription and medical follow-up.",
       "That follow-up can happen at a primary care outpatient clinic: the health center listens, checks your health, asks for exams and refers you to a trans health outpatient when needed.",
     ],
     practical: [
@@ -149,8 +149,8 @@ export const articles: Article[] = [
       "Being refused respectful treatment is a rights violation — you can report it.",
       "Suffering any form of violence.",
     ],
-    services: ["Health center (primary care outpatient)", "Trans health outpatient (SUS)", "Child Protection Council", "Public Defender's Office", "Disque 100"],
-    sources: ["ECA (Child and Adolescent Statute, Law 8.069/1990)", "Decreto 9.444/2018 — SUS care for people with gender identity dysphoria", "Ministry of Health — Comprehensive Health Policy for LGBTQ+ people", "SBEM — hormone therapy guidance"],
+    services: ["Health center (primary care outpatient)", "Trans health outpatient", "Child Protection Council", "Public Defender's Office", "Disque 100"],
+    sources: ["UN Convention on the Rights of the Child", "WHO — care for people with gender identity dysphoria", "UNICEF — inclusion of gender-diverse adolescents", "Endocrine Society — hormone therapy guidance"],
   },
 ];
 
