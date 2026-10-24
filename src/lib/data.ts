@@ -130,13 +130,27 @@ export const articles: Article[] = [
   },
   {
     slug: "rights",
-    title: "Adolescent rights and how to get help",
-    summary: "You have a right to health, protection and respect.",
-    explain: ["The ECA guarantees full protection.", "Health services must respect your privacy, within legal limits."],
-    practical: ["You can go to a health center and ask for care.", "Confidentiality has limits when your life or safety is at risk."],
-    warning: ["Having your rights denied.", "Suffering any form of violence."],
-    services: ["Health center", "Child Protection Council", "Public Defender's Office"],
-    sources: ["ECA (Child and Adolescent Statute, Law 8.069/1990)", "Ministry of Health – Guidelines for adolescent health care"],
+    title: "Sexual rights, gender and how to get help",
+    summary: "You have a right to health, respect and care for your gender.",
+    explain: [
+      "The ECA guarantees full protection. Health services must respect your privacy, within legal limits.",
+      "Sexual rights mean being informed, respected and free from coercion — whatever your orientation or gender identity.",
+      "Trans and gender-diverse people have the right to hormone therapy in the SUS, with prescription and medical follow-up.",
+      "That follow-up can happen at a primary care outpatient clinic: the health center listens, checks your health, asks for exams and refers you to a trans health outpatient when needed.",
+    ],
+    practical: [
+      "You can go to a health center and ask for care, including care about your gender.",
+      "Ask for the primary care outpatient clinic or the trans health outpatient in your city to talk about hormone therapy.",
+      "Keep your appointments and exams — the team follows your health over time.",
+      "Confidentiality has limits when your life or safety is at risk.",
+    ],
+    warning: [
+      "Never start hormones on your own or with someone else's prescription: it can seriously harm your health.",
+      "Being refused respectful treatment is a rights violation — you can report it.",
+      "Suffering any form of violence.",
+    ],
+    services: ["Health center (primary care outpatient)", "Trans health outpatient (SUS)", "Child Protection Council", "Public Defender's Office", "Disque 100"],
+    sources: ["ECA (Child and Adolescent Statute, Law 8.069/1990)", "Decreto 9.444/2018 — SUS care for people with gender identity dysphoria", "Ministry of Health — Comprehensive Health Policy for LGBTQ+ people", "SBEM — hormone therapy guidance"],
   },
 ];
 
