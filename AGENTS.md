@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Demo data lives in src/lib/data.ts and simulated stores in src/lib/*-store.ts; replace these modules with real APIs later so pages stay unchanged.
+- Standalone interactive modules live as their own route plus a component in src/components, cross-linked from related library articles (e.g. the Touch Traffic Light game at /consentimento, linked from the consent article).

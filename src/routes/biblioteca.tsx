@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Gamepad2 } from "lucide-react";
 import { articles } from "@/lib/data";
 import { PageTitle } from "@/components/Layout";
 
@@ -22,6 +22,18 @@ function Biblioteca() {
     <div>
       <PageTitle title="Library" subtitle="Simple information, with trustworthy sources. Demo content to be reviewed by professionals." />
       <ul className="grid gap-3">
+        <li>
+          <Link to="/consentimento" className="card-base flex items-center gap-3 bg-lilac p-4 text-lilac-foreground">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lilac-foreground/10">
+              <Gamepad2 className="h-6 w-6" aria-hidden />
+            </span>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold">Touch Traffic Light — body safety game</h2>
+              <p className="text-sm opacity-90">An interactive game about boundaries, consent and getting help.</p>
+            </div>
+            <ChevronRight className="h-5 w-5 opacity-70" aria-hidden />
+          </Link>
+        </li>
         {articles.map((a) => (
           <li key={a.slug}>
             <Link to="/biblioteca/$slug" params={{ slug: a.slug }} className="card-base flex items-center gap-3 p-4">

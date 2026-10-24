@@ -14,6 +14,7 @@ import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as AssistenteRouteImport } from './routes/assistente'
 import { Route as BemEstarRouteImport } from './routes/bem-estar'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as ConsentimentoRouteImport } from './routes/consentimento'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProfissionaisRouteImport } from './routes/profissionais'
 import { Route as ServicosRouteImport } from './routes/servicos'
@@ -44,6 +45,11 @@ const BemEstarRoute = BemEstarRouteImport.update({
 const BibliotecaRoute = BibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsentimentoRoute = ConsentimentoRouteImport.update({
+  id: '/consentimento',
+  path: '/consentimento',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/consentimento': typeof ConsentimentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/consentimento': typeof ConsentimentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/assistente': typeof AssistenteRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
+  '/consentimento': typeof ConsentimentoRoute
   '/privacidade': typeof PrivacidadeRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
+    | '/consentimento'
     | '/privacidade'
     | '/profissionais'
     | '/servicos'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
+    | '/consentimento'
     | '/privacidade'
     | '/profissionais'
     | '/servicos'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/assistente'
     | '/bem-estar'
     | '/biblioteca'
+    | '/consentimento'
     | '/privacidade'
     | '/profissionais'
     | '/servicos'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AssistenteRoute: typeof AssistenteRoute
   BemEstarRoute: typeof BemEstarRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
+  ConsentimentoRoute: typeof ConsentimentoRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProfissionaisRoute: typeof ProfissionaisRoute
   ServicosRoute: typeof ServicosRoute
@@ -207,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/biblioteca'
       fullPath: '/biblioteca'
       preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consentimento': {
+      id: '/consentimento'
+      path: '/consentimento'
+      fullPath: '/consentimento'
+      preLoaderRoute: typeof ConsentimentoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidade': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssistenteRoute: AssistenteRoute,
   BemEstarRoute: BemEstarRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
+  ConsentimentoRoute: ConsentimentoRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProfissionaisRoute: ProfissionaisRoute,
   ServicosRoute: ServicosRoute,
