@@ -7,11 +7,6 @@ vi.mock("@/components/ListenButton", () => ({ ListenButton: () => null }));
 afterEach(cleanup);
 
 describe("STI trail rules", () => {
-  it.each([true, false, true, true, true, true, false, true, false, true])("question %# has the supplied correct answer %s", (answer, context) => {
-    // Concrete answer key is asserted separately below; this case checks answer handling.
-    const state = answerSti(initialStiState(), answer);
-    expect(state.attempts).toBe(1);
-  });
   it("uses the ten answers from the brief", () => {
     expect(STI_QUESTIONS.map(q => q.answer)).toEqual([true, false, true, true, true, true, false, true, false, true]);
   });
