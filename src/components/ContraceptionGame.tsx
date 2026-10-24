@@ -81,7 +81,7 @@ function InsideView() {
 /* ---------- small reusable parts ---------- */
 
 function DropTarget({ id, label, className, style, active, count, onTap, children }: {
-  id: TargetId; label: string; className?: string; style?: React.CSSProperties; active: boolean; count: number; onTap: () => void; children?: ReactNode;
+  id: TargetId; label: string; className?: string | undefined; style?: React.CSSProperties | undefined; active: boolean; count: number; onTap: () => void; children?: ReactNode;
 }) {
   return (
     <button

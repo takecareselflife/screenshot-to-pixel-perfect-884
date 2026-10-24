@@ -19,7 +19,7 @@ function pick(container: HTMLElement, color: string) {
 function finishLevel1(container: HTMLElement) {
   regions.forEach((region, index) => {
     pick(container, privateRegions.includes(region) ? "red" : "green");
-    fireEvent.click(screen.getByRole("button", { name: labels[index] }));
+    fireEvent.click(screen.getByRole("button", { name: labels[index]! }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
   });
 }
@@ -50,7 +50,7 @@ describe("colored body placements", () => {
     // advance to the target step
     for (let i = 0; i < labels.indexOf(label); i++) {
       pick(container, privateRegions.includes(regions[i]!) ? "red" : "green");
-      fireEvent.click(screen.getByRole("button", { name: labels[i] }));
+      fireEvent.click(screen.getByRole("button", { name: labels[i]! }));
       fireEvent.click(screen.getByRole("button", { name: "Next" }));
     }
     for (const wrong of ["green", "yellow"]) {
