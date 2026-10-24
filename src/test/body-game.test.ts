@@ -4,13 +4,19 @@ import { matchesBodyColor, type RegionId, type TrafficColor } from "@/lib/body-g
 describe("requested body-region colors", () => {
   const rules: [RegionId, TrafficColor][] = [
     ["private", "red"], ["chest", "red"],
-    ["head", "green"], ["arms", "green"], ["feet", "green"],
-    ["thighs", "yellow"], ["shoulders", "yellow"],
+    ["abdomen", "yellow"], ["thighs", "yellow"],
+    ["head", "green"], ["face", "green"], ["shoulders", "green"], ["arms", "green"],
+    ["buttocks", "green"], ["legs", "green"], ["feet", "green"],
   ];
   it.each(rules)("%s only accepts %s", (region, expected) => {
     expect(matchesBodyColor(region, expected)).toBe(true);
     for (const wrong of ["green", "yellow", "red"] as const) {
       if (wrong !== expected) expect(matchesBodyColor(region, wrong)).toBe(false);
     }
+  });
+
+  it("red is never accepted outside genitals and chest", () => {
+    const redTargets = ["head", "face", "shoulders", "arms", "abdomen", "buttocks", "thighs", "legs", "feet"] as const;
+    for (const region of redTargets) expect(matchesBodyColor(region, "red")).toBe(false);
   });
 });
