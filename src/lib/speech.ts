@@ -64,7 +64,7 @@ export async function streamSpeech(
     if (!samples?.length) return;
     signal?.throwIfAborted();
     const buffer = context.createBuffer(1, samples.length, 24000);
-    buffer.copyToChannel(samples, 0);
+    buffer.copyToChannel(new Float32Array(samples), 0);
     const source = context.createBufferSource();
     source.buffer = buffer;
     source.playbackRate.value = playbackRate;
