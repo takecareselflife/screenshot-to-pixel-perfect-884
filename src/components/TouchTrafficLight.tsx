@@ -281,7 +281,7 @@ export function TouchTrafficLight() {
 
   const activate = (color: TrafficColor | null, region: string) => {
     if (phase === "l1") {
-      const task = l1Tasks[l1Step];
+      const task = l1Tasks[l1Step]!;
       if (region === task.target) {
         addPoints();
         setFeedback({ kind: "correct", text: task.feedback });
@@ -292,7 +292,7 @@ export function TouchTrafficLight() {
       return;
     }
     if (phase !== "l2") return;
-    const sit = l2Situations[l2Step];
+    const sit = l2Situations[l2Step]!;
     if (!color) {
       setFeedback({ kind: "info", text: "First pick a circle: green, yellow or red." });
       return;
@@ -338,7 +338,7 @@ export function TouchTrafficLight() {
   };
 
   const answerScenario = (i: number) => {
-    const sc = scenarios[l3Step];
+    const sc = scenarios[l3Step]!;
     if (i === sc.answer) {
       addPoints();
       setFeedback({ kind: "correct", text: sc.feedback });
@@ -513,7 +513,7 @@ export function TouchTrafficLight() {
               <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Situation {l2Step + 1} of {l2Situations.length}
               </p>
-              <p className="mt-1 text-lg font-bold">{l2Situations[l2Step].text}</p>
+              <p className="mt-1 text-lg font-bold">{l2Situations[l2Step]!.text}</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Which color fits, and which body area is it about? Drag the circle onto a character, or tap a circle and then tap a body part.
               </p>
@@ -576,9 +576,9 @@ export function TouchTrafficLight() {
           <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Situation {l3Step + 1} of {scenarios.length}
           </p>
-          <p className="mt-1 text-lg font-bold">{scenarios[l3Step].q}</p>
+          <p className="mt-1 text-lg font-bold">{scenarios[l3Step]!.q}</p>
           <div className="mt-3 grid gap-2">
-            {scenarios[l3Step].options.map((opt, i) => (
+            {scenarios[l3Step]!.options.map((opt, i) => (
               <button key={opt} type="button" onClick={() => answerScenario(i)} className="card-base p-3 text-left font-bold transition hover:-translate-y-0.5">
                 {opt}
               </button>
@@ -612,7 +612,7 @@ export function TouchTrafficLight() {
       <FeedbackBox feedback={feedback} onNext={phase === "trusted" ? finish : next} nextLabel={phase === "trusted" ? "Finish Game" : "Next"} />
 
       <p className="mt-6 text-center text-sm">
-        <Link to="/biblioteca/consent" className="font-bold text-primary underline">
+        <Link to="/biblioteca/$slug" params={{ slug: "consent" }} className="font-bold text-primary underline">
           Learn More about consent
         </Link>
       </p>
