@@ -339,38 +339,7 @@ export function ContraceptionGame() {
         <p className="text-sm text-muted-foreground">Drag each card to where it is used — or tap a card, then a target.</p>
       </div>
 
-      <ul className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-2" aria-label="Method cards">
-        {METHODS.map((m, i) => {
-          const done = !!matched[m.id];
-          return (
-            <li key={m.id} className="snap-start">
-              <button
-                type="button"
-                data-method={m.id}
-                aria-pressed={selected === m.id}
-                aria-label={`${m.name}${done ? " (placed correctly)" : ""}: ${m.short}`}
-                onPointerDown={onDown(m.id)}
-                onPointerMove={onMove(m.id)}
-                onPointerUp={onUp(m.id)}
-                onPointerCancel={endDrag}
-                onLostPointerCapture={endDrag}
-                onClick={() => onCardClick(m.id)}
-                className={`relative flex h-36 w-28 touch-pan-x select-none flex-col items-center gap-1 rounded-2xl p-2 text-center shadow-soft transition ${cardTones[i % cardTones.length]} ${selected === m.id ? "ring-4 ring-ring" : ""} ${done ? "opacity-60" : "cursor-grab active:cursor-grabbing"} ${drag?.id === m.id ? "scale-95 opacity-50" : ""}`}
-              >
-                {done && <CheckCircle2 className="absolute right-1.5 top-1.5 h-5 w-5 text-go" aria-hidden />}
-                <MethodArt id={m.id} />
-                <span className="text-sm font-bold leading-tight">{m.name}</span>
-                <span className="text-[11px] leading-tight opacity-90">{m.short}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      <p className="mt-1 min-h-5 text-center text-sm font-bold">
-        {selected ? `${methodById(selected).name} picked — now tap where it goes.` : "\u00a0"}
-      </p>
-
-      <div className="mt-2 grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2" data-game-board>
         <figure className="relative aspect-[200/380]">
           <Person skin="#8d5a3b" hair="#1f1611" shirt="#d98c6a" shorts="#6b5b95" longHair />
           {target("arm", "absolute", { left: "8%", top: "28%", width: "34%", height: "22%" })}
@@ -391,11 +360,42 @@ export function ContraceptionGame() {
         </figure>
       </div>
 
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        {target("oral", "min-h-20", undefined, <Pill className="h-6 w-6" aria-hidden />)}
-        {target("injection", "min-h-20", undefined, <Syringe className="h-6 w-6" aria-hidden />)}
-        {target("calendar", "min-h-20", undefined, <CalendarDays className="h-6 w-6" aria-hidden />)}
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {target("oral", "min-h-16", undefined, <Pill className="h-6 w-6" aria-hidden />)}
+        {target("injection", "min-h-16", undefined, <Syringe className="h-6 w-6" aria-hidden />)}
+        {target("calendar", "min-h-16", undefined, <CalendarDays className="h-6 w-6" aria-hidden />)}
       </div>
+
+      <ul className="-mx-4 mt-3 flex snap-x gap-2 overflow-x-auto px-4 pb-2" aria-label="Method cards">
+        {METHODS.map((m, i) => {
+          const done = !!matched[m.id];
+          return (
+            <li key={m.id} className="snap-start">
+              <button
+                type="button"
+                data-method={m.id}
+                aria-pressed={selected === m.id}
+                aria-label={`${m.name}${done ? " (placed correctly)" : ""}: ${m.short}`}
+                onPointerDown={onDown(m.id)}
+                onPointerMove={onMove(m.id)}
+                onPointerUp={onUp(m.id)}
+                onPointerCancel={endDrag}
+                onLostPointerCapture={endDrag}
+                onClick={() => onCardClick(m.id)}
+                className={`relative flex h-32 w-24 touch-pan-x select-none flex-col items-center gap-1 rounded-2xl p-2 text-center shadow-soft transition ${cardTones[i % cardTones.length]} ${selected === m.id ? "ring-4 ring-ring" : ""} ${done ? "opacity-60" : "cursor-grab active:cursor-grabbing"} ${drag?.id === m.id ? "scale-95 opacity-50" : ""}`}
+              >
+                {done && <CheckCircle2 className="absolute right-1.5 top-1.5 h-5 w-5 text-go" aria-hidden />}
+                <MethodArt id={m.id} />
+                <span className="text-sm font-bold leading-tight">{m.name}</span>
+                <span className="text-[11px] leading-tight opacity-90">{m.short}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-1 min-h-5 text-center text-sm font-bold">
+        {selected ? `${methodById(selected).name} picked — now tap where it goes.` : "\u00a0"}
+      </p>
 
       {drag && (
         <div aria-hidden="true" data-drag-preview className="pointer-events-none fixed z-50 flex w-24 -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-2xl bg-primary p-2 text-center text-xs font-bold text-primary-foreground shadow-soft"
