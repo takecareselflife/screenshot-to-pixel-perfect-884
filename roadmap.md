@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Add isolation, avoiding friends and withdrawal as possible emotional distress signs in the library
+- [x] Add isolation, avoiding friends and withdrawal as possible emotional distress signs in the library
 
 - [x] Expand STI guidance: oral/anal transmission, lesions, asymptomatic infections, testing, condoms and urinary infection prevention
 - [x] Add morning-after pill guidance to Contraceptive methods
