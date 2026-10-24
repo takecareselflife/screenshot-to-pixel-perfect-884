@@ -61,7 +61,7 @@ describe("colored body placements", () => {
     });
   });
 
-  it.each(["Chest", "Genitals (private parts)"])("%s accepts the red circle and not green or yellow", (label) => {
+  it.each(["Chest", "Genitals (private parts)", "Buttocks"])("%s accepts the red circle and not green or yellow", (label) => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
     const target = regions[labels.indexOf(label)];
