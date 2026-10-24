@@ -28,6 +28,19 @@ function finishLevel1(container: HTMLElement) {
 }
 
 describe("colored body placements", () => {
+  it("returns focus to the activity after advancing from a completed placement", () => {
+    const { container } = render(<TouchTrafficLight />);
+    fireEvent.click(screen.getByRole("button", { name: "Start the game" }));
+    pick(container, "green");
+    fireEvent.click(screen.getByRole("button", { name: "Head and hair", hidden: true }));
+    const next = screen.getByRole("button", { name: "Next" });
+    next.focus();
+    expect(document.activeElement).toBe(next);
+    fireEvent.click(next);
+    expect(document.activeElement).toBe(container.querySelector('[tabindex="-1"]'));
+    expect(screen.queryByRole("button", { name: "Next" })).toBeNull();
+  });
+
   it("requires a circle and allows placing circles on every body region", () => {
     const { container } = render(<TouchTrafficLight />);
     fireEvent.click(screen.getByRole("button", { name: "Start the game" }));

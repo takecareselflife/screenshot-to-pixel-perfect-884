@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Expand STI guidance: oral/anal transmission, lesions, asymptomatic infections, testing, condoms and urinary infection prevention
-- [ ] Add morning-after pill guidance to Contraceptive methods
-- [ ] Reproduce and repair the Body Safety game's current interaction problems
+- [x] Expand STI guidance: oral/anal transmission, lesions, asymptomatic infections, testing, condoms and urinary infection prevention
+- [x] Add morning-after pill guidance to Contraceptive methods
+- [x] Reproduce and repair the Body Safety game's current interaction problems
 
 - [x] Add the uploaded condom and HPV images to Sexually transmitted infections
 - [x] Diagnose and adjust both games; verify dragging and completion
