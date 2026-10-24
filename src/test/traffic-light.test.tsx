@@ -4,6 +4,7 @@ import { TouchTrafficLight } from "@/components/TouchTrafficLight";
 
 vi.mock("@tanstack/react-router", () => ({ Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a> }));
 vi.mock("@/components/ListenButton", () => ({ ListenButton: () => null }));
+Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 afterEach(cleanup);
 
 const regions = ["head", "face", "shoulders", "arms", "chest", "abdomen", "private", "buttocks", "legs"];
