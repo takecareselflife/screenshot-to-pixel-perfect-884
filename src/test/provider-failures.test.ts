@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/integrations/supabase/client.server", () => ({
@@ -33,7 +34,6 @@ describe("simulated AI provider failures never leak internals", () => {
     it(`transcribe: ${label} → ${expected}, no secret`, async () => {
       globalThis.fetch = upstream(status) as typeof fetch;
       const r = await handleTranscribeRequest(voiceReq());
-      if (r.status !== expected) console.log("DBG", await r.clone().text(), (globalThis.fetch as any).mock?.calls?.length);
       expect(r.status).toBe(expected);
       const body = await r.text();
       expect(body).not.toContain("SECRET"); expect(body).not.toContain("internal");
