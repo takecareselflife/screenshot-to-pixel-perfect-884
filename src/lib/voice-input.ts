@@ -75,11 +75,21 @@ export function encodeWav(chunks: readonly Float32Array[], sampleRate: number): 
   return new Blob([bytes], { type: "audio/wav" });
 }
 
+function setAudioSession(type: "play-and-record" | "auto") {
+  try {
+    const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+    if (session) session.type = type;
+  } catch { /* unsupported */ }
+}
+
 /** Ask for the microphone and start recording. Rejects with a message safe to show. */
 export async function startRecording(): Promise<Recorder> {
   if (typeof AudioContext === "undefined" || !navigator.mediaDevices?.getUserMedia) {
     throw new Error("Voice input isn't available on this device or browser. You can still type your question.");
   }
+  // Read-aloud switches iPhones to a "playback" audio session, which silences the microphone.
+  // Switch to recording mode synchronously inside the tap, before asking for the mic.
+  setAudioSession("play-and-record");
   // Resume inside the tap before awaiting microphone permission (iOS activation).
   const context = new AudioContext();
   const resume = context.resume();
@@ -90,6 +100,7 @@ export async function startRecording(): Promise<Recorder> {
     });
   } catch (cause) {
     await context.close();
+    setAudioSession("auto");
     throw new Error(micError(cause));
   }
   try {
@@ -97,6 +108,7 @@ export async function startRecording(): Promise<Recorder> {
   } catch {
     stream.getTracks().forEach((t) => t.stop());
     await context.close();
+    setAudioSession("auto");
     throw new Error("Voice input isn't available on this browser. You can still type your question.");
   }
   const source = context.createMediaStreamSource(stream);
@@ -104,12 +116,14 @@ export async function startRecording(): Promise<Recorder> {
   const chunks: Float32Array[] = [];
   const maxSamples = Math.floor(Math.min(MAX_RECORD_SECONDS * context.sampleRate, (MAX_AUDIO_BYTES - 44) / 2));
   let samples = 0;
+  let peak = 0;
   node.onaudioprocess = (event) => {
     const input = event.inputBuffer.getChannelData(0);
     const remaining = maxSamples - samples;
     if (remaining > 0) {
       const copy = new Float32Array(input.subarray(0, remaining));
       chunks.push(copy);
+      for (const v of copy) { const a = Math.abs(v); if (a > peak) peak = a; }
       samples += copy.length;
     }
   };
@@ -125,6 +139,7 @@ export async function startRecording(): Promise<Recorder> {
     node.disconnect();
     source.disconnect();
     void context.close();
+    setAudioSession("auto");
   };
   const autoRelease = window.setTimeout(release, MAX_RECORD_SECONDS * 1000);
 
@@ -137,6 +152,7 @@ export async function startRecording(): Promise<Recorder> {
       const blob = encodeWav(chunks, context.sampleRate);
       chunks.length = 0;
       if (blob.size < 2048) throw new Error("The recording was too short. Please tap the microphone and speak again.");
+      if (peak < 0.0005) throw new Error("Your microphone didn't send any sound. Check that it isn't muted or used by another app, then try again.");
       return new File([blob], "voice-note.wav", { type: "audio/wav" });
     },
     cancel() {
