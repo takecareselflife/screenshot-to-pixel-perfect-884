@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/integrations/supabase/client.server", () => ({
-  supabaseAdmin: { rpc: async () => ({ data: 1, error: null }) },
+  supabaseAdmin: { rpc: async (n: string) => ({ data: n === "ai_reserve" ? { id: "r1" } : n === "ai_settle" ? true : 1, error: null }) },
 }));
 // jsdom's File loses the MIME type, so delegate the provider call straight to the mocked fetch.
 vi.mock("@/lib/transcribe", async (orig) => ({
@@ -65,6 +65,7 @@ describe("simulated AI provider failures never leak internals", () => {
     const f = vi.fn(); globalThis.fetch = f as unknown as typeof fetch;
     expect((await handleSpeechRequest(speechReq())).status).toBe(503);
     expect(f).not.toHaveBeenCalled();
-    expect(await checkLimit(speechReq(), { scope: "assistant" })).toBe("error");
+    // Abuse limits (also used by non-AI profile actions) are independent of the paid-AI stop.
+    expect(await checkLimit(speechReq(), { scope: "assistant" })).toBe("ok");
   });
 });

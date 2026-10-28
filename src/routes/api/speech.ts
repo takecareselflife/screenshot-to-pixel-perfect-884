@@ -1,4 +1,5 @@
 import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
+import { failureOutcome, recordOutcome, reservePaidCall, settleWithStream } from "@/lib/ai-usage";
 import { createFileRoute } from "@tanstack/react-router";
 
 const SPEECH_URL = "https://ai.gateway.lovable.dev/v1/audio/speech";
@@ -25,13 +26,20 @@ export async function handleSpeechRequest(request: Request): Promise<Response> {
           const body = (await request.json()) as { text?: unknown };
           if (typeof body?.text === "string") text = body.text.trim();
         } catch {
+          await recordOutcome("speech", "rejected_invalid");
           return Response.json({ error: "Invalid request." }, { status: 400 });
         }
+        if (!text) await recordOutcome("speech", "rejected_invalid");
         if (!text) return Response.json({ error: "Nothing to read." }, { status: 400 });
         const limit = await checkLimit(request, { scope: "speech", client: 12, global: 200, daily: 300 });
+        if (limit !== "ok") await recordOutcome("speech", limit === "rate" ? "rejected_rate" : "rejected_error");
         if (limit === "rate") return Response.json({ error: "Too many Listen requests. Please wait a minute and try again." }, { status: 429, headers: { "Retry-After": "60" } });
         if (limit === "error") return Response.json({ error: "Voice playback isn't available right now." }, { status: 503 });
         if (text.length > MAX_CHARS) text = text.slice(0, MAX_CHARS);
+
+        const reservation = await reservePaidCall("speech");
+        if (!reservation.ok) return Response.json({ error: "Voice playback isn't available right now." }, { status: 503 });
+        const { ticket } = reservation;
 
         let upstream: Response;
         try {
@@ -50,6 +58,7 @@ export async function handleSpeechRequest(request: Request): Promise<Response> {
             signal: upstreamSignal(request),
           });
         } catch (e) {
+          await ticket.settle(failureOutcome(e));
           if (e instanceof DOMException && e.name === "TimeoutError") return Response.json({ error: "Voice service took too long. Please try again." }, { status: 504 });
           if (e instanceof DOMException && e.name === "AbortError") return new Response(null, { status: 499 });
           return Response.json({ error: "Voice service unavailable." }, { status: 502 });
@@ -58,10 +67,11 @@ export async function handleSpeechRequest(request: Request): Promise<Response> {
         if (!upstream.ok || !upstream.body) {
           // Never forward provider error bodies (may contain internal details).
           await upstream.body?.cancel().catch(() => {});
+          await ticket.settle("failed_provider");
           return Response.json({ error: "Voice service unavailable." }, { status: upstream.status === 429 ? 429 : 502, headers: { "Cache-Control": "no-store" } });
         }
 
-        return new Response(upstream.body, {
+        return new Response(settleWithStream(upstream.body, ticket), {
           status: 200,
           headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store" },
         });

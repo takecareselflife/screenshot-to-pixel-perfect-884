@@ -80,3 +80,23 @@ export const getProfessionalIndicators = createServerFn({ method: "POST" })
     const result = await context.supabase.rpc("impact_summary");
     return result.error ? failed : { ok: true as const, rows: result.data };
   });
+const killSwitchSchema = z.object({ active: z.boolean(), reason: z.string().trim().min(10).max(300) });
+
+export const getAiMonitoring = createServerFn({ method: "POST" })
+  .middleware([verifiedSession]).handler(async ({ context }) => {
+    const { data, error } = await context.supabase.rpc("ai_monitoring");
+    if (error || !data || rpcError(data)) return failed;
+    return { ok: true as const, data: data as unknown as import("./ai-monitoring").MonitoringData & {
+      day: string; history: { day: string; cost: number }[];
+      interventions: { at: string; actor: string | null; action: string; reason: string | null }[];
+    } };
+  });
+
+export const setAiKillSwitch = createServerFn({ method: "POST" })
+  .middleware([verifiedSession]).inputValidator((input) => killSwitchSchema.parse(input))
+  .handler(async ({ context, data }) => {
+    const limit = await checkLimit(getRequest(), { scope: "admin", client: 20, global: 300 });
+    if (limit !== "ok") return { ok: false as const, message: "Please wait a minute before trying again." };
+    const result = await context.supabase.rpc("ai_set_kill_switch", { _active: data.active, _reason: data.reason });
+    return result.error || rpcError(result.data) ? failed : { ok: true as const };
+  });

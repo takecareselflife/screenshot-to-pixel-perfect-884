@@ -18,3 +18,9 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+
+// Safety net: ordinary unit tests must never reach the real backend if a mock is missed.
+if (process.env["RUN_SECURITY_INTEGRATION"] !== "1") {
+  process.env["SUPABASE_URL"] = "http://127.0.0.1:9";
+  process.env["SUPABASE_SERVICE_ROLE_KEY"] = "unit-test-placeholder";
+}
