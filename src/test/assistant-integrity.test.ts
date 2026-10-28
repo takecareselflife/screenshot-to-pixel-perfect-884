@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assistantCrisisResponse, MAX_ASSISTANT_BODY_BYTES, parseAssistantQuestion, readAssistantQuestion } from "@/lib/assistant-request";
 const mocks = vi.hoisted(() => ({ limit: vi.fn(), stream: vi.fn(), provider: vi.fn() }));
-vi.mock("@/lib/rate-limit", () => ({ checkLimit: mocks.limit }));
+vi.mock("@/lib/rate-limit", () => ({ checkLimit: mocks.limit, upstreamSignal: (r: Request) => r.signal }));
 vi.mock("@ai-sdk/openai", () => ({ createOpenAI: mocks.provider }));
 vi.mock("ai", () => ({ streamText: mocks.stream }));
 import { handleAssistantRequest } from "@/routes/api/assistant";
