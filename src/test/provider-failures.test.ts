@@ -6,7 +6,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
 // jsdom's File loses the MIME type, so delegate the provider call straight to the mocked fetch.
 vi.mock("@/lib/transcribe", async (orig) => ({
   ...(await orig<typeof import("@/lib/transcribe")>()),
-  transcribe: (_c: unknown, _f: File, o: { signal?: AbortSignal }) => fetch("https://provider/audio", { method: "POST", signal: o.signal }),
+  transcribe: (_c: unknown, _f: File, o: { signal?: AbortSignal }) => fetch("https://provider/audio", { method: "POST", signal: o.signal ?? null }),
 }));
 vi.mock("@tanstack/react-router", () => ({ createFileRoute: () => (o: unknown) => o }));
 
