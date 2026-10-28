@@ -12,8 +12,9 @@ import { checkLimit } from "@/lib/rate-limit";
 const SECRET = "sk-live-SECRET-TOKEN-123 /internal/path db.internal:5432";
 const speechReq = () => new Request("http://x/api/speech", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text: "Olá" }) });
 const voiceReq = () => {
-  const f = new FormData(); f.append("file", new File([new Uint8Array(2000)], "a.wav", { type: "audio/wav" }));
-  return new Request("http://x/api/transcribe", { method: "POST", body: f });
+  const b = "----carebound";
+  const body = `--${b}\r\nContent-Disposition: form-data; name="file"; filename="a.wav"\r\nContent-Type: audio/wav\r\n\r\n${"A".repeat(2000)}\r\n--${b}--\r\n`;
+  return new Request("http://x/api/transcribe", { method: "POST", headers: { "content-type": `multipart/form-data; boundary=${b}` }, body });
 };
 const upstream = (status: number) => vi.fn(async () => new Response(`{"error":"${SECRET}"}`, { status }));
 
