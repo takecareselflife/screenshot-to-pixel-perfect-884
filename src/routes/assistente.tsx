@@ -47,7 +47,7 @@ function Assistente() {
     const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1]!, text: t, ...(reply ? { reply } : {}) }; return c; });
     try {
       const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
-      if (res.status === 503) { setLast("The AI assistant is not set up yet. Here is our reviewed answer instead:\n\n" + r.text, r); return; }
+      if (res.status === 503 && (await res.clone().json().catch(() => ({}))).error === "setup") { setLast("The AI assistant is not set up yet. Here is our reviewed answer instead:\n\n" + r.text, r); return; }
       if (res.status === 429) { setLast("Too many questions in a row. Please wait a minute and try again.", r); return; }
       if (!res.ok || !res.body) throw new Error("unavailable");
       const reader = res.body.getReader();

@@ -10,17 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as AnticoncepcaoRouteImport } from './routes/anticoncepcao'
 import { Route as AssistenteRouteImport } from './routes/assistente'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BemEstarRouteImport } from './routes/bem-estar'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as ConsentimentoRouteImport } from './routes/consentimento'
 import { Route as IstJogoRouteImport } from './routes/ist-jogo'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
-import { Route as ProfissionaisRouteImport } from './routes/profissionais'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SolicitarApoioRouteImport } from './routes/solicitar-apoio'
+import { Route as AuthenticatedProfissionaisRouteImport } from './routes/_authenticated/profissionais'
 import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as ApiSpeechRouteImport } from './routes/api/speech'
 import { Route as BibliotecaSlugRouteImport } from './routes/biblioteca.$slug'
@@ -28,6 +30,10 @@ import { Route as BibliotecaSlugRouteImport } from './routes/biblioteca.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjudaRoute = AjudaRouteImport.update({
@@ -43,6 +49,11 @@ const AnticoncepcaoRoute = AnticoncepcaoRouteImport.update({
 const AssistenteRoute = AssistenteRouteImport.update({
   id: '/assistente',
   path: '/assistente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BemEstarRoute = BemEstarRouteImport.update({
@@ -70,11 +81,6 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
   path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfissionaisRoute = ProfissionaisRouteImport.update({
-  id: '/profissionais',
-  path: '/profissionais',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -85,6 +91,12 @@ const SolicitarApoioRoute = SolicitarApoioRouteImport.update({
   path: '/solicitar-apoio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedProfissionaisRoute =
+  AuthenticatedProfissionaisRouteImport.update({
+    id: '/profissionais',
+    path: '/profissionais',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiAssistantRoute = ApiAssistantRouteImport.update({
   id: '/api/assistant',
   path: '/api/assistant',
@@ -106,14 +118,15 @@ export interface FileRoutesByFullPath {
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
@@ -123,14 +136,15 @@ export interface FileRoutesByTo {
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
@@ -138,17 +152,19 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/_authenticated/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
@@ -160,14 +176,15 @@ export interface FileRouteTypes {
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
-    | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/profissionais'
     | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
@@ -177,31 +194,34 @@ export interface FileRouteTypes {
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
-    | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/profissionais'
     | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
-    | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/_authenticated/profissionais'
     | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
@@ -209,15 +229,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AjudaRoute: typeof AjudaRoute
   AnticoncepcaoRoute: typeof AnticoncepcaoRoute
   AssistenteRoute: typeof AssistenteRoute
+  AuthRoute: typeof AuthRoute
   BemEstarRoute: typeof BemEstarRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
   ConsentimentoRoute: typeof ConsentimentoRoute
   IstJogoRoute: typeof IstJogoRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
-  ProfissionaisRoute: typeof ProfissionaisRoute
   ServicosRoute: typeof ServicosRoute
   SolicitarApoioRoute: typeof SolicitarApoioRoute
   ApiAssistantRoute: typeof ApiAssistantRoute
@@ -231,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajuda': {
@@ -252,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/assistente'
       fullPath: '/assistente'
       preLoaderRoute: typeof AssistenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bem-estar': {
@@ -289,13 +324,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profissionais': {
-      id: '/profissionais'
-      path: '/profissionais'
-      fullPath: '/profissionais'
-      preLoaderRoute: typeof ProfissionaisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/servicos': {
       id: '/servicos'
       path: '/servicos'
@@ -309,6 +337,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/solicitar-apoio'
       preLoaderRoute: typeof SolicitarApoioRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/profissionais': {
+      id: '/_authenticated/profissionais'
+      path: '/profissionais'
+      fullPath: '/profissionais'
+      preLoaderRoute: typeof AuthenticatedProfissionaisRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/assistant': {
       id: '/api/assistant'
@@ -334,6 +369,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedProfissionaisRoute: typeof AuthenticatedProfissionaisRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedProfissionaisRoute: AuthenticatedProfissionaisRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface BibliotecaRouteChildren {
   BibliotecaSlugRoute: typeof BibliotecaSlugRoute
 }
@@ -348,15 +394,16 @@ const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AjudaRoute: AjudaRoute,
   AnticoncepcaoRoute: AnticoncepcaoRoute,
   AssistenteRoute: AssistenteRoute,
+  AuthRoute: AuthRoute,
   BemEstarRoute: BemEstarRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
   ConsentimentoRoute: ConsentimentoRoute,
   IstJogoRoute: IstJogoRoute,
   PrivacidadeRoute: PrivacidadeRoute,
-  ProfissionaisRoute: ProfissionaisRoute,
   ServicosRoute: ServicosRoute,
   SolicitarApoioRoute: SolicitarApoioRoute,
   ApiAssistantRoute: ApiAssistantRoute,
