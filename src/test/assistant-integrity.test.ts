@@ -81,3 +81,16 @@ describe("assistant integrity", () => {
     expect(mocks.stream).not.toHaveBeenCalled();
   });
 });
+
+import { assistantSafetyNotice } from "@/lib/assistant-request";
+describe("deterministic safety notice", () => {
+  it("adds SAMU 192 for severe abdominal pain with fever", () => {
+    expect(assistantSafetyNotice("Estou com dor forte na barriga, febre e vômito")).toContain("192");
+  });
+  it("adds CVV 188 for weeks of isolation", () => {
+    expect(assistantSafetyNotice("Faz semanas que não quero ver ninguém e estou sem vontade de nada")).toContain("188");
+  });
+  it("adds nothing for a neutral question", () => {
+    expect(assistantSafetyNotice("Como funciona a camisinha?")).toBeNull();
+  });
+});

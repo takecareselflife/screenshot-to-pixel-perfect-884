@@ -49,3 +49,20 @@ export function assistantCrisisResponse(question: string): string | null {
     ? "Se há perigo imediato no Brasil, ligue 190 (polícia) ou 192 (SAMU). Para apoio emocional, ligue 188 (CVV). Procure uma pessoa de confiança e um serviço de saúde agora. Não posso diagnosticar, prescrever ou prometer sigilo. Fora do Brasil, procure o número de emergência local. Veja /ajuda e /servicos."
     : "If there is immediate danger in Brazil, call 190 (police) or 192 (SAMU). For emotional support, call 188 (CVV). Contact a trusted person and a health service now. I cannot diagnose, prescribe or promise confidentiality. Outside Brazil, use your local emergency number. See /ajuda and /servicos.";
 }
+/**
+ * Deterministic safety line prepended to the AI answer for urgent physical symptoms or
+ * signs of emotional distress, so emergency numbers never depend on the model obeying a prompt.
+ */
+export function assistantSafetyNotice(question: string): string | null {
+  const n = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const pt = /\b(estou|tenho|minha|meu|nao|dor|quero|faz)\b/.test(n);
+  const urgent = /\b(dor (muito )?forte|febre|vomit\w*|sangramento (forte|intenso)|desmai\w*|falta de ar|severe pain|fever|vomiting|heavy bleeding|faint\w*|can'?t breathe)\b/.test(n);
+  if (urgent) return pt
+    ? "⚠️ Sinais como dor forte, febre, vômitos, sangramento intenso, desmaio ou falta de ar precisam de atendimento agora. Emergência: ligue 192 (SAMU).\n\n"
+    : "⚠️ Severe pain, fever, vomiting, heavy bleeding, fainting or trouble breathing need care now. Emergency: call 192 (SAMU).\n\n";
+  const distress = /\b(nao quero ver ninguem|isolad\w*|sem vontade|vontade de nada|triste\w*|sem esperanca|deprimid\w*|ansios\w*|sozinh\w*|hopeless|isolated|don'?t want to see anyone|no motivation|sad|depressed|lonely)\b/.test(n);
+  if (distress) return pt
+    ? "💬 Você não está sozinho(a). Para conversar agora, ligue 188 (CVV, 24h, gratuito). Em perigo imediato, ligue 192 (SAMU).\n\n"
+    : "💬 You are not alone. To talk now, call 188 (CVV, 24h, free). In immediate danger, call 192 (SAMU).\n\n";
+  return null;
+}

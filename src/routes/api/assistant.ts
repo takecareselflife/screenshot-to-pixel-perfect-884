@@ -4,7 +4,7 @@ import { streamText } from "ai";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
 import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
-import { assistantCrisisResponse, readAssistantQuestion } from "@/lib/assistant-request";
+import { assistantCrisisResponse, assistantSafetyNotice, readAssistantQuestion } from "@/lib/assistant-request";
 
 const MODEL = "openai/gpt-6-astra";
 
@@ -66,7 +66,23 @@ export async function handleAssistantRequest(request: Request): Promise<Response
             openai: { forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", store: false, include: ["reasoning.encrypted_content"] },
           },
         });
-        return result.toTextStreamResponse({ headers: privateHeaders });
+        const notice = assistantSafetyNotice(question);
+        const response = result.toTextStreamResponse({ headers: privateHeaders });
+        if (!notice || !response.body) return response;
+        const body = response.body;
+        const enc = new TextEncoder();
+        const merged = new ReadableStream<Uint8Array>({
+          async start(controller) {
+            controller.enqueue(enc.encode(notice));
+            const reader = body.getReader();
+            try {
+              for (;;) { const { done, value } = await reader.read(); if (done) break; controller.enqueue(value); }
+              controller.close();
+            } catch (e) { controller.error(e); }
+          },
+          cancel(reason) { return body.cancel(reason); },
+        });
+        return new Response(merged, { status: response.status, headers: response.headers });
 }
 
 export const Route = createFileRoute("/api/assistant")({
