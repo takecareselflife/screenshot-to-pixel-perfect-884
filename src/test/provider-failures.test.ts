@@ -65,6 +65,7 @@ describe("simulated AI provider failures never leak internals", () => {
     const f = vi.fn(); globalThis.fetch = f as unknown as typeof fetch;
     expect((await handleSpeechRequest(speechReq())).status).toBe(503);
     expect(f).not.toHaveBeenCalled();
-    expect(await checkLimit(speechReq(), { scope: "assistant" })).toBe("error");
+    // Abuse limits (also used by non-AI profile actions) are independent of the paid-AI stop.
+    expect(await checkLimit(speechReq(), { scope: "assistant" })).toBe("ok");
   });
 });
