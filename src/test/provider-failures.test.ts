@@ -3,6 +3,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: { rpc: async () => ({ data: 1, error: null }) },
 }));
+// jsdom's File loses the MIME type, so delegate the provider call straight to the mocked fetch.
+vi.mock("@/lib/transcribe", async (orig) => ({
+  ...(await orig<typeof import("@/lib/transcribe")>()),
+  transcribe: (_c: unknown, _f: File, o: { signal?: AbortSignal }) => fetch("https://provider/audio", { method: "POST", signal: o.signal }),
+}));
 vi.mock("@tanstack/react-router", () => ({ createFileRoute: () => (o: unknown) => o }));
 
 import { handleSpeechRequest } from "@/routes/api/speech";
