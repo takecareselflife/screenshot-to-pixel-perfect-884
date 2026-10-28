@@ -3,6 +3,7 @@ import { useState } from "react";
 import { listRequests, updateRequest } from "@/lib/requests-store";
 import { services, type RequestStatus } from "@/lib/data";
 import { PageTitle, SimBadge } from "@/components/Layout";
+import { ImpactPanel } from "@/components/ImpactPanel";
 
 export const Route = createFileRoute("/profissionais")({
   head: () => ({
@@ -57,6 +58,8 @@ function Painel() {
           <div key={s} className="rounded-2xl bg-secondary p-3 text-center"><p className="text-2xl font-bold">{n}</p><p className="text-xs">{s}</p></div>
         ))}
       </section>
+
+      {role === "manager" && <ImpactPanel />}
 
       {role === "intake" && (
         <ul className="space-y-3">
