@@ -34,7 +34,6 @@ describe.skipIf(!enabled)("live paid-AI budget, kill switch and monitoring permi
   afterAll(async () => {
     await svc.from("ai_kill_switch").update({ active: false }).eq("id", 1);
     if (reservationIds.length) await svc.from("ai_budget_reservations").delete().in("id", reservationIds);
-    await svc.from("ai_usage_events").delete().gte("created_at", startedAt).eq("est_cost", 0.0001);
     for (const u of users) { await u.client.auth.signOut(); await svc.auth.admin.deleteUser(u.id); await svc.from("security_audit").delete().eq("actor_id", u.id); }
   }, 60000);
 
