@@ -60,3 +60,7 @@
 - [x] AI assistant grounded in library content (Portuguese/English, no diagnoses, safety escalation, rate limit, PII redaction, setup/error messages)
 - [x] Smart referral: "What do you need?" on Services
 - [x] Anonymous impact indicators in the managers' panel
+- [x] Real sign-in + roles for the professionals' panel; indicators restricted to managers
+- [x] Privacy page in Portuguese describing AI data flow and unknowns
+- [x] Server-enforced, concurrency-safe question limit (hashed IP, daily rotation)
+- [ ] Grant the first professional/manager role (waits on the user creating an account)

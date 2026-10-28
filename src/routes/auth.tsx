@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageTitle } from "@/components/Layout";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s.redirect === "string" && s.redirect.startsWith("/") && !s.redirect.startsWith("//") ? s.redirect : "/profissionais" }),
+  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s["redirect"] === "string" && s["redirect"].startsWith("/") && !s["redirect"].startsWith("//") ? s["redirect"] : "/profissionais" }),
   head: () => ({
     meta: [
       { title: "Professional sign-in | Care+" },
