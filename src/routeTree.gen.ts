@@ -21,6 +21,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProfissionaisRouteImport } from './routes/profissionais'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SolicitarApoioRouteImport } from './routes/solicitar-apoio'
+import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as ApiSpeechRouteImport } from './routes/api/speech'
 import { Route as BibliotecaSlugRouteImport } from './routes/biblioteca.$slug'
 
@@ -84,6 +85,11 @@ const SolicitarApoioRoute = SolicitarApoioRouteImport.update({
   path: '/solicitar-apoio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAssistantRoute = ApiAssistantRouteImport.update({
+  id: '/api/assistant',
+  path: '/api/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSpeechRoute = ApiSpeechRouteImport.update({
   id: '/api/speech',
   path: '/api/speech',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
   '/biblioteca/$slug': typeof BibliotecaSlugRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/profissionais'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/api/assistant'
     | '/api/speech'
     | '/biblioteca/$slug'
   fileRoutesById: FileRoutesById
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   ProfissionaisRoute: typeof ProfissionaisRoute
   ServicosRoute: typeof ServicosRoute
   SolicitarApoioRoute: typeof SolicitarApoioRoute
+  ApiAssistantRoute: typeof ApiAssistantRoute
   ApiSpeechRoute: typeof ApiSpeechRoute
 }
 
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolicitarApoioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/assistant': {
+      id: '/api/assistant'
+      path: '/api/assistant'
+      fullPath: '/api/assistant'
+      preLoaderRoute: typeof ApiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/speech': {
       id: '/api/speech'
       path: '/api/speech'
@@ -339,6 +359,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfissionaisRoute: ProfissionaisRoute,
   ServicosRoute: ServicosRoute,
   SolicitarApoioRoute: SolicitarApoioRoute,
+  ApiAssistantRoute: ApiAssistantRoute,
   ApiSpeechRoute: ApiSpeechRoute,
 }
 export const routeTree = rootRouteImport

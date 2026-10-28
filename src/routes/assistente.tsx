@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { Send, Image as ImageIcon } from "lucide-react";
 import { answer, type Reply } from "@/lib/assistant";
+import { track } from "@/lib/impact";
 import { guides, guideById, type Guide } from "@/lib/guides";
 import { GuideViewer } from "@/components/GuideViewer";
 import { ListenButton } from "@/components/ListenButton";
@@ -33,21 +34,45 @@ function Assistente() {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => end.current?.scrollIntoView({ behavior: "smooth" }), [msgs]);
 
-  const send = (text: string) => {
-    if (!text.trim()) return;
+  const [busy, setBusy] = useState(false);
+  const send = async (text: string) => {
+    if (!text.trim() || busy) return;
     const r = answer(text);
-    setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.text, reply: r }]);
+    track("assistant_question", r.links[0]?.to ?? "other");
+    const history = [...msgs.slice(1), { from: "user" as const, text }].map((m) => ({ role: m.from === "user" ? "user" : "assistant", content: m.text }));
     setInput("");
+    // Risk messages answer instantly with hotlines; the AI still follows below.
+    setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.risk ? r.text : "…", reply: { ...r, sources: r.risk ? r.sources : [] } }]);
+    setBusy(true);
+    const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1], text: t, ...(reply ? { reply } : {}) }; return c; });
+    try {
+      const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      if (!res.ok || !res.body) throw new Error("unavailable");
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let out = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        out += dec.decode(value, { stream: true });
+        setLast(r.risk ? `${r.text}\n\n${out}` : out);
+      }
+      if (!out.trim()) throw new Error("empty");
+    } catch {
+      setLast(r.text, r); // offline fallback: reviewed local answer
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
     <div>
       <PageTitle title="Health Assistant" />
-      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>Demo</SimBadge> Replies come from a local knowledge base. The conversation is not saved.</p>
+      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Answers use only our reviewed health content. No diagnoses. Not saved.</p>
       <div className="space-y-3" aria-live="polite">
         {msgs.map((m, i) => (
           <div key={i} className={`max-w-[85%] rounded-2xl p-3 ${m.from === "user" ? "ml-auto bg-primary text-primary-foreground" : m.reply?.risk ? "bg-accent" : "card-base"}`}>
-            <p>{m.text}</p>
+            <p className="whitespace-pre-line">{m.text.replace(/\*\*/g, "")}</p>
             {m.from === "bot" && <ListenButton text={m.text} className="mt-2" />}
             {m.reply && m.reply.sources.length > 0 && <p className="mt-2 text-xs opacity-80">Sources: {m.reply.sources.join("; ")}</p>}
             {m.reply?.guide && guideById(m.reply.guide) && (
