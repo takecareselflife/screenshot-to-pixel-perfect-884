@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assistantCrisisResponse, MAX_ASSISTANT_BODY_BYTES, parseAssistantQuestion, readAssistantQuestion } from "@/lib/assistant-request";
 const mocks = vi.hoisted(() => ({ limit: vi.fn(), stream: vi.fn(), provider: vi.fn() }));
-vi.mock("@/lib/rate-limit", () => ({ checkLimit: mocks.limit }));
+vi.mock("@/lib/rate-limit", () => ({ checkLimit: mocks.limit, upstreamSignal: (r: Request) => r.signal }));
 vi.mock("@ai-sdk/openai", () => ({ createOpenAI: mocks.provider }));
 vi.mock("ai", () => ({ streamText: mocks.stream }));
 import { handleAssistantRequest } from "@/routes/api/assistant";
@@ -79,5 +79,18 @@ describe("assistant integrity", () => {
     mocks.limit.mockResolvedValue(state);
     expect((await handleAssistantRequest(request({ question: "What is consent?" }))).status).toBe(state === "rate" ? 429 : 503);
     expect(mocks.stream).not.toHaveBeenCalled();
+  });
+});
+
+import { assistantSafetyNotice } from "@/lib/assistant-request";
+describe("deterministic safety notice", () => {
+  it("adds SAMU 192 for severe abdominal pain with fever", () => {
+    expect(assistantSafetyNotice("Estou com dor forte na barriga, febre e vômito")).toContain("192");
+  });
+  it("adds CVV 188 for weeks of isolation", () => {
+    expect(assistantSafetyNotice("Faz semanas que não quero ver ninguém e estou sem vontade de nada")).toContain("188");
+  });
+  it("adds nothing for a neutral question", () => {
+    expect(assistantSafetyNotice("Como funciona a camisinha?")).toBeNull();
   });
 });

@@ -3,8 +3,8 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
-import { checkLimit } from "@/lib/rate-limit";
-import { assistantCrisisResponse, readAssistantQuestion } from "@/lib/assistant-request";
+import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
+import { assistantCrisisResponse, assistantSafetyNotice, readAssistantQuestion } from "@/lib/assistant-request";
 
 const MODEL = "openai/gpt-6-astra";
 
@@ -23,7 +23,9 @@ RULES:
 - Never diagnose, never prescribe or give medication doses, never say whether someone "has" a condition. For symptoms, say which warning signs need care and refer to a service.
 - Short, warm, plain English: 2–5 short sentences or bullets. No judgement.
 - If there is risk (self-harm, violence, abuse, immediate danger): first give 190 (police), 192 (SAMU), 188 (CVV, 24h) and recommend the Help page.
-- End with one line "Source: <source name>" taken from the knowledge base when you used it.
+- Urgent physical symptoms (severe pain, pain with fever or vomiting, heavy bleeding, fainting, difficulty breathing): say to seek care now and give 192 (SAMU) for emergencies.
+- Persistent sadness, isolation, loss of interest or hopelessness: acknowledge warmly, suggest a trusted adult and a service, and always give 188 (CVV, 24h).
+- End with one line "Source: <source name>" naming only the knowledge-base article you actually used; omit the line if none applies taken from the knowledge base when you used it.
 - Do not ask for names, addresses or other personal data.
 - When a service would help, mention the Services page (/servicos). Needs it can match: ${needs.map((n) => n.label).join(", ")}.
 
@@ -56,7 +58,7 @@ export async function handleAssistantRequest(request: Request): Promise<Response
           model: provider.responses(MODEL),
           instructions: instructions(),
           messages: [{ role: "user", content: question }],
-          abortSignal: request.signal,
+          abortSignal: upstreamSignal(request),
           maxRetries: 0,
           // SDK errors may contain request text: never log them or return raw errors.
           onError: () => {},
@@ -64,7 +66,23 @@ export async function handleAssistantRequest(request: Request): Promise<Response
             openai: { forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", store: false, include: ["reasoning.encrypted_content"] },
           },
         });
-        return result.toTextStreamResponse({ headers: privateHeaders });
+        const notice = assistantSafetyNotice(question);
+        const response = result.toTextStreamResponse({ headers: privateHeaders });
+        if (!notice || !response.body) return response;
+        const body = response.body;
+        const enc = new TextEncoder();
+        const merged = new ReadableStream<Uint8Array>({
+          async start(controller) {
+            controller.enqueue(enc.encode(notice));
+            const reader = body.getReader();
+            try {
+              for (;;) { const { done, value } = await reader.read(); if (done) break; controller.enqueue(value); }
+              controller.close();
+            } catch (e) { controller.error(e); }
+          },
+          cancel(reason) { return body.cancel(reason); },
+        });
+        return new Response(merged, { status: response.status, headers: response.headers });
 }
 
 export const Route = createFileRoute("/api/assistant")({

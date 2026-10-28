@@ -1,4 +1,4 @@
-import { checkLimit } from "@/lib/rate-limit";
+import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
 import { createFileRoute } from "@tanstack/react-router";
 
 const SPEECH_URL = "https://ai.gateway.lovable.dev/v1/audio/speech";
@@ -9,7 +9,12 @@ const MAX_CHARS = 4000;
 export const Route = createFileRoute("/api/speech")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
+      POST: ({ request }) => handleSpeechRequest(request),
+    },
+  },
+});
+
+export async function handleSpeechRequest(request: Request): Promise<Response> {
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) {
           return Response.json({ error: "Voice playback is not configured on the server." }, { status: 500 });
@@ -42,9 +47,10 @@ export const Route = createFileRoute("/api/speech")({
               },
               stream_format: "sse",
             }),
-            signal: request.signal,
+            signal: upstreamSignal(request),
           });
         } catch (e) {
+          if (e instanceof DOMException && e.name === "TimeoutError") return Response.json({ error: "Voice service took too long. Please try again." }, { status: 504 });
           if (e instanceof DOMException && e.name === "AbortError") return new Response(null, { status: 499 });
           return Response.json({ error: "Voice service unavailable." }, { status: 502 });
         }
@@ -59,7 +65,4 @@ export const Route = createFileRoute("/api/speech")({
           status: 200,
           headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store" },
         });
-      },
-    },
-  },
-});
+}
