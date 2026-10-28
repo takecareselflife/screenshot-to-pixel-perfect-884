@@ -91,26 +91,6 @@ function Assistente() {
         <input id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write your question…" className="flex-1 rounded-full border bg-card px-4 py-3" />
         <button aria-label="Send" disabled={busy} className="rounded-full disabled:opacity-50 bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
       </form>
-
-      <section className="mt-8">
-        <h2 className="mb-1 text-lg font-semibold">Illustrated guides</h2>
-        <p className="mb-3 text-sm text-muted-foreground">Tap a card to see the full drawing. You can also zoom in with two fingers.</p>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {guides.map((g) => (
-            <li key={g.id}>
-              <button onClick={() => setOpenGuide(g)} className="card-base w-full overflow-hidden p-0 text-left">
-                <img src={g.src} alt="" className="h-32 w-full object-cover object-top" />
-                <span className="block p-3">
-                  <span className="block font-bold">{g.title}</span>
-                  <span className="block text-sm text-muted-foreground">{g.blurb}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <GuideViewer guide={openGuide} onClose={() => setOpenGuide(null)} />
     </div>
   );
 }
