@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { loadImpact } from "@/lib/impact";
+import { getProfessionalIndicators } from "@/lib/professional.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
 
@@ -7,9 +8,10 @@ type Row = { kind: string; ref: string; total: number };
 const label = (ref: string) => articles.find((a) => a.slug === ref)?.title ?? needs.find((n) => n.id === ref)?.label ?? ref;
 
 export function ImpactPanel() {
+  const load = useServerFn(getProfessionalIndicators);
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState(false);
-  useEffect(() => { loadImpact().then((d) => setRows(d.map((r) => ({ ...r, total: Number(r.total) }))), () => setErr(true)); }, []);
+  useEffect(() => { let active=true; load().then((d) => { if (!active) return; if (d.ok) setRows(d.rows.map((r) => ({ ...r, total: Number(r.total) }))); else setErr(true); }, () => { if (active) setErr(true); }); return () => { active=false; }; }, [load]);
   if (err) return <p className="text-sm">Indicators could not be loaded.</p>;
   if (!rows) return <p className="text-sm">Loading indicators…</p>;
   const sum = (k: string) => rows.filter((r) => r.kind === k).reduce((a, r) => a + r.total, 0);

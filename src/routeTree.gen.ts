@@ -22,6 +22,7 @@ import { Route as IstJogoRouteImport } from './routes/ist-jogo'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SolicitarApoioRouteImport } from './routes/solicitar-apoio'
+import { Route as AuthenticatedContaRouteImport } from './routes/_authenticated/conta'
 import { Route as AuthenticatedProfissionaisRouteImport } from './routes/_authenticated/profissionais'
 import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as ApiSpeechRouteImport } from './routes/api/speech'
@@ -92,6 +93,11 @@ const SolicitarApoioRoute = SolicitarApoioRouteImport.update({
   path: '/solicitar-apoio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedContaRoute = AuthenticatedContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProfissionaisRoute =
   AuthenticatedProfissionaisRouteImport.update({
     id: '/profissionais',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/privacidade': typeof PrivacidadeRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/conta': typeof AuthenticatedContaRoute
   '/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/privacidade': typeof PrivacidadeRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/conta': typeof AuthenticatedContaRoute
   '/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/privacidade': typeof PrivacidadeRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
+  '/_authenticated/conta': typeof AuthenticatedContaRoute
   '/_authenticated/profissionais': typeof AuthenticatedProfissionaisRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/speech': typeof ApiSpeechRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/conta'
     | '/profissionais'
     | '/api/assistant'
     | '/api/speech'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/conta'
     | '/profissionais'
     | '/api/assistant'
     | '/api/speech'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/servicos'
     | '/solicitar-apoio'
+    | '/_authenticated/conta'
     | '/_authenticated/profissionais'
     | '/api/assistant'
     | '/api/speech'
@@ -351,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolicitarApoioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/conta': {
+      id: '/_authenticated/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof AuthenticatedContaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profissionais': {
       id: '/_authenticated/profissionais'
       path: '/profissionais'
@@ -390,10 +409,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedContaRoute: typeof AuthenticatedContaRoute
   AuthenticatedProfissionaisRoute: typeof AuthenticatedProfissionaisRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedContaRoute: AuthenticatedContaRoute,
   AuthenticatedProfissionaisRoute: AuthenticatedProfissionaisRoute,
 }
 

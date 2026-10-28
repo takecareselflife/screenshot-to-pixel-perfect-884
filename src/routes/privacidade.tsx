@@ -47,7 +47,8 @@ const sections: { title: string; items: Item[] }[] = [
       ["Contagens anônimas", ["Guardamos só contagens: qual conteúdo foi aberto, qual tipo de serviço foi buscado e o dia. Não guardamos quem, aparelho, local nem textos. Só gestores autorizados veem os totais."]],
       ["Limite de perguntas", ["Para evitar abuso, o servidor conta quantas perguntas chegam por minuto. Seu endereço de internet (IP) não é guardado: usamos um código embaralhado que muda todo dia e é apagado em cerca de 1 dia. O mesmo limite se aplica às mensagens de voz."]],
       ["Questionários e pedido de apoio", ["Nesta versão, ficam só na memória da página e não são enviados a nenhum servidor. O pedido de apoio ainda é uma demonstração: ninguém o recebe."]],
-      ["Contas de profissionais", ["Só profissionais têm conta (e-mail e senha). Adolescentes não precisam de conta. O acesso ao painel exige aprovação de um administrador."]],
+      ["Contas de profissionais", ["O login guarda e-mail e credenciais de autenticação no Lovable Cloud. O perfil privado guarda nome e registro profissional, sem dados de pacientes. Adolescentes não precisam de conta. Cadastro e confirmação de e-mail não concedem acesso profissional.", "Cada pessoa consulta apenas seu perfil e pode editar nome e registro quando o acesso não está suspenso ou revogado. Alterações exigem nova aprovação. Administradores explicitamente autorizados podem consultar os perfis para aprovar, suspender ou revogar permissões. As verificações são feitas no servidor e no banco, inclusive com uma sessão já aberta."]],
+      ["Auditoria administrativa", ["Guardamos identificadores do responsável e da conta afetada, ação, data e permissões alteradas. Não incluímos senhas, tokens, nomes, registros profissionais ou conversas nesses eventos. Tentativas autenticadas de acesso negado também podem ser registradas. Eventos feitos por um operador fora do aplicativo não identificam automaticamente uma pessoa; o procedimento de autorização inicial exige revisão manual.", "Ainda não foi definido um prazo de retenção ou exclusão automática desses eventos e dos perfis profissionais. Isso deve ser definido antes do piloto."]],
       ["Registros técnicos", ["A hospedagem pode registrar dados técnicos de acesso (como IP e horário) por segurança. Quais dados e por quanto tempo ainda precisa ser verificado."]],
     ],
   },
@@ -68,6 +69,7 @@ const pending = [
   "Revisão clínica do conteúdo da biblioteca, que a IA usa como base (ainda não validado).",
   "Prazos de guarda dos registros técnicos da hospedagem.",
   "Plano de resposta a incidentes de segurança.",
+  "Autorização manual do primeiro administrador, validação dos registros profissionais, prazo de retenção dos perfis e da auditoria.",
 ];
 
 function Privacidade() {
@@ -90,7 +92,7 @@ function Privacidade() {
       <section className="rounded-2xl bg-lilac p-4 text-lilac-foreground">
         <h2 className="text-lg font-semibold">Ainda precisa ser verificado</h2>
         <ul className="mt-2 list-disc pl-5 text-sm">{pending.map((p) => <li key={p}>{p}</li>)}</ul>
-        <p className="mt-2 text-sm">Os números de emergência (190, 192, 188) são reais. Os serviços listados são fictícios.</p>
+        <p className="mt-2 text-sm">Os números de emergência (190, 192, 188) são reais. A lista inclui UBS com fontes oficiais e exemplos fictícios identificados separadamente. O painel de pedidos continua demonstrativo, sem receber conversas ou questionários de adolescentes.</p>
       </section>
     </div>
   );
