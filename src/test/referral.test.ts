@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { recommend } from "@/lib/referral";
 import { services } from "@/lib/data";
-import { redact } from "@/routes/api/assistant";
+import { redact } from "@/lib/redact";
 
 describe("smart referral", () => {
   it("sends emotional needs to mental health first", () => {

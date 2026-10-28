@@ -3,6 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
+import { redact } from "@/lib/redact";
 
 const MODEL = "openai/gpt-6-astra";
 
@@ -35,11 +36,6 @@ function limited(ip: string) {
   hits.set(ip, list);
   return list.length > 10;
 }
-// Remove emails and phone numbers before anything reaches the AI provider.
-export function redact(t: string) {
-  return t.replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, "[email]").replace(/\+?\d[\d\s().-]{7,}\d/g, "[phone]");
-}
-
 export const Route = createFileRoute("/api/assistant")({
   server: {
     handlers: {
