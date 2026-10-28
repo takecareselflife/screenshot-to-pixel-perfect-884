@@ -12,6 +12,9 @@
 - Demo data lives in src/lib/data.ts and simulated stores in src/lib/*-store.ts; replace these modules with real APIs later so pages stay unchanged.
 - Real service listings in the shared directory carry official source URLs; label synthetic entries separately and count successful referrals only for sourced services to avoid presenting demos as care.
 - Assistant voice input sends a complete recording to a rate-limited server transcription endpoint and places the transcript in the editable question field; never send a spoken question automatically.
+- Professional identity fields stay in owner-private profiles; access state, resource roles and operator-designated administrators are separate so editing a profile or registering cannot grant privileges.
+- Every professional server operation revalidates authentication and the live database session; RLS and checked RPCs recheck approval and roles, so suspension/revocation denies stale-session operations.
+- The intake demo uses only its own seeded in-memory examples, never public support-form memory or adolescent conversations/questionnaires; administrative audit stores only actor, subject, action, date and access metadata.
 - Library card visibility is selected in src/lib/library.ts independently from safety content, so hiding a card does not remove help flows.
 - Speech playback batches PCM into audible segments and waits for every scheduled segment; shared player ownership uses controller identity to prevent stale cancellations.
 - Standalone interactive modules live as their own route plus a component in src/components, cross-linked from related library articles (e.g. the Touch Traffic Light game at /consentimento, linked from the consent article).

@@ -14,6 +14,32 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_authorizations: {
+        Row: {
+          active: boolean
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_authorizations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_rate_limits: {
         Row: {
           bucket: string
@@ -53,6 +79,80 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_access: {
+        Row: {
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          display_name: string
+          id: string
+          registration: string
+          updated_at: string
+        }
+        Insert: {
+          display_name?: string
+          id: string
+          registration?: string
+          updated_at?: string
+        }
+        Update: {
+          display_name?: string
+          id?: string
+          registration?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      security_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          details: Json
+          id: number
+          occurred_at: string
+          subject_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          details?: Json
+          id?: never
+          occurred_at?: string
+          subject_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          details?: Json
+          id?: never
+          occurred_at?: string
+          subject_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -76,6 +176,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_professionals: { Args: never; Returns: Json }
+      authorize_professional: { Args: { _area: string }; Returns: Json }
+      has_active_session: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -95,6 +198,12 @@ export type Database = {
           total: number
         }[]
       }
+      is_authorized_admin: { Args: never; Returns: boolean }
+      manage_professional: {
+        Args: { _roles: string[]; _status: string; _target: string }
+        Returns: Json
+      }
+      professional_session: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "professional" | "manager"

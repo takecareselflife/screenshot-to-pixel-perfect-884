@@ -1,11 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
-import { listRequests, updateRequest } from "@/lib/requests-store";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { demoRequests } from "@/lib/data";
 import { services, type RequestStatus } from "@/lib/data";
 import { PageTitle, SimBadge } from "@/components/Layout";
 import { ImpactPanel } from "@/components/ImpactPanel";
+import { SignOutButton, useProfessionalSession } from "@/components/ProfessionalAccount";
+import { ProfessionalAdministration } from "@/components/ProfessionalAdministration";
+import { authorizeProfessionalArea } from "@/lib/professional.functions";
+import { canAccess } from "@/lib/professional-schemas";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/profissionais")({
   head: () => ({
@@ -22,52 +26,52 @@ export const Route = createFileRoute("/_authenticated/profissionais")({
   component: Painel,
 });
 
-type Role = "intake" | "manager";
+type Role = "intake" | "manager" | "administration";
 const statuses: RequestStatus[] = ["New", "Contacted", "Received", "Referred", "In follow-up"];
 
 function Painel() {
-  const navigate = useNavigate();
-  const [roles, setRoles] = useState<string[] | null>(null);
+  const session = useProfessionalSession();
+  const authorize = useServerFn(authorizeProfessionalArea);
   const [role, setRole] = useState<Role | null>(null);
   const [, force] = useState(0);
   const [log, setLog] = useState<string[]>([]);
-  const reqs = listRequests();
+  // Never read the public support form's memory; this panel only contains seeded examples.
+  const [reqs, setReqs] = useState(() => demoRequests.map((r) => ({ ...r, notes: [...r.notes] })));
+  const [error, setError] = useState("");
+  const updateRequest = (id: string, patch: Partial<(typeof reqs)[number]>) => setReqs((rows) => rows.map((r) => r.id === id ? { ...r, ...patch } : r));
   const audit = (m: string) => setLog((l) => [`${new Date().toLocaleTimeString("en-US")} · ${role} · ${m}`, ...l]);
-
-  useEffect(() => {
-    // RLS only returns the signed-in user's own role rows.
-    supabase.from("user_roles").select("role").then(({ data }) => {
-      const r = (data ?? []).map((x) => x.role as string);
-      setRoles(r);
-      if (r.length === 1) setRole(r[0] === "manager" ? "manager" : "intake");
-    });
-  }, []);
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", search: { redirect: "/profissionais" }, replace: true });
+  const data = session.data?.ok ? session.data.session : null;
+  const check = async (area: "intake" | "indicators" | "administration") => {
+    try { const result = await authorize({ data: area }); if (result.ok) return true; }
+    catch { /* safe denial */ }
+    setError("Access denied. Refresh your access or sign in again."); setRole(null); await session.refetch(); return false;
   };
+  const choose = async (next: Role) => { if (await check(next === "manager" ? "indicators" : next)) setRole(next); };
+  const guardedDemo = async (action: () => void) => { if (await check("intake")) action(); };
+  if (session.isPending) return <p>Checking access…</p>;
 
-  if (!roles) return <p>Checking access…</p>;
-
-  if (roles.length === 0) {
+  if (!data || (!data.admin && data.roles.length === 0)) {
     return (
       <div>
-        <PageTitle title="Access not authorized" subtitle="Your account is signed in, but it has not been approved as a professional." />
-        <p className="mb-4 text-sm">Ask the platform administrator to grant you access. No data is shown until then.</p>
-        <button onClick={signOut} className="rounded-xl bg-primary px-4 py-2 font-bold text-primary-foreground">Sign out</button>
+        <PageTitle title="Access not authorized" subtitle={`Professional access: ${data?.status ?? "unavailable"}.`} />
+        <p className="mb-4 text-sm">An authorized administrator must approve your professional access. No requests or indicators are shown.</p>
+        <Link to="/conta" className="mb-4 block text-sm underline">My professional profile</Link>
+        <SignOutButton />
       </div>
     );
   }
 
-  if (!role) {
+  if (!role || !canAccess(data, role === "manager" ? "indicators" : role)) {
     return (
       <div>
         <PageTitle title="For professionals" subtitle="Choose the area you are authorized for." />
         <div className="grid gap-3 sm:grid-cols-2">
-          {roles.includes("professional") && <button onClick={() => setRole("intake")} className="card-base p-4 text-left"><h2 className="font-semibold">Intake</h2><p className="text-sm text-muted-foreground">Sees and manages referred requests.</p></button>}
-          {roles.includes("manager") && <button onClick={() => setRole("manager")} className="card-base p-4 text-left"><h2 className="font-semibold">Indicators</h2><p className="text-sm text-muted-foreground">Sees only aggregated indicators.</p></button>}
+          {canAccess(data,"intake") && <Button variant="outline" onClick={() => choose("intake")}>Demo intake</Button>}
+          {canAccess(data,"indicators") && <Button variant="outline" onClick={() => choose("manager")}>Anonymous indicators</Button>}
+          {canAccess(data,"administration") && <Button variant="outline" onClick={() => choose("administration")}>Professional approvals</Button>}
         </div>
+        {error && <p role="alert" className="mt-3 text-sm">{error}</p>}
+        <Link to="/conta" className="my-4 block text-sm underline">My professional profile</Link><SignOutButton />
       </div>
     );
   }
@@ -77,18 +81,20 @@ function Painel() {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <PageTitle title={role === "manager" ? "Indicators" : "Requests"} />
-        <button onClick={signOut} className="text-sm underline">Sign out</button>
+        <PageTitle title={role === "manager" ? "Indicators" : role === "administration" ? "Administration" : "Demo requests"} />
+        <SignOutButton />
       </div>
+      <div className="mb-4 flex flex-wrap gap-4"><Button variant="link" className="p-0" onClick={() => setRole(null)}>Change area</Button><Link to="/conta" className="text-sm underline">My professional profile</Link><Button variant="link" className="p-0" onClick={() => session.refetch()}>Refresh access</Button></div>
       <p className="mb-4 text-sm"><SimBadge>Fictional data</SimBadge> Individual questionnaire answers and conversations never appear here.</p>
 
-      <section className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      {role === "intake" && <section className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-5">
         {counts.map(({ s, n }) => (
           <div key={s} className="rounded-2xl bg-secondary p-3 text-center"><p className="text-2xl font-bold">{n}</p><p className="text-xs">{s}</p></div>
         ))}
-      </section>
+      </section>}
 
       {role === "manager" && <ImpactPanel />}
+      {role === "administration" && <ProfessionalAdministration />}
 
       {role === "intake" && (
         <ul className="space-y-3">
@@ -101,11 +107,11 @@ function Painel() {
               <p className="text-sm text-muted-foreground">Contact: {r.contact}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <select aria-label="Status" value={r.status} className="rounded-xl border bg-card p-2 text-sm"
-                  onChange={(e) => { updateRequest(r.id, { status: e.target.value as RequestStatus }); audit(`${r.id} → ${e.target.value}`); force((x) => x + 1); }}>
+                  onChange={(e) => { const status=e.target.value as RequestStatus; void guardedDemo(() => { updateRequest(r.id,{status}); audit(`${r.id} → ${status}`); force((x)=>x+1); }); }}>
                   {statuses.map((s) => <option key={s}>{s}</option>)}
                 </select>
                 <select aria-label="Refer to" defaultValue="" className="rounded-xl border bg-card p-2 text-sm"
-                  onChange={(e) => { if (!e.target.value) return; updateRequest(r.id, { status: "Referred", notes: [...r.notes, `Referred to ${e.target.value}`] }); audit(`${r.id} referred`); force((x) => x + 1); }}>
+                  onChange={(e) => { const target=e.target.value; if (!target) return; void guardedDemo(() => { updateRequest(r.id, { status: "Referred", notes: [...r.notes, `Referred to ${target}`] }); audit(`${r.id} referred`); force((x) => x + 1); }); }}>
                   <option value="">Refer to…</option>
                   {services.filter((s) => s.city === r.city).map((s) => <option key={s.id}>{s.name}</option>)}
                 </select>
@@ -113,7 +119,7 @@ function Painel() {
               <form className="mt-2 flex gap-2" onSubmit={(e) => {
                 e.preventDefault();
                 const f = new FormData(e.currentTarget); const note = String(f.get("n") || "").trim();
-                if (!note) return; updateRequest(r.id, { notes: [...r.notes, note] }); audit(`${r.id} note added`); e.currentTarget.reset(); force((x) => x + 1);
+                if (!note) return; const form=e.currentTarget; void guardedDemo(() => { updateRequest(r.id, { notes: [...r.notes, note] }); audit(`${r.id} note added`); form.reset(); force((x) => x + 1); });
               }}>
                 <input name="n" placeholder="Add a note…" className="flex-1 rounded-xl border bg-card p-2 text-sm" />
                 <button className="rounded-xl bg-primary px-3 text-sm font-bold text-primary-foreground">Save</button>
@@ -124,13 +130,13 @@ function Painel() {
         </ul>
       )}
 
-      <section className="mt-6">
-        <h2 className="mb-2 text-lg font-semibold">Administrative access log</h2>
+      {role === "intake" && <section className="mt-6">
+        <h2 className="mb-2 text-lg font-semibold">Demo activity (not a security audit)</h2>
         <ul className="rounded-xl bg-muted p-3 text-xs">
           <li>Session started as {role}</li>
           {log.map((l) => <li key={l}>{l}</li>)}
         </ul>
-      </section>
+      </section>}
     </div>
   );
 }

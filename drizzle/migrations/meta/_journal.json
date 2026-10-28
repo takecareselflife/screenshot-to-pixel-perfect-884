@@ -15,6 +15,27 @@
       "when": 1793146360956,
       "tag": "0001_roles_and_rate_limit",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793148848266,
+      "tag": "0002_private_professional_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793149055231,
+      "tag": "0003_fix_permission_audit_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793149168348,
+      "tag": "0004_tighten_private_profile_grants",
+      "breakpoints": true
     }
   ]
 }
