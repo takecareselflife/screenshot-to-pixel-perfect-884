@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Investigate and block untrusted AI history; validate synthetic attacks and publish a scoped evidence report without storing conversations
+
 - [x] Audit professional access, authentication, permissions and privacy against the uploaded security brief
 - [x] Harden professional access, approval/revocation, logout/recovery and administrative auditing without collecting adolescent health data
 - [x] Verify professional access with synthetic accounts and produce an evidence-based security report
