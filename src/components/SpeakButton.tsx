@@ -16,18 +16,24 @@ export function SpeakButton({ onTranscript, className = "" }: { onTranscript: (t
   const [error, setError] = useState<string | null>(null);
   const recorderRef = useRef<Recorder | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const mountedRef = useRef(true);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (timerRef.current !== null) window.clearInterval(timerRef.current);
       recorderRef.current?.cancel();
       recorderRef.current = null;
       controllerRef.current?.abort();
       controllerRef.current = null;
-    },
-    [],
-  );
+    };
+  }, []);
 
   const finish = () => {
+    if (timerRef.current !== null) window.clearInterval(timerRef.current);
+    timerRef.current = null;
     recorderRef.current = null;
     controllerRef.current = null;
     setState("idle");
@@ -37,6 +43,9 @@ export function SpeakButton({ onTranscript, className = "" }: { onTranscript: (t
   const stop = async () => {
     const recorder = recorderRef.current;
     if (!recorder) return;
+    recorderRef.current = null;
+    if (timerRef.current !== null) window.clearInterval(timerRef.current);
+    timerRef.current = null;
     setState("working");
     let file: File;
     try {
@@ -67,16 +76,15 @@ export function SpeakButton({ onTranscript, className = "" }: { onTranscript: (t
     setState("starting");
     try {
       const recorder = await startRecording();
+      if (!mountedRef.current) { recorder.cancel(); return; }
       recorderRef.current = recorder;
       setState("recording");
       setSeconds(0);
-      const timer = window.setInterval(() => {
+      timerRef.current = window.setInterval(() => {
         const elapsed = recorder.elapsedSeconds();
         setSeconds(elapsed);
         if (elapsed >= MAX_RECORD_SECONDS) void stop();
       }, 500);
-      // Clear the interval when this recording is replaced or the page unmounts.
-      window.setTimeout(() => window.clearInterval(timer), (MAX_RECORD_SECONDS + 2) * 1000);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The microphone could not be started. Please try again.");
       setState("idle");
