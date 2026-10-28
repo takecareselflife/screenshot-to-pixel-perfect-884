@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 import { listRequests, updateRequest } from "@/lib/requests-store";
 import { services, type RequestStatus } from "@/lib/data";
 import { PageTitle, SimBadge } from "@/components/Layout";
 import { ImpactPanel } from "@/components/ImpactPanel";
 
-export const Route = createFileRoute("/profissionais")({
+export const Route = createFileRoute("/_authenticated/profissionais")({
   head: () => ({
     meta: [
       { title: "Professionals' panel | Care+" },
@@ -24,20 +26,47 @@ type Role = "intake" | "manager";
 const statuses: RequestStatus[] = ["New", "Contacted", "Received", "Referred", "In follow-up"];
 
 function Painel() {
+  const navigate = useNavigate();
+  const [roles, setRoles] = useState<string[] | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [, force] = useState(0);
   const [log, setLog] = useState<string[]>([]);
   const reqs = listRequests();
   const audit = (m: string) => setLog((l) => [`${new Date().toLocaleTimeString("en-US")} · ${role} · ${m}`, ...l]);
 
+  useEffect(() => {
+    // RLS only returns the signed-in user's own role rows.
+    supabase.from("user_roles").select("role").then(({ data }) => {
+      const r = (data ?? []).map((x) => x.role as string);
+      setRoles(r);
+      if (r.length === 1) setRole(r[0] === "manager" ? "manager" : "intake");
+    });
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  };
+
+  if (!roles) return <p>Checking access…</p>;
+
+  if (roles.length === 0) {
+    return (
+      <div>
+        <PageTitle title="Access not authorized" subtitle="Your account is signed in, but it has not been approved as a professional." />
+        <p className="mb-4 text-sm">Ask the platform administrator to grant you access. No data is shown until then.</p>
+        <button onClick={signOut} className="rounded-xl bg-primary px-4 py-2 font-bold text-primary-foreground">Sign out</button>
+      </div>
+    );
+  }
+
   if (!role) {
     return (
       <div>
-        <PageTitle title="For professionals" subtitle="Restricted access for authorized professionals." />
-        <p className="mb-4 text-sm"><SimBadge>Simulated login</SimBadge> The real version will have authentication and role-based access control.</p>
+        <PageTitle title="For professionals" subtitle="Choose the area you are authorized for." />
         <div className="grid gap-3 sm:grid-cols-2">
-          <button onClick={() => setRole("intake")} className="card-base p-4 text-left"><h2 className="font-semibold">Sign in as an intake professional</h2><p className="text-sm text-muted-foreground">Sees and manages referred requests.</p></button>
-          <button onClick={() => setRole("manager")} className="card-base p-4 text-left"><h2 className="font-semibold">Sign in as a manager</h2><p className="text-sm text-muted-foreground">Sees only aggregated indicators.</p></button>
+          {roles.includes("professional") && <button onClick={() => setRole("intake")} className="card-base p-4 text-left"><h2 className="font-semibold">Intake</h2><p className="text-sm text-muted-foreground">Sees and manages referred requests.</p></button>}
+          {roles.includes("manager") && <button onClick={() => setRole("manager")} className="card-base p-4 text-left"><h2 className="font-semibold">Indicators</h2><p className="text-sm text-muted-foreground">Sees only aggregated indicators.</p></button>}
         </div>
       </div>
     );
@@ -49,7 +78,7 @@ function Painel() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <PageTitle title={role === "manager" ? "Indicators" : "Requests"} />
-        <button onClick={() => setRole(null)} className="text-sm underline">Sign out</button>
+        <button onClick={signOut} className="text-sm underline">Sign out</button>
       </div>
       <p className="mb-4 text-sm"><SimBadge>Fictional data</SimBadge> Individual questionnaire answers and conversations never appear here.</p>
 
