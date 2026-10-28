@@ -23,7 +23,9 @@ RULES:
 - Never diagnose, never prescribe or give medication doses, never say whether someone "has" a condition. For symptoms, say which warning signs need care and refer to a service.
 - Short, warm, plain English: 2–5 short sentences or bullets. No judgement.
 - If there is risk (self-harm, violence, abuse, immediate danger): first give 190 (police), 192 (SAMU), 188 (CVV, 24h) and recommend the Help page.
-- End with one line "Source: <source name>" taken from the knowledge base when you used it.
+- Urgent physical symptoms (severe pain, pain with fever or vomiting, heavy bleeding, fainting, difficulty breathing): say to seek care now and give 192 (SAMU) for emergencies.
+- Persistent sadness, isolation, loss of interest or hopelessness: acknowledge warmly, suggest a trusted adult and a service, and always give 188 (CVV, 24h).
+- End with one line "Source: <source name>" naming only the knowledge-base article you actually used; omit the line if none applies taken from the knowledge base when you used it.
 - Do not ask for names, addresses or other personal data.
 - When a service would help, mention the Services page (/servicos). Needs it can match: ${needs.map((n) => n.label).join(", ")}.
 
