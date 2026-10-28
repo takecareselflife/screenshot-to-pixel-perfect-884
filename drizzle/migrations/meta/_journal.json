@@ -36,6 +36,13 @@
       "when": 1793149168348,
       "tag": "0004_tighten_private_profile_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793152508623,
+      "tag": "0005_ai_usage_budget_killswitch",
+      "breakpoints": true
     }
   ]
 }

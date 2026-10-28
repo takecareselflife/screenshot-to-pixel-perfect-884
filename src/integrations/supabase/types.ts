@@ -40,6 +40,60 @@ export type Database = {
           },
         ]
       }
+      ai_budget_reservations: {
+        Row: {
+          created_at: string
+          day: string
+          est_cost: number
+          id: string
+          scope: string
+          settled_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          est_cost: number
+          id?: string
+          scope: string
+          settled_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          est_cost?: number
+          id?: string
+          scope?: string
+          settled_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      ai_kill_switch: {
+        Row: {
+          active: boolean
+          changed_at: string | null
+          changed_by: string | null
+          id: number
+          reason: string | null
+        }
+        Insert: {
+          active?: boolean
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: number
+          reason?: string | null
+        }
+        Update: {
+          active?: boolean
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: number
+          reason?: string | null
+        }
+        Relationships: []
+      }
       ai_rate_limits: {
         Row: {
           bucket: string
@@ -55,6 +109,33 @@ export type Database = {
           bucket?: string
           hits?: number
           window_start?: string
+        }
+        Relationships: []
+      }
+      ai_usage_events: {
+        Row: {
+          created_at: string
+          est_cost: number
+          id: number
+          latency_ms: number | null
+          outcome: string
+          scope: string
+        }
+        Insert: {
+          created_at?: string
+          est_cost?: number
+          id?: number
+          latency_ms?: number | null
+          outcome: string
+          scope: string
+        }
+        Update: {
+          created_at?: string
+          est_cost?: number
+          id?: number
+          latency_ms?: number | null
+          outcome?: string
+          scope?: string
         }
         Relationships: []
       }
@@ -177,6 +258,33 @@ export type Database = {
     }
     Functions: {
       admin_professionals: { Args: never; Returns: Json }
+      ai_monitoring: { Args: never; Returns: Json }
+      ai_record: {
+        Args: {
+          _cost: number
+          _latency: number
+          _outcome: string
+          _scope: string
+        }
+        Returns: undefined
+      }
+      ai_reserve: {
+        Args: {
+          _cost: number
+          _scope: string
+          _scope_limit: number
+          _total_limit: number
+        }
+        Returns: Json
+      }
+      ai_set_kill_switch: {
+        Args: { _active: boolean; _reason: string }
+        Returns: Json
+      }
+      ai_settle: {
+        Args: { _id: string; _latency: number; _outcome: string }
+        Returns: boolean
+      }
       authorize_professional: { Args: { _area: string }; Returns: Json }
       has_active_session: { Args: never; Returns: boolean }
       has_role: {
