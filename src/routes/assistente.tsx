@@ -5,6 +5,7 @@ import { answer, type Reply } from "@/lib/assistant";
 import { track } from "@/lib/impact";
 import { ListenButton } from "@/components/ListenButton";
 import { PageTitle, SimBadge } from "@/components/Layout";
+import { SpeakButton } from "@/components/SpeakButton";
 
 export const Route = createFileRoute("/assistente")({
   head: () => ({
@@ -29,6 +30,13 @@ function Assistente() {
   ]);
   const [input, setInput] = useState("");
   const end = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  /** Spoken words land in the box so the user can fix them before sending. */
+  const addSpokenText = (text: string) => {
+    setInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text));
+    inputRef.current?.focus();
+  };
   useEffect(() => end.current?.scrollIntoView({ behavior: "smooth" }), [msgs]);
 
   const [busy, setBusy] = useState(false);
@@ -67,7 +75,7 @@ function Assistente() {
   return (
     <div>
       <PageTitle title="Health Assistant" />
-      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Educational information only — not a substitute for professional medical care. No diagnoses or prescriptions. Ask in English or Portuguese. Conversations are not saved; avoid names, phones or addresses.</p>
+      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Educational information only — not a substitute for professional medical care. No diagnoses or prescriptions. Ask in English or Portuguese, by typing or with the microphone. Conversations and voice recordings are not saved; avoid names, phones or addresses.</p>
       <div className="space-y-3" aria-live="polite">
         {msgs.map((m, i) => (
           <div key={i} className={`max-w-[85%] rounded-2xl p-3 ${m.from === "user" ? "ml-auto bg-primary text-primary-foreground" : m.reply?.risk ? "bg-accent" : "card-base"}`}>
@@ -86,9 +94,11 @@ function Assistente() {
       <div className="mt-4 flex flex-wrap gap-2">
         {suggestions.map((s) => <button key={s} onClick={() => send(s)} className="rounded-full border px-3 py-1 text-sm">{s}</button>)}
       </div>
-      <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-4 flex gap-2">
+      <p className="mt-4 text-xs text-muted-foreground">You can speak instead of typing: tap <span className="font-bold">Speak</span>, say your question, then check the text before sending it.</p>
+      <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-2 flex flex-wrap gap-2">
         <label htmlFor="msg" className="sr-only">Your message</label>
-        <input id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write your question…" className="flex-1 rounded-full border bg-card px-4 py-3" />
+        <input ref={inputRef} id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write or speak your question…" className="min-w-[55%] flex-1 rounded-full border bg-card px-4 py-3" />
+        <SpeakButton onTranscript={addSpokenText} />
         <button aria-label="Send" disabled={busy} className="rounded-full disabled:opacity-50 bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
       </form>
     </div>
