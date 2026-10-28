@@ -14,13 +14,40 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      impact_events: {
+        Row: {
+          day: string
+          id: number
+          kind: string
+          ref: string
+        }
+        Insert: {
+          day?: string
+          id?: never
+          kind: string
+          ref: string
+        }
+        Update: {
+          day?: string
+          id?: never
+          kind?: string
+          ref?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      impact_summary: {
+        Args: never
+        Returns: {
+          kind: string
+          ref: string
+          total: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
