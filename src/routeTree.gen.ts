@@ -20,6 +20,7 @@ import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as ConsentimentoRouteImport } from './routes/consentimento'
 import { Route as IstJogoRouteImport } from './routes/ist-jogo'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SolicitarApoioRouteImport } from './routes/solicitar-apoio'
 import { Route as AuthenticatedContaRouteImport } from './routes/_authenticated/conta'
@@ -83,6 +84,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
   path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
   '/conta': typeof AuthenticatedContaRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
   '/conta': typeof AuthenticatedContaRoute
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/consentimento': typeof ConsentimentoRoute
   '/ist-jogo': typeof IstJogoRoute
   '/privacidade': typeof PrivacidadeRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/servicos': typeof ServicosRoute
   '/solicitar-apoio': typeof SolicitarApoioRoute
   '/_authenticated/conta': typeof AuthenticatedContaRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
+    | '/reset-password'
     | '/servicos'
     | '/solicitar-apoio'
     | '/conta'
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
+    | '/reset-password'
     | '/servicos'
     | '/solicitar-apoio'
     | '/conta'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/consentimento'
     | '/ist-jogo'
     | '/privacidade'
+    | '/reset-password'
     | '/servicos'
     | '/solicitar-apoio'
     | '/_authenticated/conta'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   ConsentimentoRoute: typeof ConsentimentoRoute
   IstJogoRoute: typeof IstJogoRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ServicosRoute: typeof ServicosRoute
   SolicitarApoioRoute: typeof SolicitarApoioRoute
   ApiAssistantRoute: typeof ApiAssistantRoute
@@ -347,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/privacidade'
       fullPath: '/privacidade'
       preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsentimentoRoute: ConsentimentoRoute,
   IstJogoRoute: IstJogoRoute,
   PrivacidadeRoute: PrivacidadeRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ServicosRoute: ServicosRoute,
   SolicitarApoioRoute: SolicitarApoioRoute,
   ApiAssistantRoute: ApiAssistantRoute,
