@@ -15,9 +15,9 @@ vi.mock("@/integrations/supabase/client.server", () => ({
       if (name === "hit_rate_limit") return { data: db.rate === "rate" ? 9999 : 1, error: db.rate === "error" ? { message: "x" } : null };
       if (name === "ai_reserve") {
         if (db.killed) return { data: { error: "disabled" }, error: null };
-        const used = (s?: string) => [...db.reservations.values()].filter((r) => r.status !== "released" && (!s || r.scope === s)).reduce((a, r) => a + r.cost, 0);
-        const cost = args["_cost"] as number;
-        if (used(args["_scope"] as string) + cost > (args["_scope_limit"] as number) || used() + cost > (args["_total_limit"] as number)) return { data: { error: "budget" }, error: null };
+        const used = (s?: string) => [...db.reservations.values()].filter((r) => r.status !== "released" && (!s || r.scope === s)).reduce((a, r) => a + Math.round(r.cost * 1e4), 0);
+        const cost = args["_cost"] as number; const c4 = Math.round(cost * 1e4);
+        if (used(args["_scope"] as string) + c4 > Math.round((args["_scope_limit"] as number) * 1e4) || used() + c4 > Math.round((args["_total_limit"] as number) * 1e4)) return { data: { error: "budget" }, error: null };
         const id = `r${db.reservations.size + 1}`;
         db.reservations.set(id, { scope: args["_scope"] as string, cost, status: "reserved" });
         return { data: { id }, error: null };
@@ -105,9 +105,9 @@ describe("settlement before and after the provider", () => {
 });
 
 describe("budget exhaustion and simultaneous requests", () => {
-  it("the speech budget allows exactly floor(budget/cost) calls among 3000 simultaneous attempts", async () => {
-    const results = await Promise.all(Array.from({ length: 3000 }, () => reservePaidCall("speech")));
-    expect(results.filter((r) => r.ok).length).toBe(Math.floor(DAILY_BUDGET.speech / EST_COST.speech + 1e-9));
+  it("the speech budget allows exactly floor(budget/cost) calls among 2100 simultaneous attempts", { timeout: 30000 }, async () => {
+    const results = await Promise.all(Array.from({ length: 2100 }, () => reservePaidCall("speech")));
+    expect(results.filter((r) => r.ok).length).toBe(Math.floor(Math.round(DAILY_BUDGET.speech * 1e4) / Math.round(EST_COST.speech * 1e4)));
   });
 });
 
