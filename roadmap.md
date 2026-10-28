@@ -1,7 +1,7 @@
 # Roadmap
 
-- [ ] Add real Brazilian UBS (basic health units) to the Services screen, keeping the app in English
-- [ ] Complete and verify voice input in the Health Assistant: microphone button that transcribes speech into the question box (renewed request)
+- [x] Add real Brazilian UBS (basic health units) to the Services screen, keeping the app in English — four sourced São Paulo units plus official nationwide CNES search
+- [x] Complete and verify voice input in the Health Assistant: microphone recording transcribes into the question box for review; verified with spoken Portuguese audio
 - [x] Body game: show dashed outlines on still-missing body parts so players can complete the progress bar
 - [x] Body game: each character must be fully covered (31 placements) — fixes circles not filling on Alex
 - [x] Body game: face yellow; add back-view character on the right (upper back green, lower back yellow, buttocks red, thighs yellow); 13 regions total

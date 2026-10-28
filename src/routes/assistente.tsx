@@ -94,8 +94,7 @@ function Assistente() {
       <div className="mt-4 flex flex-wrap gap-2">
         {suggestions.map((s) => <button key={s} onClick={() => send(s)} className="rounded-full border px-3 py-1 text-sm">{s}</button>)}
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">You can speak instead of typing: tap <span className="font-bold">Speak</span>, say your question, then check the text before sending it.</p>
-      <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-2 flex flex-wrap gap-2">
+      <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-4 flex flex-wrap gap-2">
         <label htmlFor="msg" className="sr-only">Your message</label>
         <input ref={inputRef} id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write or speak your question…" className="min-w-[55%] flex-1 rounded-full border bg-card px-4 py-3" />
         <SpeakButton onTranscript={addSpokenText} />
