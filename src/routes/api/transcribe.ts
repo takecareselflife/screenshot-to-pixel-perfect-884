@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/transcribe")({
           return Response.json({ error: "That message was too long. Please keep it under 30 seconds." }, { status: 413 });
         }
 
-        const limit = await checkLimit(request, { scope: "voice", client: 8, global: 200 });
+        const limit = await checkLimit(request, { scope: "voice", client: 8, global: 200, daily: 120 });
         if (limit === "rate") {
           return Response.json({ error: "Too many voice messages in a row. Please wait a minute and try again." }, { status: 429, headers: { "Retry-After": "60" } });
         }
@@ -60,18 +60,19 @@ export const Route = createFileRoute("/api/transcribe")({
           upstream = await transcribe(transcribeConfig(apiKey), file, { signal: request.signal });
         } catch (cause) {
           if (cause instanceof DOMException && cause.name === "AbortError") return new Response(null, { status: 499 });
-          return Response.json({ error: cause instanceof Error ? cause.message : "The voice message couldn't be processed." }, { status: 400 });
+          return Response.json({ error: "The voice message couldn't be processed." }, { status: 400 });
         }
-        if (!upstream.body) {
-          const detail = upstream.ok ? "The voice service returned no audio result." : await upstream.text().catch(() => "");
-          return new Response(detail || "The voice message couldn't be understood.", { status: upstream.ok ? 502 : upstream.status });
+        if (!upstream.ok || !upstream.body) {
+          // Never forward provider error bodies (may contain internal details).
+          await upstream.body?.cancel().catch(() => {});
+          return Response.json({ error: "The voice message couldn't be understood. Please try again or type your question." }, { status: upstream.status === 429 ? 429 : 502 });
         }
         // Pass the upstream status, content type and body through unchanged.
         return new Response(upstream.body, {
           status: upstream.status,
           headers: {
             "Content-Type": upstream.headers.get("Content-Type") ?? "application/json",
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-store",
           },
         });
       },
