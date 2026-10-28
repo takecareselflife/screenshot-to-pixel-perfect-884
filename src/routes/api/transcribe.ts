@@ -26,7 +26,25 @@ export const Route = createFileRoute("/api/transcribe")({
 
         let file: File | null = null;
         try {
-          const form = await request.formData();
+          // Enforce actual bytes as well as Content-Length, including chunked uploads.
+          const reader = request.body?.getReader();
+          if (!reader) return Response.json({ error: "No audio was recorded." }, { status: 400 });
+          const chunks: Uint8Array[] = [];
+          let bytes = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            bytes += value.byteLength;
+            if (bytes > MAX_BODY_BYTES) {
+              await reader.cancel();
+              return Response.json({ error: "That message was too long. Please keep it under 30 seconds." }, { status: 413 });
+            }
+            chunks.push(value);
+          }
+          const body = new Uint8Array(bytes);
+          let offset = 0;
+          for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+          const form = await new Response(body, { headers: { "Content-Type": request.headers.get("Content-Type") ?? "" } }).formData();
           const entry = form.get("file");
           if (entry instanceof File) file = entry;
         } catch {

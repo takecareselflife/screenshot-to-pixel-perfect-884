@@ -42,7 +42,7 @@ export async function transcribe(
   form.append("response_format", "json");
   if (!options.buffered) form.append("stream", "true");
   if (options.language) form.append("language", options.language);
-  return fetch(`${config.baseURL}/v1/audio/transcriptions`, {
+  return fetch(`${config.baseURL}/audio/transcriptions`, {
     method: "POST",
     headers: { Authorization: `Bearer ${config.apiKey}` },
     body: form,

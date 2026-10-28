@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { MapPin, Phone, Clock, Info } from "lucide-react";
-import { services, type ServiceType } from "@/lib/data";
+import { MapPin, Phone, Clock, Info, ExternalLink } from "lucide-react";
+import { services, nationalServiceSearch, type ServiceType } from "@/lib/data";
 import { PageTitle, SimBadge } from "@/components/Layout";
 import { needs, recommend, type NeedId } from "@/lib/referral";
 import { track } from "@/lib/impact";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/servicos")({
   head: () => ({
@@ -40,7 +41,10 @@ function Servicos() {
   return (
     <div>
       <PageTitle title="Find a service" />
-      <p className="mb-4 text-sm"><SimBadge>Fictional data</SimBadge> These places don't exist. Later the directory will be connected to official registries.</p>
+      <p className="mb-3 text-sm text-muted-foreground">UBS — Basic Health Units in Brazil. Initial listings: São Paulo. Confirm opening hours and available care with the unit before visiting.</p>
+      <Button asChild variant="outline" className="mb-4 h-auto whitespace-normal text-left">
+        <a href={nationalServiceSearch} target="_blank" rel="noopener noreferrer">Find a UBS anywhere in Brazil (CNES)<ExternalLink aria-hidden /></a>
+      </Button>
       <section className="mb-4" aria-labelledby="need-h">
         <h2 id="need-h" className="mb-2 font-semibold">What do you need?</h2>
         <div className="flex flex-wrap gap-2">
@@ -64,6 +68,7 @@ function Servicos() {
       <ul className="space-y-3">
         {list.map((s) => (
           <li key={s.id} className="card-base p-4">
+            <div className="mb-1"><SimBadge>{s.source ? "Brazil · Official listing" : "Fictional example"}</SimBadge></div>
             <span className="text-xs font-bold text-primary">{s.type}</span>
             <h2 className="text-lg font-semibold">{s.name}</h2>
             <p className="text-sm text-muted-foreground">{s.city} · {s.region}</p>
@@ -77,14 +82,20 @@ function Servicos() {
             ) : (
               <p className="mt-2 text-sm italic text-muted-foreground">Information not verified yet.</p>
             )}
-            {found.includes(s.id) ? (
+            {s.source ? (
+              <Button asChild variant="link" className="mt-2 h-auto whitespace-normal p-0">
+                <a href={s.source} target="_blank" rel="noopener noreferrer">Official source (Portuguese)<ExternalLink aria-hidden /></a>
+              </Button>
+            ) : <p className="mt-2 text-xs text-muted-foreground">Demo only — not a real service.</p>}
+            {s.source && (found.includes(s.id) ? (
               <p className="mt-2 text-sm font-bold text-primary">Thanks! Counted anonymously.</p>
             ) : (
-              <button onClick={() => { setFound((f) => [...f, s.id]); track("service_found", need || s.type); }} className="mt-2 rounded-full bg-secondary px-3 py-1 text-sm font-bold text-secondary-foreground">This is the service I need</button>
-            )}
+              <div><Button variant="secondary" onClick={() => { setFound((f) => [...f, s.id]); track("service_found", need || s.type); }} className="mt-2 h-auto whitespace-normal">This is the service I need</Button></div>
+            ))}
           </li>
         ))}
       </ul>
+      {list.length === 0 && <p className="py-4 text-sm text-muted-foreground">No listed services match these filters. Use the official CNES search for other Brazilian cities.</p>}
     </div>
   );
 }

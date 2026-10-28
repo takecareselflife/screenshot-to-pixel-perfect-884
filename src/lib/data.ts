@@ -1,5 +1,6 @@
 /**
- * Demo data (synthetic). Educational contents are general summaries and must be
+ * Educational content, sourced service listings and clearly labeled synthetic demos.
+ * Educational contents are general summaries and must be
  * reviewed by professionals before real use.
  * Structure is ready to be swapped for an API / official directories.
  */
@@ -165,10 +166,17 @@ export type Service = {
   hours?: string;
   access?: string;
   verified: boolean;
+  source?: string;
 };
 
-// All FICTIONAL. Missing fields = not registered/verified.
+// Real UBS names/addresses from the municipal registry; other entries are labeled demos.
+export const nationalServiceSearch = "https://cnes.datasus.gov.br/pages/estabelecimentos/consulta.jsp";
+const ubsSource = "https://capital.sp.gov.br/documents/d/saude/unidades_referencia_pos_exposicao_abril_2025-pdf";
 export const services: Service[] = [
+  { id: "ubs-vila-carrao", name: "UBS Vila Carrão", type: "Health center", city: "São Paulo", region: "São Paulo (SP)", address: "Rua Dr. Jaci Barbosa, 208", verified: true, source: ubsSource },
+  { id: "ubs-vila-california", name: "UBS Vila Califórnia", type: "Health center", city: "São Paulo", region: "São Paulo (SP)", address: "Praia Conde de São Januário, 91", verified: true, source: ubsSource },
+  { id: "ubs-alto-pinheiros", name: "UBS Alto de Pinheiros", type: "Health center", city: "São Paulo", region: "São Paulo (SP)", address: "Avenida Queiroz Filho, 313", verified: true, source: ubsSource },
+  { id: "ubs-rio-pequeno", name: "UBS Rio Pequeno – Doutor Paulo Barros França", type: "Health center", city: "São Paulo", region: "São Paulo (SP)", address: "Rua Padre Francisco Libermann, 318", verified: true, source: ubsSource },
   { id: "s1", name: "Jardim Esperança Health Center (fictional)", type: "Health center", city: "Vila Aurora", region: "North", address: "100 Example Street", phone: "(00) 0000-0001", hours: "Mon–Fri, 7am–7pm", access: "Walk-in, no appointment needed", verified: true },
   { id: "s2", name: "Downtown Health Center (fictional)", type: "Health center", city: "Vila Aurora", region: "Downtown", address: "45 Demo Avenue", hours: "Mon–Fri, 7am–5pm", verified: true },
   { id: "s3", name: "Girassol Adolescent Psychological Care Center (fictional)", type: "Mental health", city: "Vila Aurora", region: "South", address: "12 Model Street", phone: "(00) 0000-0003", hours: "Mon–Fri, 8am–6pm", access: "Open door for adolescents", verified: true },
