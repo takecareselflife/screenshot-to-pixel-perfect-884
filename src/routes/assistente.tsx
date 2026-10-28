@@ -6,6 +6,7 @@ import { track } from "@/lib/impact";
 import { ListenButton } from "@/components/ListenButton";
 import { PageTitle, SimBadge } from "@/components/Layout";
 import { SpeakButton } from "@/components/SpeakButton";
+import { assistantQuestionSchema } from "@/lib/assistant-request";
 
 export const Route = createFileRoute("/assistente")({
   head: () => ({
@@ -41,17 +42,19 @@ function Assistente() {
 
   const [busy, setBusy] = useState(false);
   const send = async (text: string) => {
-    if (!text.trim() || busy) return;
+    const parsed = assistantQuestionSchema.safeParse({ question: text });
+    if (!parsed.success || busy) return;
+    text = parsed.data.question;
     const r = answer(text);
     track("assistant_question", r.links[0]?.to ?? "other");
-    const history = [...msgs.slice(1), { from: "user" as const, text }].map((m) => ({ role: m.from === "user" ? "user" : "assistant", content: m.text }));
     setInput("");
     // Risk messages answer instantly with hotlines; the AI still follows below.
     setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.risk ? r.text : "Thinking…", reply: { ...r, sources: r.risk ? r.sources : [] } }]);
     setBusy(true);
-    const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1]!, text: t, ...(reply ? { reply } : {}) }; return c; });
+    const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; const last = c[c.length - 1]; if (!last) return m; c[c.length - 1] = { ...last, text: t, ...(reply ? { reply } : {}) }; return c; });
     try {
-      const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: text }) });
+      if (res.status === 400) { setLast("This question could not be validated. Please send a complete question of up to 2,000 characters without conversation history."); return; }
       if (res.status === 503 && (await res.clone().json().catch(() => ({}))).error === "setup") { setLast("The AI assistant is not set up yet. Here is our reviewed answer instead:\n\n" + r.text, r); return; }
       if (res.status === 429) { setLast("Too many questions in a row. Please wait a minute and try again.", r); return; }
       if (!res.ok || !res.body) throw new Error("unavailable");
@@ -75,7 +78,7 @@ function Assistente() {
   return (
     <div>
       <PageTitle title="Health Assistant" />
-      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Educational information only — not a substitute for professional medical care. No diagnoses or prescriptions. Ask in English or Portuguese, by typing or with the microphone. Conversations and voice recordings are not saved; avoid names, phones or addresses.</p>
+      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Educational information only — not a substitute for professional medical care. No diagnoses or prescriptions. Each question is answered independently; earlier messages are not sent to the AI. Care+ does not store conversations or voice recordings; provider retention is not yet verified. Avoid names, phones or addresses.</p>
       <div className="space-y-3" aria-live="polite">
         {msgs.map((m, i) => (
           <div key={i} className={`max-w-[85%] rounded-2xl p-3 ${m.from === "user" ? "ml-auto bg-primary text-primary-foreground" : m.reply?.risk ? "bg-accent" : "card-base"}`}>
@@ -96,7 +99,7 @@ function Assistente() {
       </div>
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-4 flex flex-wrap gap-2">
         <label htmlFor="msg" className="sr-only">Your message</label>
-        <input ref={inputRef} id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write or speak your question…" className="min-w-[55%] flex-1 rounded-full border bg-card px-4 py-3" />
+        <input ref={inputRef} id="msg" value={input} maxLength={2000} onChange={(e) => setInput(e.target.value)} placeholder="Write or speak your question…" className="min-w-[55%] flex-1 rounded-full border bg-card px-4 py-3" />
         <SpeakButton onTranscript={addSpokenText} />
         <button aria-label="Send" disabled={busy} className="rounded-full disabled:opacity-50 bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
       </form>
