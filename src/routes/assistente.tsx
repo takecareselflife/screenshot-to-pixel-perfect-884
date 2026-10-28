@@ -27,7 +27,7 @@ const suggestions = ["How do I use a condom?", "What is consent?", "I'm feeling 
 
 function Assistente() {
   const [msgs, setMsgs] = useState<Msg[]>([
-    { from: "bot", text: "Hi! I'm the Health Assistant. I can explain health topics and point you to where to get help. I don't make diagnoses and I don't replace professionals. Please avoid sharing personal data." },
+    { from: "bot", text: "Hi! Olá! I'm the Health Assistant. I can explain health topics and point you to where to get help. I don't make diagnoses and I don't replace professionals. Please avoid sharing personal data." },
   ]);
   const [input, setInput] = useState("");
   const [openGuide, setOpenGuide] = useState<Guide | null>(null);
@@ -42,11 +42,13 @@ function Assistente() {
     const history = [...msgs.slice(1), { from: "user" as const, text }].map((m) => ({ role: m.from === "user" ? "user" : "assistant", content: m.text }));
     setInput("");
     // Risk messages answer instantly with hotlines; the AI still follows below.
-    setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.risk ? r.text : "…", reply: { ...r, sources: r.risk ? r.sources : [] } }]);
+    setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.risk ? r.text : "Thinking…", reply: { ...r, sources: r.risk ? r.sources : [] } }]);
     setBusy(true);
     const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1], text: t, ...(reply ? { reply } : {}) }; return c; });
     try {
       const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      if (res.status === 503) { setLast("The AI assistant is not set up yet. Here is our reviewed answer instead:\n\n" + r.text, r); return; }
+      if (res.status === 429) { setLast("Too many questions in a row. Please wait a minute and try again.", r); return; }
       if (!res.ok || !res.body) throw new Error("unavailable");
       const reader = res.body.getReader();
       const dec = new TextDecoder();
@@ -59,7 +61,7 @@ function Assistente() {
       }
       if (!out.trim()) throw new Error("empty");
     } catch {
-      setLast(r.text, r); // offline fallback: reviewed local answer
+      setLast("The AI assistant could not answer right now. Here is our reviewed answer instead:\n\n" + r.text, r);
     } finally {
       setBusy(false);
     }
@@ -68,7 +70,7 @@ function Assistente() {
   return (
     <div>
       <PageTitle title="Health Assistant" />
-      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Answers use only our reviewed health content. No diagnoses. Not saved.</p>
+      <p className="mb-4 text-sm text-muted-foreground"><SimBadge>AI</SimBadge> Educational information only — not a substitute for professional medical care. No diagnoses or prescriptions. Ask in English or Portuguese. Conversations are not saved; avoid names, phones or addresses.</p>
       <div className="space-y-3" aria-live="polite">
         {msgs.map((m, i) => (
           <div key={i} className={`max-w-[85%] rounded-2xl p-3 ${m.from === "user" ? "ml-auto bg-primary text-primary-foreground" : m.reply?.risk ? "bg-accent" : "card-base"}`}>
@@ -95,7 +97,7 @@ function Assistente() {
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-4 flex gap-2">
         <label htmlFor="msg" className="sr-only">Your message</label>
         <input id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write your question…" className="flex-1 rounded-full border bg-card px-4 py-3" />
-        <button aria-label="Send" className="rounded-full bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
+        <button aria-label="Send" disabled={busy} className="disabled:opacity-50 ="rounded-full bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
       </form>
 
       <section className="mt-8">

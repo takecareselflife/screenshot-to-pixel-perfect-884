@@ -12,6 +12,9 @@ function instructions() {
     .join("\n\n");
   return `You are the Care+ Health Assistant for adolescents (sexual and reproductive health, well-being, safety).
 RULES:
+- Reply in the same language the user writes in (Brazilian Portuguese if they write in Portuguese).
+- Cover puberty/menstruation, contraception, STIs, consent, relationships, emotional wellbeing and access to care. Say clearly when you are unsure. Never invent sources; the content is a draft not yet clinically validated.
+- Never promise confidentiality.
 - Answer ONLY from the reviewed knowledge base below. If it doesn't cover the question, say so and suggest a health professional.
 - Never diagnose, never prescribe or give medication doses, never say whether someone "has" a condition. For symptoms, say which warning signs need care and refer to a service.
 - Short, warm, plain English: 2–5 short sentences or bullets. No judgement.
@@ -24,12 +27,27 @@ KNOWLEDGE BASE:
 ${kb}`;
 }
 
+const hits = new Map<string, number[]>();
+function limited(ip: string) {
+  const now = Date.now();
+  const list = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);
+  list.push(now);
+  hits.set(ip, list);
+  return list.length > 10;
+}
+// Remove emails and phone numbers before anything reaches the AI provider.
+export function redact(t: string) {
+  return t.replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, "[email]").replace(/\+?\d[\d\s().-]{7,}\d/g, "[phone]");
+}
+
 export const Route = createFileRoute("/api/assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
         const apiKey = process.env["LOVABLE_API_KEY"];
-        if (!apiKey) return Response.json({ error: "Assistant is not configured." }, { status: 500 });
+        if (!apiKey) return Response.json({ error: "setup" }, { status: 503 });
+        const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? "anon";
+        if (limited(ip)) return Response.json({ error: "rate" }, { status: 429 });
         let messages: { role: "user" | "assistant"; content: string }[] = [];
         try {
           const body = (await request.json()) as { messages?: unknown };
@@ -38,7 +56,7 @@ export const Route = createFileRoute("/api/assistant")({
               .filter((m): m is { role: "user" | "assistant"; content: string } =>
                 !!m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
               .slice(-12)
-              .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
+              .map((m) => ({ role: m.role, content: redact(m.content.slice(0, 2000)) }));
           }
         } catch {
           return Response.json({ error: "Invalid request." }, { status: 400 });
