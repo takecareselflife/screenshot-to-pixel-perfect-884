@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_rate_limits: {
+        Row: {
+          bucket: string
+          hits: number
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          hits?: number
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          hits?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       impact_events: {
         Row: {
           day: string
@@ -35,11 +53,40 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      hit_rate_limit: {
+        Args: { _bucket: string; _window_seconds: number }
+        Returns: number
+      }
       impact_summary: {
         Args: never
         Returns: {
@@ -50,7 +97,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "professional" | "manager"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -177,6 +224,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["professional", "manager"],
+    },
   },
 } as const
