@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { changeProfessionalAccess, getAdministrativeAudit, getAdministrativeRecords } from "@/lib/professional.functions";
 import { Button } from "@/components/ui/button";
+import { AiMonitoringPanel } from "@/components/AiMonitoringPanel";
 import type { ProfessionalRecord } from "@/lib/professional-schemas";
 
 function AccessRow({ record, onSaved }: { record: ProfessionalRecord; onSaved: () => Promise<void> }) {
@@ -38,6 +39,7 @@ export function ProfessionalAdministration() {
   const audit = useQuery({ queryKey: ["admin-audit"], queryFn: () => auditFn() });
   const refresh = async () => { await client.invalidateQueries({ queryKey: ["admin-professionals"] }); await client.invalidateQueries({ queryKey: ["admin-audit"] }); };
   return <section className="space-y-6">
+    <AiMonitoringPanel />
     <h2 className="text-xl font-semibold">Professional approvals</h2>
     {records.isPending ? <p>Checking permissions…</p> : records.data?.ok ? <ul className="space-y-3">{records.data.records.map((record) => <AccessRow key={`${record.id}-${record.status}-${record.roles.join()}`} record={record} onSaved={refresh} />)}{!records.data.records.length && <li>No pending professional profiles.</li>}</ul> : <p role="alert">Administrator access denied or unavailable.</p>}
     <h2 className="text-xl font-semibold">Security audit — latest 100 events</h2>
