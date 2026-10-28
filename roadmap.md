@@ -1,8 +1,9 @@
 # Roadmap
 
 - [x] Audit professional access, authentication, permissions and privacy against the uploaded security brief
-- [ ] Harden professional access, approval/revocation, logout/recovery and administrative auditing without collecting adolescent health data
-- [ ] Verify professional access with synthetic accounts and produce an evidence-based security report
+- [x] Harden professional access, approval/revocation, logout/recovery and administrative auditing without collecting adolescent health data
+- [x] Verify professional access with synthetic accounts and produce an evidence-based security report
+- [ ] Designate first real administrator after the owner supplies a confirmed account and explicit authorization; no real accounts exist yet
 - [x] Add real Brazilian UBS (basic health units) to the Services screen, keeping the app in English — four sourced São Paulo units plus official nationwide CNES search
 - [x] Complete and verify voice input in the Health Assistant: microphone recording transcribes into the question box for review; verified with spoken Portuguese audio
 - [x] Body game: show dashed outlines on still-missing body parts so players can complete the progress bar
