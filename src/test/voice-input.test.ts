@@ -5,7 +5,12 @@ describe("voice recording", () => {
   it("caps voice messages at 30 seconds", () => { expect(MAX_RECORD_SECONDS).toBe(30); });
   it("encodes a complete WAV with the real rate and all samples", async () => {
     const blob = encodeWav([new Float32Array([-1, 0, 1])], 48000);
-    const bytes = await new Response(blob).arrayBuffer();
+    const bytes = await new Promise<ArrayBuffer>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => reader.result instanceof ArrayBuffer ? resolve(reader.result) : reject(new Error("Expected bytes"));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsArrayBuffer(blob);
+    });
     const view = new DataView(bytes);
     expect(new TextDecoder().decode(bytes.slice(0, 4))).toBe("RIFF");
     expect(view.getUint32(24, true)).toBe(48000);
