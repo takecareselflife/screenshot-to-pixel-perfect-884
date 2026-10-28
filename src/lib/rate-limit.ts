@@ -19,8 +19,6 @@ export async function checkLimit(
   request: Request,
   options: { scope: string; client?: number; global?: number; daily?: number } = { scope: "assistant" },
 ): Promise<"ok" | "rate" | "error"> {
-  // Emergency stop: setting PAID_AI_DISABLED=1 on the server pauses every paid AI call (fail closed).
-  if (process.env["PAID_AI_DISABLED"] === "1") return "error";
   const salt = process.env["RATE_LIMIT_SALT"];
   if (!salt) return "error";
   const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
