@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
+import { failureOutcome, recordOutcome, reservePaidCall, settleWithStream } from "@/lib/ai-usage";
 import { transcribe, transcribeConfig, TRANSCRIBE_MAX_BYTES } from "@/lib/transcribe";
 
 /** Multipart framing adds overhead on top of the audio itself. */
@@ -24,6 +25,7 @@ export async function handleTranscribeRequest(request: Request): Promise<Respons
         }
 
         const limit = await checkLimit(request, { scope: "voice", client: 8, global: 200, daily: 120 });
+        if (limit !== "ok") await recordOutcome("voice", limit === "rate" ? "rejected_rate" : "rejected_error");
         if (limit === "rate") {
           return Response.json({ error: "Too many voice messages in a row. Please wait a minute and try again." }, { status: 429, headers: { "Retry-After": "60" } });
         }
@@ -60,10 +62,15 @@ export async function handleTranscribeRequest(request: Request): Promise<Respons
           return Response.json({ error: "That message was too long. Please keep it under 30 seconds." }, { status: 413 });
         }
 
+        const reservation = await reservePaidCall("voice");
+        if (!reservation.ok) return Response.json({ error: "Voice input isn't available right now. You can still type your question." }, { status: 503 });
+        const { ticket } = reservation;
+
         let upstream: Response;
         try {
           upstream = await transcribe(transcribeConfig(apiKey), file, { signal: upstreamSignal(request) });
         } catch (cause) {
+          await ticket.settle(failureOutcome(cause));
           if (cause instanceof DOMException && cause.name === "TimeoutError") return Response.json({ error: "Voice service took too long. Please try again or type your question." }, { status: 504 });
           if (cause instanceof DOMException && cause.name === "AbortError") return new Response(null, { status: 499 });
           return Response.json({ error: "The voice message couldn't be processed." }, { status: 400 });
@@ -71,10 +78,11 @@ export async function handleTranscribeRequest(request: Request): Promise<Respons
         if (!upstream.ok || !upstream.body) {
           // Never forward provider error bodies (may contain internal details).
           await upstream.body?.cancel().catch(() => {});
+          await ticket.settle("failed_provider");
           return Response.json({ error: "The voice message couldn't be understood. Please try again or type your question." }, { status: upstream.status === 429 ? 429 : 502 });
         }
         // Pass the upstream status, content type and body through unchanged.
-        return new Response(upstream.body, {
+        return new Response(settleWithStream(upstream.body, ticket), {
           status: upstream.status,
           headers: {
             "Content-Type": upstream.headers.get("Content-Type") ?? "application/json",

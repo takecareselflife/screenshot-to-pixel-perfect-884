@@ -4,6 +4,7 @@ import { streamText } from "ai";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
 import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
+import { failureOutcome, recordOutcome, reservePaidCall, settleWithStream, type SettleOutcome } from "@/lib/ai-usage";
 import { assistantCrisisResponse, assistantSafetyNotice, readAssistantQuestion } from "@/lib/assistant-request";
 
 const MODEL = "openai/gpt-6-astra";
@@ -38,16 +39,22 @@ const privateHeaders = { "Cache-Control": "no-store", "X-Content-Type-Options": 
 const invalidRequest = () => Response.json({ error: "Invalid question. Send only the current question, without history or identifiers." }, { status: 400, headers: privateHeaders });
 
 export async function handleAssistantRequest(request: Request): Promise<Response> {
-        if (request.headers.get("content-type")?.split(";")[0]?.trim() !== "application/json") return invalidRequest();
+        if (request.headers.get("content-type")?.split(";")[0]?.trim() !== "application/json") { await recordOutcome("assistant", "rejected_invalid"); return invalidRequest(); }
         const question = await readAssistantQuestion(request);
-        if (!question) return invalidRequest();
+        if (!question) { await recordOutcome("assistant", "rejected_invalid"); return invalidRequest(); }
+        // Crisis guidance is server-owned text with no paid call, so it is served even when AI is paused.
+        const crisis = assistantCrisisResponse(question);
+        if (crisis) { await recordOutcome("assistant", "local"); return new Response(crisis, { headers: { ...privateHeaders, "Content-Type": "text/plain; charset=utf-8" } }); }
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return Response.json({ error: "setup" }, { status: 503, headers: privateHeaders });
         const limit = await checkLimit(request, { scope: "assistant", daily: 200 });
+        if (limit !== "ok") await recordOutcome("assistant", limit === "rate" ? "rejected_rate" : "rejected_error");
         if (limit === "rate") return Response.json({ error: "rate" }, { status: 429, headers: { ...privateHeaders, "Retry-After": "60" } });
         if (limit === "error") return Response.json({ error: "unavailable" }, { status: 503, headers: privateHeaders });
-        const crisis = assistantCrisisResponse(question);
-        if (crisis) return new Response(crisis, { headers: { ...privateHeaders, "Content-Type": "text/plain; charset=utf-8" } });
+        const reservation = await reservePaidCall("assistant");
+        if (!reservation.ok) return Response.json({ error: "unavailable" }, { status: 503, headers: privateHeaders });
+        const { ticket } = reservation;
+        let failure: SettleOutcome | undefined;
 
         const provider = createOpenAI({
           baseURL: "https://ai.gateway.lovable.dev/v1",
@@ -61,28 +68,16 @@ export async function handleAssistantRequest(request: Request): Promise<Response
           abortSignal: upstreamSignal(request),
           maxRetries: 0,
           // SDK errors may contain request text: never log them or return raw errors.
-          onError: () => {},
+          onError: ({ error }) => { failure = failureOutcome(error); },
           providerOptions: {
             openai: { forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", store: false, include: ["reasoning.encrypted_content"] },
           },
         });
         const notice = assistantSafetyNotice(question);
         const response = result.toTextStreamResponse({ headers: privateHeaders });
-        if (!notice || !response.body) return response;
-        const body = response.body;
-        const enc = new TextEncoder();
-        const merged = new ReadableStream<Uint8Array>({
-          async start(controller) {
-            controller.enqueue(enc.encode(notice));
-            const reader = body.getReader();
-            try {
-              for (;;) { const { done, value } = await reader.read(); if (done) break; controller.enqueue(value); }
-              controller.close();
-            } catch (e) { controller.error(e); }
-          },
-          cancel(reason) { return body.cancel(reason); },
-        });
-        return new Response(merged, { status: response.status, headers: response.headers });
+        if (!response.body) { await ticket.settle("failed_provider"); return Response.json({ error: "unavailable" }, { status: 503, headers: privateHeaders }); }
+        const body = settleWithStream(response.body, ticket, notice ? new TextEncoder().encode(notice) : undefined, () => failure ?? "completed");
+        return new Response(body, { status: response.status, headers: response.headers });
 }
 
 export const Route = createFileRoute("/api/assistant")({

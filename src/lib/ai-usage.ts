@@ -68,14 +68,14 @@ export const failureOutcome = (e: unknown): SettleOutcome =>
   : "failed_provider";
 
 /** Pass a provider stream through and settle when it finishes, errors or is cancelled. */
-export function settleWithStream(body: ReadableStream<Uint8Array>, ticket: Ticket, prefix?: Uint8Array) {
+export function settleWithStream(body: ReadableStream<Uint8Array>, ticket: Ticket, prefix?: Uint8Array, outcomeOnDone: () => SettleOutcome = () => "completed") {
   const reader = body.getReader();
   return new ReadableStream<Uint8Array>({
     start(controller) { if (prefix) controller.enqueue(prefix); },
     async pull(controller) {
       try {
         const { done, value } = await reader.read();
-        if (done) { controller.close(); await ticket.settle("completed"); return; }
+        if (done) { controller.close(); await ticket.settle(outcomeOnDone()); return; }
         controller.enqueue(value);
       } catch (e) {
         await ticket.settle(failureOutcome(e));
