@@ -1,17 +1,18 @@
 // Explicit opt-in: disposable accounts only; never runs against existing user records.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 const enabled = process.env["RUN_SECURITY_INTEGRATION"] === "1";
 describe.skipIf(!enabled)("live professional RLS with disposable synthetic accounts", () => {
   const url = process.env["SUPABASE_URL"] ?? "";
   const adminKey = process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? "";
   const publicKey = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? "";
-  const admin = createClient(url || "http://localhost", adminKey || "disabled", { auth: { persistSession:false }, global: { fetch: (input,init) => {
+  const admin = createClient<Database>(url || "http://localhost", adminKey || "disabled", { auth: { persistSession:false, storageKey:"care-security-operator" }, global: { fetch: (input,init) => {
     const h=new Headers(init?.headers); if(h.get("Authorization")===`Bearer ${adminKey}`) h.delete("Authorization"); h.set("apikey",adminKey); return fetch(input,{...init,headers:h});
   } } });
   const ids: string[] = [];
-  const accounts: { id:string; client:ReturnType<typeof createClient> }[] = [];
+  const accounts: { id:string; client:SupabaseClient<Database> }[] = [];
   const owner = () => { const a=accounts[0]; if(!a) throw new Error("Missing synthetic owner"); return a; };
   const operator = () => { const a=accounts[1]; if(!a) throw new Error("Missing synthetic administrator"); return a; };
   beforeAll(async () => {
@@ -22,7 +23,7 @@ describe.skipIf(!enabled)("live professional RLS with disposable synthetic accou
       const created=await admin.auth.admin.createUser({email,password,email_confirm:true});
       if(created.error || !created.data.user) throw new Error("Synthetic setup failed");
       ids.push(created.data.user.id);
-      const client=createClient(url,publicKey,{auth:{persistSession:false},global:{fetch:(input,init)=>{
+      const client=createClient<Database>(url,publicKey,{auth:{persistSession:false,storageKey:`care-security-${i}`},global:{fetch:(input,init)=>{
         const h=new Headers(init?.headers); if(h.get("Authorization")===`Bearer ${publicKey}`) h.delete("Authorization"); h.set("apikey",publicKey);return fetch(input,{...init,headers:h});
       }}});
       const login=await client.auth.signInWithPassword({email,password});
@@ -64,7 +65,7 @@ describe.skipIf(!enabled)("live professional RLS with disposable synthetic accou
     expect((await owner().client.rpc("authorize_professional",{_area:"intake"})).data).toMatchObject({ok:true});
     expect((await owner().client.rpc("authorize_professional",{_area:"indicators"})).data).toMatchObject({error:"forbidden"});
     const audit=await operator().client.from("security_audit").select("actor_id,occurred_at,details").eq("subject_id",owner().id).eq("action","professional_access_changed");
-    expect(audit.data?.some((r)=>r.actor_id===operator().id && r.occurred_at && r.details.status==="approved")).toBe(true);
+    expect(audit.data?.some((r)=>r.actor_id===operator().id && r.occurred_at && typeof r.details === "object" && r.details !== null && !Array.isArray(r.details) && r.details.status==="approved")).toBe(true);
   });
   it("suspension immediately blocks the still-open authenticated session",async()=>{
     await operator().client.rpc("manage_professional",{_target:owner().id,_status:"suspended",_roles:[]});
