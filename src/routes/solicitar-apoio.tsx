@@ -33,7 +33,7 @@ function Solicitar() {
       <div className="space-y-4">
         <h1 className="text-3xl font-semibold">Request recorded</h1>
         <p>Code: <strong>{id}</strong></p>
-        <p className="rounded-xl bg-lilac p-3 text-sm text-lilac-foreground">This is a <strong>simulation</strong>: the request stayed only in the professionals' panel demo and no real information was sent.</p>
+        <p className="rounded-xl bg-lilac p-3 text-sm text-lilac-foreground">This is a <strong>simulation</strong>: it stays only in this browser's temporary memory. No professional receives it.</p>
         <Link to="/" className="inline-block rounded-full bg-primary px-4 py-2 font-bold text-primary-foreground">Back to start</Link>
       </div>
     );
@@ -48,7 +48,7 @@ function Solicitar() {
           <h2 className="text-xl font-semibold">Before you start</h2>
           <ul className="list-disc space-y-1 pl-5 text-sm">
             <li>We ask for the minimum: topic, way to be contacted and city.</li>
-            <li>Only authorized professionals at the service see your request.</li>
+            <li>This is a simulation. No service or professional receives this request.</li>
             <li>Nothing is shared automatically with family or school.</li>
             <li>Confidentiality has limits: if there is serious risk to your life or safety, the law may require professionals to activate protection services.</li>
             <li>You can ask for your data to be deleted.</li>

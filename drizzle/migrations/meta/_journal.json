@@ -29,6 +29,13 @@
       "when": 1793149055231,
       "tag": "0003_fix_permission_audit_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793149168348,
+      "tag": "0004_tighten_private_profile_grants",
+      "breakpoints": true
     }
   ]
 }
