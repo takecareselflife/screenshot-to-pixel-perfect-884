@@ -57,3 +57,6 @@
 - [x] Add route /consentimento and link it from the consent article and the library list
 - [x] Verify build
 - [x] Verify end-to-end in the browser (all levels, drag-and-drop, retry path, final screen)
+- [x] AI assistant grounded in library content (Portuguese/English, no diagnoses, safety escalation, rate limit, PII redaction, setup/error messages)
+- [x] Smart referral: "What do you need?" on Services
+- [x] Anonymous impact indicators in the managers' panel
