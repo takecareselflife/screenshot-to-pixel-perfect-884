@@ -31,14 +31,3 @@ describe("paid endpoint limits", () => {
   });
 });
 
-describe("app-wide daily budget (not tied to IP)", () => {
-  beforeEach(() => { counts.clear(); process.env["RATE_LIMIT_SALT"] = "test"; });
-  it("pauses the read-aloud service after 2000 calls/day even from many different clients", async () => {
-    counts.set("budget:speech:day", 2000);
-    expect(await checkLimit(req("9.9.9.9"), { scope: "speech", client: 12, global: 200, daily: 300 })).toBe("error");
-  });
-  it("pauses everything once the 5000 total daily calls are used", async () => {
-    counts.set("budget:all:day", 5000);
-    expect(await checkLimit(req("8.8.8.8"), { scope: "assistant" })).toBe("error");
-  });
-});

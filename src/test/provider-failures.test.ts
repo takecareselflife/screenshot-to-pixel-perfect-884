@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/integrations/supabase/client.server", () => ({
-  supabaseAdmin: { rpc: async () => ({ data: 1, error: null }) },
+  supabaseAdmin: { rpc: async (n: string) => ({ data: n === "ai_reserve" ? { id: "r1" } : n === "ai_settle" ? true : 1, error: null }) },
 }));
 // jsdom's File loses the MIME type, so delegate the provider call straight to the mocked fetch.
 vi.mock("@/lib/transcribe", async (orig) => ({
