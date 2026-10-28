@@ -3,6 +3,8 @@ import { ArrowLeft, AlertTriangle, CheckCircle2, MapPin, BookMarked, Gamepad2 } 
 import { articles } from "@/lib/data";
 import { ListenButton } from "@/components/ListenButton";
 import { guides } from "@/lib/guides";
+import { track } from "@/lib/impact";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/biblioteca/$slug")({
   loader: ({ params }) => {
@@ -37,6 +39,7 @@ function Block({ title, icon, items, tone }: { title: string; icon: React.ReactN
 
 function ArticlePage() {
   const { article: a } = Route.useLoaderData();
+  useEffect(() => track("article_view", a.slug), [a.slug]);
   return (
     <article className="space-y-4">
       <Link to="/biblioteca" className="inline-flex items-center gap-1 text-sm text-primary"><ArrowLeft className="h-4 w-4" />Library</Link>
