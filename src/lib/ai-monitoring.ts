@@ -1,5 +1,5 @@
 /** Pure monitoring rules for the administrator panel, so thresholds can be reviewed and unit-tested. */
-import { DAILY_BUDGET, TOTAL_DAILY_BUDGET, type PaidScope } from "./ai-usage";
+import { DAILY_BUDGET, TOTAL_DAILY_BUDGET, type PaidScope } from "./ai-budget";
 
 export type MonitoringData = {
   outcomes: { scope: PaidScope; outcome: string; count: number }[];

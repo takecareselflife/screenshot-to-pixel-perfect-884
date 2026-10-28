@@ -4,15 +4,10 @@
  * ESTIMATES (not provider invoices). Records hold only service, outcome, estimated cost and latency:
  * no IP, user, question, audio or transcript.
  */
-export type PaidScope = "assistant" | "voice" | "speech";
+import { DAILY_BUDGET, EST_COST, TOTAL_DAILY_BUDGET, type PaidScope } from "./ai-budget";
+export { DAILY_BUDGET, EST_COST, TOTAL_DAILY_BUDGET, type PaidScope };
 export type RejectOutcome = "rejected_invalid" | "rejected_rate" | "rejected_error" | "local";
 export type SettleOutcome = "completed" | "failed_before_provider" | "failed_provider" | "timeout" | "cancelled";
-
-/** Conservative estimated credits per call, set above typical observed usage. Review against provider usage. */
-export const EST_COST: Record<PaidScope, number> = { assistant: 0.05, voice: 0.03, speech: 0.03 };
-/** Daily estimated-credit ceilings per service and for the whole app; reset at 00:00 UTC. */
-export const DAILY_BUDGET: Record<PaidScope, number> = { assistant: 150, voice: 30, speech: 60 };
-export const TOTAL_DAILY_BUDGET = 200;
 
 async function admin() {
   return (await import("@/integrations/supabase/client.server")).supabaseAdmin;
