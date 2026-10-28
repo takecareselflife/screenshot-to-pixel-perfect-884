@@ -50,11 +50,9 @@ describe.skipIf(!enabled)("live professional RLS with disposable synthetic accou
     expect(mine.data?.display_name).toBe("");
   });
   it("owners cannot grant roles, approval or administrator status",async()=>{
-    for(const [table,payload] of [
-      ["user_roles",{user_id:owner().id,role:"manager"}],
-      ["professional_access",{user_id:owner().id,status:"approved"}],
-      ["admin_authorizations",{user_id:owner().id,active:true}],
-    ] as const) expect((await owner().client.from(table).insert(payload)).error).not.toBeNull();
+    expect((await owner().client.from("user_roles").insert({user_id:owner().id,role:"manager"})).error).not.toBeNull();
+    expect((await owner().client.from("professional_access").insert({user_id:owner().id,status:"approved"})).error).not.toBeNull();
+    expect((await owner().client.from("admin_authorizations").insert({user_id:owner().id,active:true})).error).not.toBeNull();
     expect((await owner().client.rpc("manage_professional",{_target:operator().id,_status:"approved",_roles:["manager"]})).data).toMatchObject({error:"forbidden"});
   });
   it("explicit admin approval is audited and allows only assigned resources",async()=>{
@@ -65,7 +63,7 @@ describe.skipIf(!enabled)("live professional RLS with disposable synthetic accou
     expect((await owner().client.rpc("authorize_professional",{_area:"intake"})).data).toMatchObject({ok:true});
     expect((await owner().client.rpc("authorize_professional",{_area:"indicators"})).data).toMatchObject({error:"forbidden"});
     const audit=await operator().client.from("security_audit").select("actor_id,occurred_at,details").eq("subject_id",owner().id).eq("action","professional_access_changed");
-    expect(audit.data?.some((r)=>r.actor_id===operator().id && r.occurred_at && typeof r.details === "object" && r.details !== null && !Array.isArray(r.details) && r.details.status==="approved")).toBe(true);
+    expect(audit.data?.some((r)=>r.actor_id===operator().id && r.occurred_at && typeof r.details === "object" && r.details !== null && !Array.isArray(r.details) && r.details["status"]==="approved")).toBe(true);
   });
   it("suspension immediately blocks the still-open authenticated session",async()=>{
     await operator().client.rpc("manage_professional",{_target:owner().id,_status:"suspended",_roles:[]});
