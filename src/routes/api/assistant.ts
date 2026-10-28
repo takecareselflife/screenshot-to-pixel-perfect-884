@@ -3,7 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { articles } from "@/lib/data";
 import { needs } from "@/lib/referral";
-import { checkLimit } from "@/lib/rate-limit";
+import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
 import { assistantCrisisResponse, readAssistantQuestion } from "@/lib/assistant-request";
 
 const MODEL = "openai/gpt-6-astra";
@@ -56,7 +56,7 @@ export async function handleAssistantRequest(request: Request): Promise<Response
           model: provider.responses(MODEL),
           instructions: instructions(),
           messages: [{ role: "user", content: question }],
-          abortSignal: request.signal,
+          abortSignal: upstreamSignal(request),
           maxRetries: 0,
           // SDK errors may contain request text: never log them or return raw errors.
           onError: () => {},

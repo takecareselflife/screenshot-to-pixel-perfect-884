@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { checkLimit } from "@/lib/rate-limit";
+import { checkLimit, upstreamSignal } from "@/lib/rate-limit";
 import { transcribe, transcribeConfig, TRANSCRIBE_MAX_BYTES } from "@/lib/transcribe";
 
 /** Multipart framing adds overhead on top of the audio itself. */
@@ -8,7 +8,12 @@ const MAX_BODY_BYTES = TRANSCRIBE_MAX_BYTES + 256 * 1024;
 export const Route = createFileRoute("/api/transcribe")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
+      POST: ({ request }) => handleTranscribeRequest(request),
+    },
+  },
+});
+
+export async function handleTranscribeRequest(request: Request): Promise<Response> {{
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return Response.json({ error: "Voice input isn't set up yet. You can still type your question." }, { status: 503 });
 
@@ -57,8 +62,9 @@ export const Route = createFileRoute("/api/transcribe")({
 
         let upstream: Response;
         try {
-          upstream = await transcribe(transcribeConfig(apiKey), file, { signal: request.signal });
+          upstream = await transcribe(transcribeConfig(apiKey), file, { signal: upstreamSignal(request) });
         } catch (cause) {
+          if (cause instanceof DOMException && cause.name === "TimeoutError") return Response.json({ error: "Voice service took too long. Please try again or type your question." }, { status: 504 });
           if (cause instanceof DOMException && cause.name === "AbortError") return new Response(null, { status: 499 });
           return Response.json({ error: "The voice message couldn't be processed." }, { status: 400 });
         }
@@ -75,7 +81,4 @@ export const Route = createFileRoute("/api/transcribe")({
             "Cache-Control": "no-store",
           },
         });
-      },
-    },
-  },
-});
+}}
