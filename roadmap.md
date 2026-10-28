@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Investigate and block untrusted AI history; validate synthetic attacks and publish a scoped evidence report without storing conversations
+- [x] Investigate and block untrusted AI history; 25 integrity tests and 15 live checks; report in AI-INTEGRITY-REPORT.md without storing conversations
 
 - [x] Audit professional access, authentication, permissions and privacy against the uploaded security brief
 - [x] Harden professional access, approval/revocation, logout/recovery and administrative auditing without collecting adolescent health data
