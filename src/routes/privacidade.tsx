@@ -43,8 +43,9 @@ const sections: { title: string; items: Item[] }[] = [
     title: "Outros dados",
     items: [
       ["Botão Ouvir (áudio)", ["O texto da tela é enviado pelo servidor a um serviço de voz do Google, também via Lovable, para virar áudio. Não guardamos o áudio. A retenção pelo provedor precisa ser verificada."]],
+      ["Botão Falar (voz)", ["Quando você grava, o áudio do microfone vai ao nosso servidor e segue para um modelo de transcrição (OpenAI, via Lovable) só para virar texto. O texto aparece na caixa de perguntas para você revisar antes de enviar. Não guardamos o áudio nem a transcrição no Care+."]],
       ["Contagens anônimas", ["Guardamos só contagens: qual conteúdo foi aberto, qual tipo de serviço foi buscado e o dia. Não guardamos quem, aparelho, local nem textos. Só gestores autorizados veem os totais."]],
-      ["Limite de perguntas", ["Para evitar abuso, o servidor conta quantas perguntas chegam por minuto. Seu endereço de internet (IP) não é guardado: usamos um código embaralhado que muda todo dia e é apagado em cerca de 1 dia."]],
+      ["Limite de perguntas", ["Para evitar abuso, o servidor conta quantas perguntas chegam por minuto. Seu endereço de internet (IP) não é guardado: usamos um código embaralhado que muda todo dia e é apagado em cerca de 1 dia. O mesmo limite se aplica às mensagens de voz."]],
       ["Questionários e pedido de apoio", ["Nesta versão, ficam só na memória da página e não são enviados a nenhum servidor. O pedido de apoio ainda é uma demonstração: ninguém o recebe."]],
       ["Contas de profissionais", ["Só profissionais têm conta (e-mail e senha). Adolescentes não precisam de conta. O acesso ao painel exige aprovação de um administrador."]],
       ["Registros técnicos", ["A hospedagem pode registrar dados técnicos de acesso (como IP e horário) por segurança. Quais dados e por quanto tempo ainda precisa ser verificado."]],
@@ -62,6 +63,7 @@ const sections: { title: string; items: Item[] }[] = [
 
 const pending = [
   "Retenção e uso dos dados pela OpenAI, Google e Lovable.",
+  "Por quanto tempo o áudio gravado e o texto transcrito ficam guardados no serviço de transcrição (OpenAI e Lovable).",
   "Revisão jurídica conforme a lei de proteção de dados do país do piloto e as regras de consentimento para adolescentes.",
   "Revisão clínica do conteúdo da biblioteca, que a IA usa como base (ainda não validado).",
   "Prazos de guarda dos registros técnicos da hospedagem.",
