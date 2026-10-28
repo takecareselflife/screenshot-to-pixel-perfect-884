@@ -107,7 +107,6 @@ describe("settlement before and after the provider", () => {
 describe("budget exhaustion and simultaneous requests", () => {
   it("the speech budget allows exactly floor(budget/cost) calls among 2100 simultaneous attempts", { timeout: 30000 }, async () => {
     const results = await Promise.all(Array.from({ length: 2100 }, () => reservePaidCall("speech")));
-    console.log("REASONS", JSON.stringify(results.filter((r) => !r.ok).slice(0,2)), db.reservations.size);
     expect(results.filter((r) => r.ok).length).toBe(Math.floor(Math.round(DAILY_BUDGET.speech * 1e4) / Math.round(EST_COST.speech * 1e4)));
   });
 });

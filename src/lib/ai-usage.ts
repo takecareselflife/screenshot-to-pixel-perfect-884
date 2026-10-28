@@ -9,8 +9,11 @@ export { DAILY_BUDGET, EST_COST, TOTAL_DAILY_BUDGET, type PaidScope };
 export type RejectOutcome = "rejected_invalid" | "rejected_rate" | "rejected_error" | "local";
 export type SettleOutcome = "completed" | "failed_before_provider" | "failed_provider" | "timeout" | "cancelled";
 
+let adminModule: Promise<typeof import("@/integrations/supabase/client.server")> | undefined;
+/** Load the privileged client once per worker (avoids concurrent duplicate module loads). */
 async function admin() {
-  return (await import("@/integrations/supabase/client.server")).supabaseAdmin;
+  adminModule ??= import("@/integrations/supabase/client.server");
+  return (await adminModule).supabaseAdmin;
 }
 
 /** Best-effort aggregate record; never throws and never blocks the response on failure. */
