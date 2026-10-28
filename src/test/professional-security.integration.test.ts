@@ -71,6 +71,25 @@ describe.skipIf(!enabled)("live professional RLS with disposable synthetic accou
     const edit=await owner().client.from("profiles").update({display_name:"Changed"}).eq("id",owner().id).select("id");
     expect(edit.data).toEqual([]);
   });
+  it("a suspended account stays blocked until an authorized administrator reactivates it",async()=>{
+    expect((await owner().client.rpc("manage_professional",{_target:owner().id,_status:"approved",_roles:["professional"]})).data).toMatchObject({error:"forbidden"});
+    expect((await owner().client.rpc("authorize_professional",{_area:"intake"})).data).toMatchObject({error:"forbidden"});
+    await admin.from("admin_authorizations").update({active:false}).eq("user_id",operator().id);
+    expect((await operator().client.rpc("manage_professional",{_target:owner().id,_status:"approved",_roles:["professional"]})).data).toMatchObject({error:"forbidden"});
+    await admin.from("admin_authorizations").update({active:true}).eq("user_id",operator().id);
+  });
+  it("reactivation grants only the assigned role and is audited without profile contents",async()=>{
+    expect((await operator().client.rpc("manage_professional",{_target:owner().id,_status:"approved",_roles:["professional"]})).data).toMatchObject({ok:true});
+    expect((await owner().client.rpc("authorize_professional",{_area:"intake"})).data).toMatchObject({ok:true});
+    expect((await owner().client.rpc("authorize_professional",{_area:"indicators"})).data).toMatchObject({error:"forbidden"});
+    expect((await owner().client.rpc("professional_session")).data).toMatchObject({status:"approved",admin:false});
+    const audit=await operator().client.from("security_audit").select("details").eq("subject_id",owner().id).eq("action","professional_access_changed");
+    const statuses=(audit.data??[]).map((r)=>(r.details as Record<string,unknown>|null)?.["status"]);
+    expect(statuses).toEqual(expect.arrayContaining(["approved","suspended"]));
+    const text=JSON.stringify(audit.data);
+    expect(text).not.toContain("Synthetic test");
+    expect(text).not.toContain("TEST-ONLY");
+  });
   it("administrators cannot self-approve and ordinary users cannot read audit",async()=>{
     expect((await operator().client.rpc("manage_professional",{_target:operator().id,_status:"approved",_roles:["professional"]})).data).toMatchObject({error:"forbidden"});
     expect((await owner().client.from("security_audit").select("*")).data).toEqual([]);
