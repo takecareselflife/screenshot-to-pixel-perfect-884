@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Audit professional access, authentication, permissions and privacy against the uploaded security brief
+- [x] Audit professional access, authentication, permissions and privacy against the uploaded security brief
 - [ ] Harden professional access, approval/revocation, logout/recovery and administrative auditing without collecting adolescent health data
 - [ ] Verify professional access with synthetic accounts and produce an evidence-based security report
 - [x] Add real Brazilian UBS (basic health units) to the Services screen, keeping the app in English — four sourced São Paulo units plus official nationwide CNES search
