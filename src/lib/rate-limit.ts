@@ -13,7 +13,7 @@ const GLOBAL_PER_MINUTE = 300;
 
 export async function checkLimit(
   request: Request,
-  options: { scope: string; client?: number; global?: number } = { scope: "assistant" },
+  options: { scope: string; client?: number; global?: number; daily?: number } = { scope: "assistant" },
 ): Promise<"ok" | "rate" | "error"> {
   const salt = process.env["RATE_LIMIT_SALT"];
   if (!salt) return "error";
@@ -22,11 +22,15 @@ export async function checkLimit(
   const bucket = await sha256(`${salt}|${day}|${options.scope}|${ip}`);
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const [mine, all] = await Promise.all([
+    const [mine, all, day24] = await Promise.all([
       supabaseAdmin.rpc("hit_rate_limit", { _bucket: bucket, _window_seconds: 60 }),
       supabaseAdmin.rpc("hit_rate_limit", { _bucket: "global", _window_seconds: 60 }),
+      options.daily
+        ? supabaseAdmin.rpc("hit_rate_limit", { _bucket: `${bucket}:day`, _window_seconds: 86400 })
+        : Promise.resolve({ data: 0, error: null }),
     ]);
-    if (mine.error || all.error) return "error";
+    if (mine.error || all.error || day24.error) return "error";
+    if (options.daily && (day24.data ?? 0) > options.daily) return "rate";
     const client = options.client ?? PER_CLIENT_PER_MINUTE;
     const global = options.global ?? GLOBAL_PER_MINUTE;
     return (mine.data ?? 0) > client || (all.data ?? 0) > global ? "rate" : "ok";

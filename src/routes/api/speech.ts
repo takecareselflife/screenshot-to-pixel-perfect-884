@@ -1,3 +1,4 @@
+import { checkLimit } from "@/lib/rate-limit";
 import { createFileRoute } from "@tanstack/react-router";
 
 const SPEECH_URL = "https://ai.gateway.lovable.dev/v1/audio/speech";
@@ -22,6 +23,9 @@ export const Route = createFileRoute("/api/speech")({
           return Response.json({ error: "Invalid request." }, { status: 400 });
         }
         if (!text) return Response.json({ error: "Nothing to read." }, { status: 400 });
+        const limit = await checkLimit(request, { scope: "speech", client: 12, global: 200, daily: 300 });
+        if (limit === "rate") return Response.json({ error: "Too many Listen requests. Please wait a minute and try again." }, { status: 429, headers: { "Retry-After": "60" } });
+        if (limit === "error") return Response.json({ error: "Voice playback isn't available right now." }, { status: 503 });
         if (text.length > MAX_CHARS) text = text.slice(0, MAX_CHARS);
 
         let upstream: Response;
@@ -46,16 +50,14 @@ export const Route = createFileRoute("/api/speech")({
         }
 
         if (!upstream.ok || !upstream.body) {
-          const message = await upstream.text().catch(() => "");
-          return new Response(message || "Voice service unavailable.", {
-            status: upstream.status || 502,
-            headers: { "Cache-Control": "no-cache" },
-          });
+          // Never forward provider error bodies (may contain internal details).
+          await upstream.body?.cancel().catch(() => {});
+          return Response.json({ error: "Voice service unavailable." }, { status: upstream.status === 429 ? 429 : 502, headers: { "Cache-Control": "no-store" } });
         }
 
         return new Response(upstream.body, {
           status: 200,
-          headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+          headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store" },
         });
       },
     },
