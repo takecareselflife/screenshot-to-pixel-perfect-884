@@ -14,7 +14,7 @@ export const sessionSchema = z.object({
   status: z.enum(["ordinary", "pending", "approved", "suspended", "revoked"]),
   admin: z.boolean(),
   roles: z.array(z.enum(["professional", "manager"])),
-  profile: profileSchema.partial().optional(),
+  profile: z.object({ display_name: z.string().max(100), registration: z.string().max(80) }).optional(),
 });
 export type ProfessionalSession = z.infer<typeof sessionSchema>;
 export const recordSchema = z.object({
