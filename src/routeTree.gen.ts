@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as AnticoncepcaoRouteImport } from './routes/anticoncepcao'
 import { Route as AssistenteRouteImport } from './routes/assistente'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BemEstarRouteImport } from './routes/bem-estar'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as ConsentimentoRouteImport } from './routes/consentimento'
@@ -48,6 +49,11 @@ const AnticoncepcaoRoute = AnticoncepcaoRouteImport.update({
 const AssistenteRoute = AssistenteRouteImport.update({
   id: '/assistente',
   path: '/assistente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BemEstarRoute = BemEstarRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/ajuda': typeof AjudaRoute
   '/anticoncepcao': typeof AnticoncepcaoRoute
   '/assistente': typeof AssistenteRoute
+  '/auth': typeof AuthRoute
   '/bem-estar': typeof BemEstarRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
   '/consentimento': typeof ConsentimentoRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/ajuda'
     | '/anticoncepcao'
     | '/assistente'
+    | '/auth'
     | '/bem-estar'
     | '/biblioteca'
     | '/consentimento'
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   AjudaRoute: typeof AjudaRoute
   AnticoncepcaoRoute: typeof AnticoncepcaoRoute
   AssistenteRoute: typeof AssistenteRoute
+  AuthRoute: typeof AuthRoute
   BemEstarRoute: typeof BemEstarRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
   ConsentimentoRoute: typeof ConsentimentoRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/assistente'
       fullPath: '/assistente'
       preLoaderRoute: typeof AssistenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bem-estar': {
@@ -378,6 +398,7 @@ const rootRouteChildren: RootRouteChildren = {
   AjudaRoute: AjudaRoute,
   AnticoncepcaoRoute: AnticoncepcaoRoute,
   AssistenteRoute: AssistenteRoute,
+  AuthRoute: AuthRoute,
   BemEstarRoute: BemEstarRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
   ConsentimentoRoute: ConsentimentoRoute,
