@@ -12,6 +12,7 @@
 - Demo data lives in src/lib/data.ts and simulated stores in src/lib/*-store.ts; replace these modules with real APIs later so pages stay unchanged.
 - Real service listings in the shared directory carry official source URLs; label synthetic entries separately and count successful referrals only for sourced services to avoid presenting demos as care.
 - Assistant voice input sends a complete recording to a rate-limited server transcription endpoint and places the transcript in the editable question field; never send a spoken question automatically.
+- The public AI assistant is stateless and accepts only a strict current-question payload; never forward browser history, roles, account/conversation identifiers or privileged instructions, because unauthenticated authorship cannot be verified without introducing sensitive storage.
 - Professional identity fields stay in owner-private profiles; access state, resource roles and operator-designated administrators are separate so editing a profile or registering cannot grant privileges.
 - Every professional server operation revalidates authentication and the live database session; RLS and checked RPCs recheck approval and roles, so suspension/revocation denies stale-session operations.
 - The intake demo uses only its own seeded in-memory examples, never public support-form memory or adolescent conversations/questionnaires; administrative audit stores only actor, subject, action, date and access metadata.

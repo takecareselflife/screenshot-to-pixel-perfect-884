@@ -27,7 +27,7 @@ const sections: { title: string; items: Item[] }[] = [
         "A IA recebe instruções para responder só com o conteúdo da nossa biblioteca, sem diagnósticos e sem receitar remédios.",
       ]],
       ["O que é enviado para a IA", [
-        "O texto da sua pergunta e das últimas mensagens desta mesma conversa (até 12).",
+        "Só o texto da pergunta atual (até 2.000 caracteres). Cada pergunta é independente: o histórico mostrado na tela não é enviado à IA. Pedidos com histórico, autoria ou identificadores de conversa são rejeitados.",
         "Antes do envio, e-mails e números de telefone são apagados automaticamente. Esse filtro é simples e pode falhar — por isso, não escreva nome, endereço, escola ou outros dados pessoais.",
         "Não enviamos seu nome, conta, localização ou identificação do aparelho.",
       ]],
