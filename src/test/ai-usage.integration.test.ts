@@ -45,8 +45,8 @@ describe.skipIf(!enabled)("live paid-AI budget, kill switch and monitoring permi
 
   it("40 simultaneous reservations never exceed the ceiling", async () => {
     // Ceiling = today's existing usage + exactly 5 test reservations.
-    const { data } = await svc.from("ai_budget_reservations").select("est_cost").neq("status", "released").eq("day", new Date().toISOString().slice(0, 10));
-    const used = (data ?? []).reduce((a, r) => a + Number(r.est_cost), 0);
+    const { data } = await svc.from("ai_budget_reservations").select("est_cost").neq("status", "released").eq("day", new Date().toISOString().slice(0, 10)).limit(100000);
+    const used = (data ?? []).reduce((a, r) => a + Math.round(Number(r.est_cost) * 1e4), 0) / 1e4;
     const cap = used + 0.0005 + 1e-6;
     const results = await Promise.all(Array.from({ length: 40 }, () => svc.rpc("ai_reserve", { _scope: "speech", _cost: 0.0001, _scope_limit: cap, _total_limit: cap })));
     const ok = results.map((r) => (r.data as { id?: string } | null)?.id).filter((x): x is string => !!x);
