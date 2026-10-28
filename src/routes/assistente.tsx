@@ -44,7 +44,7 @@ function Assistente() {
     // Risk messages answer instantly with hotlines; the AI still follows below.
     setMsgs((m) => [...m, { from: "user", text }, { from: "bot", text: r.risk ? r.text : "Thinking…", reply: { ...r, sources: r.risk ? r.sources : [] } }]);
     setBusy(true);
-    const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1], text: t, ...(reply ? { reply } : {}) }; return c; });
+    const setLast = (t: string, reply?: Reply) => setMsgs((m) => { const c = [...m]; c[c.length - 1] = { ...c[c.length - 1]!, text: t, ...(reply ? { reply } : {}) }; return c; });
     try {
       const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
       if (res.status === 503) { setLast("The AI assistant is not set up yet. Here is our reviewed answer instead:\n\n" + r.text, r); return; }

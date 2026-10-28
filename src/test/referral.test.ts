@@ -5,11 +5,11 @@ import { redact } from "@/lib/redact";
 
 describe("smart referral", () => {
   it("sends emotional needs to mental health first", () => {
-    expect(recommend(services, "emotional")[0].type).toBe("Mental health");
+    expect(recommend(services, "emotional")[0]!.type).toBe("Mental health");
   });
   it("sends violence to violence response, never mental health", () => {
     const r = recommend(services, "violence");
-    expect(r[0].type).toBe("Violence response");
+    expect(r[0]!.type).toBe("Violence response");
     expect(r.some((s) => s.type === "Mental health")).toBe(false);
   });
   it("filters by city", () => {
