@@ -51,7 +51,7 @@ export async function handleTranscribeRequest(request: Request): Promise<Respons
           for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
           const form = await new Response(body, { headers: { "Content-Type": request.headers.get("Content-Type") ?? "" } }).formData();
           const entry = form.get("file");
-          if (entry instanceof File) file = entry;
+          if (entry && typeof entry !== "string") file = entry as File;
         } catch {
           return Response.json({ error: "Invalid voice message. Please try again." }, { status: 400 });
         }
