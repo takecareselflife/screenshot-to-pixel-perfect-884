@@ -41,7 +41,7 @@ export async function handleAssistantRequest(request: Request): Promise<Response
         if (!question) return invalidRequest();
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return Response.json({ error: "setup" }, { status: 503, headers: privateHeaders });
-        const limit = await checkLimit(request);
+        const limit = await checkLimit(request, { scope: "assistant", daily: 200 });
         if (limit === "rate") return Response.json({ error: "rate" }, { status: 429, headers: { ...privateHeaders, "Retry-After": "60" } });
         if (limit === "error") return Response.json({ error: "unavailable" }, { status: 503, headers: privateHeaders });
         const crisis = assistantCrisisResponse(question);
