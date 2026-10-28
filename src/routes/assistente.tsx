@@ -97,7 +97,7 @@ function Assistente() {
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="sticky bottom-20 mt-4 flex gap-2">
         <label htmlFor="msg" className="sr-only">Your message</label>
         <input id="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Write your question…" className="flex-1 rounded-full border bg-card px-4 py-3" />
-        <button aria-label="Send" disabled={busy} className="disabled:opacity-50 ="rounded-full bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
+        <button aria-label="Send" disabled={busy} className="rounded-full disabled:opacity-50 bg-primary p-3 text-primary-foreground"><Send className="h-5 w-5" /></button>
       </form>
 
       <section className="mt-8">
