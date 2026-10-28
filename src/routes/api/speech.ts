@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/speech")({
   },
 });
 
-export async function handleSpeechRequest(request: Request): Promise<Response> {{
+export async function handleSpeechRequest(request: Request): Promise<Response> {
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) {
           return Response.json({ error: "Voice playback is not configured on the server." }, { status: 500 });
@@ -65,4 +65,4 @@ export async function handleSpeechRequest(request: Request): Promise<Response> {
           status: 200,
           headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store" },
         });
-}}
+}

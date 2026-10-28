@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/transcribe")({
   },
 });
 
-export async function handleTranscribeRequest(request: Request): Promise<Response> {{
+export async function handleTranscribeRequest(request: Request): Promise<Response> {
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return Response.json({ error: "Voice input isn't set up yet. You can still type your question." }, { status: 503 });
 
@@ -81,4 +81,4 @@ export async function handleTranscribeRequest(request: Request): Promise<Respons
             "Cache-Control": "no-store",
           },
         });
-}}
+}
