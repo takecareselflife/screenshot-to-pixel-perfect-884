@@ -39,7 +39,7 @@ export const hints = [
   "Is this something you need help handling?",
 ];
 
-export const pauseOption: GameOption = { id: "pause", text: "Take a break and come back when I feel ready.", category: "feelings" };
+export const pauseOption: GameOption = { id: "pause", text: "Take a break and come back later.", category: "feelings" };
 
 export const scenarios: Scenario[] = [
   {
@@ -48,14 +48,14 @@ export const scenarios: Scenario[] = [
     title: "Left out",
     situation: "You see photos of your friends hanging out without you. You start thinking, “Maybe nobody really wants me around.”",
     options: [
-      { id: "a", text: "Remember that one situation doesn't tell the whole story about my friendships.", category: "perspective" },
-      { id: "b", text: "Talk to a friend I trust about how I feel.", category: "talk" },
-      { id: "c", text: "Think about whether this happened before or was a one-time thing.", category: "perspective" },
-      { id: "d", text: "Find chances to connect with people who share my interests.", category: "practical" },
-      { id: "e", text: "Give myself time to feel upset before deciding what to do.", category: "feelings" },
-      { id: "f", text: "Decide that nobody will ever want to be my friend.", stuckThought: true },
-      { id: "g", text: "If exclusion keeps happening, set boundaries or talk to a trusted adult.", category: "boundary" },
-      { id: "h", text: "Ask myself what I need from friendships to feel respected and included.", category: "feelings" },
+      { id: "a", text: "One moment isn't my whole friendship story.", category: "perspective" },
+      { id: "b", text: "Talk to a friend I trust.", category: "talk" },
+      { id: "c", text: "Was this a one-time thing?", category: "perspective" },
+      { id: "d", text: "Meet people who share my interests.", category: "practical" },
+      { id: "e", text: "Feel upset first, decide later.", category: "feelings" },
+      { id: "f", text: "Nobody will ever want me as a friend.", stuckThought: true },
+      { id: "g", text: "If it keeps happening, tell a trusted adult.", category: "boundary" },
+      { id: "h", text: "Think about what I need from friends.", category: "feelings" },
     ],
   },
   {
@@ -64,13 +64,13 @@ export const scenarios: Scenario[] = [
     title: "A hard test",
     situation: "You got a low grade on a test. You think, “I'm bad at school. I'm going to fail everything.”",
     options: [
-      { id: "a", text: "Notice I feel disappointed — that's okay.", category: "feelings" },
-      { id: "b", text: "Ask the teacher which parts I got wrong.", category: "practical" },
-      { id: "c", text: "Remember a subject or task that went well for me.", category: "perspective" },
-      { id: "d", text: "Ask a family member or friend to study with me.", category: "talk" },
-      { id: "e", text: "Stop trying because it won't help.", stuckThought: true },
-      { id: "f", text: "Try a new way of studying, like short sessions.", category: "practical" },
-      { id: "g", text: "If school stress feels too heavy, talk to the school counselor.", category: "professional" },
+      { id: "a", text: "It's okay to feel disappointed.", category: "feelings" },
+      { id: "b", text: "Ask the teacher what I missed.", category: "practical" },
+      { id: "c", text: "Remember something that went well.", category: "perspective" },
+      { id: "d", text: "Study with a friend or family member.", category: "talk" },
+      { id: "e", text: "Stop trying, it won't help.", stuckThought: true },
+      { id: "f", text: "Try short study sessions.", category: "practical" },
+      { id: "g", text: "Talk to the school counselor.", category: "professional" },
     ],
   },
   {
@@ -79,13 +79,13 @@ export const scenarios: Scenario[] = [
     title: "The group chat",
     situation: "Someone in a group chat makes fun of a photo you posted. You think, “Everyone is laughing at me.”",
     options: [
-      { id: "a", text: "Take a break from the chat for a while.", category: "boundary" },
+      { id: "a", text: "Take a break from the chat.", category: "boundary" },
       { id: "b", text: "Tell a trusted adult what happened.", category: "talk" },
-      { id: "c", text: "Remember that one comment is not what everyone thinks.", category: "perspective" },
-      { id: "d", text: "Save screenshots in case it keeps happening.", category: "practical" },
-      { id: "e", text: "Never post anything again and hide from everyone.", stuckThought: true },
-      { id: "f", text: "Block or report the person if it's mean.", category: "boundary" },
-      { id: "g", text: "Name how I feel: embarrassed, sad, angry…", category: "feelings" },
+      { id: "c", text: "One comment isn't what everyone thinks.", category: "perspective" },
+      { id: "d", text: "Save screenshots, just in case.", category: "practical" },
+      { id: "e", text: "Never post again and hide.", stuckThought: true },
+      { id: "f", text: "Block or report them.", category: "boundary" },
+      { id: "g", text: "Name my feeling: sad, angry…", category: "feelings" },
     ],
   },
   {
@@ -94,14 +94,14 @@ export const scenarios: Scenario[] = [
     title: "Future pressure",
     situation: "Everyone seems to know what they want to study or do after school. You don't, and you think, “I'm already behind in life.”",
     options: [
-      { id: "a", text: "Recognize that many people change plans several times.", category: "perspective" },
-      { id: "b", text: "Make a list of things I enjoy or am curious about.", category: "practical" },
-      { id: "c", text: "Talk to someone older about how they decided.", category: "talk" },
-      { id: "d", text: "Look for information on courses, jobs or short experiences.", category: "practical" },
-      { id: "e", text: "Accept the uncertainty and the worry I feel right now.", category: "feelings" },
-      { id: "f", text: "Conclude I'll never be good at anything.", stuckThought: true },
-      { id: "g", text: "Say no to pressure to decide before I'm ready.", category: "boundary" },
-      { id: "h", text: "Book a talk with a school or career counselor.", category: "professional" },
+      { id: "a", text: "Many people change plans.", category: "perspective" },
+      { id: "b", text: "List things I enjoy.", category: "practical" },
+      { id: "c", text: "Ask an older person how they chose.", category: "talk" },
+      { id: "d", text: "Look up courses or jobs.", category: "practical" },
+      { id: "e", text: "It's okay to feel unsure.", category: "feelings" },
+      { id: "f", text: "I'll never be good at anything.", stuckThought: true },
+      { id: "g", text: "Say no to pressure to decide now.", category: "boundary" },
+      { id: "h", text: "Talk to a career counselor.", category: "professional" },
     ],
   },
   {
@@ -110,13 +110,13 @@ export const scenarios: Scenario[] = [
     title: "Pressure in a relationship",
     situation: "The person you're dating keeps asking for your passwords and gets upset when you spend time with friends. You think, “If I say no, they'll leave and it'll be my fault.”",
     options: [
-      { id: "a", text: "Remember that a caring relationship respects my privacy and friends.", category: "perspective" },
-      { id: "b", text: "Say clearly that my passwords stay private.", category: "boundary" },
-      { id: "c", text: "Talk with a friend or trusted adult about what's happening.", category: "talk" },
-      { id: "d", text: "Notice how I feel when this happens — anxious, guilty, trapped?", category: "feelings" },
-      { id: "e", text: "Give in to everything so they don't get upset.", stuckThought: true },
-      { id: "f", text: "Look up information about healthy and controlling relationships.", category: "practical" },
-      { id: "g", text: "If I feel scared or controlled, contact a health professional or support line.", category: "professional" },
+      { id: "a", text: "Caring partners respect my privacy.", category: "perspective" },
+      { id: "b", text: "My passwords stay private.", category: "boundary" },
+      { id: "c", text: "Tell a friend or trusted adult.", category: "talk" },
+      { id: "d", text: "Notice how I feel: anxious, trapped?", category: "feelings" },
+      { id: "e", text: "Give in so they don't get upset.", stuckThought: true },
+      { id: "f", text: "Learn about healthy relationships.", category: "practical" },
+      { id: "g", text: "If I feel scared, call a support line.", category: "professional" },
     ],
   },
 ];
