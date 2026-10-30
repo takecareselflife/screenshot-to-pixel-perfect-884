@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, Smile, HelpCircle, CloudRain, LifeBuoy, MapPin, MessageCircle, Info } from "lucide-react";
+import { Heart, Smile, HelpCircle, LifeBuoy, MapPin, MessageCircle, Info } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
