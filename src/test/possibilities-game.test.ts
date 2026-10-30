@@ -1,17 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { achievementsFor, feedbackFor, hasStuckThought, scenarios, scenariosFor, stuckThoughtFeedback } from "@/lib/possibilities-game";
+import { achievementsFor, feedbackFor, hasStuckThought, scenarios, stuckThoughtFeedback } from "@/lib/possibilities-game";
 
 const friends = scenarios.find((s) => s.id === "friends-photos")!;
 
 describe("Expand Your Possibilities rules", () => {
-  it("offers age-specific scenarios", () => {
-    expect(scenariosFor("12-14").map((s) => s.id)).toContain("group-chat");
-    expect(scenariosFor("12-14").map((s) => s.id)).not.toContain("relationship-pressure");
-    expect(scenariosFor("15-17").map((s) => s.id)).toContain("relationship-pressure");
+  it("uses one shared scenario pool with no age split", () => {
+    expect(scenarios.map((s) => s.id)).toEqual(["friends-photos", "test-fail", "group-chat", "future-pressure", "relationship-pressure"]);
+    expect(scenarios.every((s) => !("ages" in s))).toBe(true);
+  });
+  it("keeps situations and options short enough to scan", () => {
+    for (const s of scenarios) {
+      expect(s.situation.length).toBeLessThanOrEqual(130);
+      for (const o of s.options) expect(o.text.length).toBeLessThanOrEqual(40);
+    }
   });
   it("answers option F gently instead of rewarding or penalizing it", () => {
     expect(hasStuckThought(friends, ["f"])).toBe(true);
-    expect(feedbackFor(friends, ["f"], "12-14")).toBe(stuckThoughtFeedback);
+    expect(feedbackFor(friends, ["f"])).toBe(stuckThoughtFeedback);
     expect(achievementsFor(friends, ["a"], ["a", "f"], ["a"])).toEqual(achievementsFor(friends, ["a"], ["a"], ["a"]));
   });
   it("awards New Paths only for a new category", () => {

@@ -1,7 +1,7 @@
 // Pure rules for the "Expand Your Possibilities" game. Feedback is pre-written
 // (reviewable by health professionals); nothing is sent to a server or stored.
+// One shared scenario pool for all players — no age separation.
 
-export type AgeGroup = "12-14" | "15-17";
 export type Category = "feelings" | "practical" | "talk" | "perspective" | "boundary" | "professional";
 export type OptionId = string;
 
@@ -15,7 +15,6 @@ export interface GameOption {
 
 export interface Scenario {
   id: string;
-  ages: AgeGroup[];
   title: string;
   situation: string;
   options: GameOption[];
@@ -32,42 +31,40 @@ export const categoryLabels: Record<Category, string> = {
 
 export const hints = [
   "What could you do for yourself?",
-  "Is there someone you trust who could help?",
-  "Is there another way to look at the situation?",
-  "What information might you need?",
-  "Is there something you could try differently?",
-  "Is this something you need help handling?",
+  "Who could you talk to?",
+  "Is there another way to see it?",
+  "What would you need to know?",
+  "What could you try differently?",
+  "Do you need help with this?",
 ];
 
-export const pauseOption: GameOption = { id: "pause", text: "Take a break and come back later.", category: "feelings" };
+export const pauseOption: GameOption = { id: "pause", text: "Take a break, come back later.", category: "feelings" };
 
 export const scenarios: Scenario[] = [
   {
     id: "friends-photos",
-    ages: ["12-14", "15-17"],
     title: "Left out",
-    situation: "You see photos of your friends hanging out without you. You start thinking, “Maybe nobody really wants me around.”",
+    situation: "Your friends posted photos of a hangout without you. You think: “Nobody really wants me there.”",
     options: [
-      { id: "a", text: "One moment isn't my whole friendship story.", category: "perspective" },
+      { id: "a", text: "One moment isn't the whole story.", category: "perspective" },
       { id: "b", text: "Talk to a friend I trust.", category: "talk" },
-      { id: "c", text: "Was this a one-time thing?", category: "perspective" },
-      { id: "d", text: "Meet people who share my interests.", category: "practical" },
+      { id: "c", text: "Was it just this once?", category: "perspective" },
+      { id: "d", text: "Meet people with my interests.", category: "practical" },
       { id: "e", text: "Feel upset first, decide later.", category: "feelings" },
-      { id: "f", text: "Nobody will ever want me as a friend.", stuckThought: true },
-      { id: "g", text: "If it keeps happening, tell a trusted adult.", category: "boundary" },
-      { id: "h", text: "Think about what I need from friends.", category: "feelings" },
+      { id: "f", text: "Nobody will ever like me.", stuckThought: true },
+      { id: "g", text: "Tell a trusted adult if it repeats.", category: "boundary" },
+      { id: "h", text: "Name what I need from friends.", category: "feelings" },
     ],
   },
   {
     id: "test-fail",
-    ages: ["12-14"],
     title: "A hard test",
-    situation: "You got a low grade on a test. You think, “I'm bad at school. I'm going to fail everything.”",
+    situation: "You got a low grade on a test. You think: “I'm bad at school. I'll fail everything.”",
     options: [
       { id: "a", text: "It's okay to feel disappointed.", category: "feelings" },
       { id: "b", text: "Ask the teacher what I missed.", category: "practical" },
       { id: "c", text: "Remember something that went well.", category: "perspective" },
-      { id: "d", text: "Study with a friend or family member.", category: "talk" },
+      { id: "d", text: "Study with a friend or family.", category: "talk" },
       { id: "e", text: "Stop trying, it won't help.", stuckThought: true },
       { id: "f", text: "Try short study sessions.", category: "practical" },
       { id: "g", text: "Talk to the school counselor.", category: "professional" },
@@ -75,13 +72,12 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "group-chat",
-    ages: ["12-14"],
     title: "The group chat",
-    situation: "Someone in a group chat makes fun of a photo you posted. You think, “Everyone is laughing at me.”",
+    situation: "Someone in a group chat mocks a photo you posted. You think: “Everyone is laughing at me.”",
     options: [
       { id: "a", text: "Take a break from the chat.", category: "boundary" },
-      { id: "b", text: "Tell a trusted adult what happened.", category: "talk" },
-      { id: "c", text: "One comment isn't what everyone thinks.", category: "perspective" },
+      { id: "b", text: "Tell a trusted adult.", category: "talk" },
+      { id: "c", text: "One comment isn't everyone's view.", category: "perspective" },
       { id: "d", text: "Save screenshots, just in case.", category: "practical" },
       { id: "e", text: "Never post again and hide.", stuckThought: true },
       { id: "f", text: "Block or report them.", category: "boundary" },
@@ -90,9 +86,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "future-pressure",
-    ages: ["15-17"],
     title: "Future pressure",
-    situation: "Everyone seems to know what they want to study or do after school. You don't, and you think, “I'm already behind in life.”",
+    situation: "Everyone seems to know their plans after school. You don't. You think: “I'm already behind.”",
     options: [
       { id: "a", text: "Many people change plans.", category: "perspective" },
       { id: "b", text: "List things I enjoy.", category: "practical" },
@@ -100,30 +95,25 @@ export const scenarios: Scenario[] = [
       { id: "d", text: "Look up courses or jobs.", category: "practical" },
       { id: "e", text: "It's okay to feel unsure.", category: "feelings" },
       { id: "f", text: "I'll never be good at anything.", stuckThought: true },
-      { id: "g", text: "Say no to pressure to decide now.", category: "boundary" },
+      { id: "g", text: "Say no to decide-now pressure.", category: "boundary" },
       { id: "h", text: "Talk to a career counselor.", category: "professional" },
     ],
   },
   {
     id: "relationship-pressure",
-    ages: ["15-17"],
     title: "Pressure in a relationship",
-    situation: "The person you're dating keeps asking for your passwords and gets upset when you spend time with friends. You think, “If I say no, they'll leave and it'll be my fault.”",
+    situation: "The person you date wants your passwords and hates when you see friends. You think: “If I say no, they'll leave.”",
     options: [
-      { id: "a", text: "Caring partners respect my privacy.", category: "perspective" },
+      { id: "a", text: "Caring partners respect privacy.", category: "perspective" },
       { id: "b", text: "My passwords stay private.", category: "boundary" },
       { id: "c", text: "Tell a friend or trusted adult.", category: "talk" },
-      { id: "d", text: "Notice how I feel: anxious, trapped?", category: "feelings" },
+      { id: "d", text: "Notice my feeling: anxious, trapped?", category: "feelings" },
       { id: "e", text: "Give in so they don't get upset.", stuckThought: true },
       { id: "f", text: "Learn about healthy relationships.", category: "practical" },
       { id: "g", text: "If I feel scared, call a support line.", category: "professional" },
     ],
   },
 ];
-
-export function scenariosFor(age: AgeGroup): Scenario[] {
-  return scenarios.filter((s) => s.ages.includes(age));
-}
 
 export function categoriesOf(scenario: Scenario, selected: OptionId[]): Category[] {
   const set = new Set<Category>();
@@ -136,22 +126,21 @@ export function hasStuckThought(scenario: Scenario, selected: OptionId[]): boole
 }
 
 export const stuckThoughtFeedback =
-  "When you're hurt, it can feel like things will always be this way. But one painful moment doesn't tell you everything about your future. Would you like to explore another possibility?";
+  "When you're hurt, it can feel like things will always be this way. But one painful moment doesn't tell the whole story. Want to look for another possibility?";
 
-export function feedbackFor(scenario: Scenario, selected: OptionId[], age: AgeGroup): string {
+export function feedbackFor(scenario: Scenario, selected: OptionId[]): string {
   const cats = categoriesOf(scenario, selected);
-  if (cats.length === 0) return hasStuckThought(scenario, selected) ? stuckThoughtFeedback : "Take your time. You can pick anything that might help, even a small step.";
+  if (cats.length === 0) return hasStuckThought(scenario, selected) ? stuckThoughtFeedback : "Take your time. Pick anything that might help, even a small step.";
   const names = cats.map((c) => categoryLabels[c].toLowerCase());
   const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
-  const open = age === "12-14" ? "That can really hurt." : "This is a hard situation, and there's no single right answer.";
-  return `${open} You found ways that include ${list}. You don't have to figure everything out at once.`;
+  return `This is a hard situation, and there's no single right answer. You found paths like ${list}. One is enough to start.`;
 }
 
 export type Achievement = "new-paths" | "perspectives" | "support" | "next-step";
 export const achievementLabels: Record<Achievement, { title: string; text: string }> = {
-  "new-paths": { title: "New Paths", text: "You discovered another possible approach." },
-  perspectives: { title: "Different Perspectives", text: "You considered another way to understand the situation." },
-  support: { title: "Support Seeker", text: "You identified someone or a service that could help." },
+  "new-paths": { title: "New Paths", text: "You found another possible approach." },
+  perspectives: { title: "Different Perspectives", text: "You saw the situation another way." },
+  support: { title: "Support Seeker", text: "You found someone or a service that could help." },
   "next-step": { title: "Next Step", text: "You chose a realistic action." },
 };
 
