@@ -19,7 +19,6 @@ const options = [
   { to: "/biblioteca", label: "I want to take care of my health", icon: Heart, tone: "bg-secondary text-secondary-foreground" },
   { to: "/bem-estar", label: "I want to talk about my feelings", icon: Smile, tone: "bg-sky text-sky-foreground" },
   { to: "/assistente", label: "I have questions about sexuality", icon: HelpCircle, tone: "bg-lilac text-lilac-foreground" },
-  { to: "/ajuda", label: "I'm going through a hard time", icon: CloudRain, tone: "bg-accent text-accent-foreground" },
   { to: "/ajuda", label: "I need help", icon: LifeBuoy, tone: "bg-warm text-warm-foreground" },
   { to: "/servicos", label: "Find a health service", icon: MapPin, tone: "bg-secondary text-secondary-foreground" },
 ] as const;
