@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Check, Lightbulb, LifeBuoy, RotateCcw, Sparkles, Trophy } from "lucide-react";
 import { hotlines } from "@/lib/data";
 import {
-  type AgeGroup, type OptionId, type Scenario, MAX_NEXT_STEPS, achievementLabels, achievementsFor,
-  categoriesOf, categoryLabels, feedbackFor, hasStuckThought, hints, pauseOption, scenariosFor, stuckThoughtFeedback,
+  type OptionId, type Scenario, MAX_NEXT_STEPS, achievementLabels, achievementsFor,
+  categoriesOf, categoryLabels, feedbackFor, hasStuckThought, hints, pauseOption, scenarios, stuckThoughtFeedback,
 } from "@/lib/possibilities-game";
 
 type Stage = 1 | 2 | 3 | 4 | 5;
@@ -45,7 +45,6 @@ function SafetyPanel({ onBack }: { onBack: () => void }) {
 }
 
 export function PossibilitiesGame() {
-  const [age, setAge] = useState<AgeGroup | null>(null);
   const [index, setIndex] = useState(0);
   const [stage, setStage] = useState<Stage>(1);
   const [first, setFirst] = useState<OptionId[]>([]);
@@ -55,22 +54,7 @@ export function PossibilitiesGame() {
   const [safety, setSafety] = useState(false);
   const [earned, setEarned] = useState(0);
 
-  if (!age) {
-    return (
-      <section className="card-base space-y-4 p-4">
-        <p className="text-lg">Hard moments can feel like there's only one way forward. Let's look for more.</p>
-        <h2 className="text-xl font-semibold">Choose your age group</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {(["12-14", "15-17"] as AgeGroup[]).map((a) => (
-            <button key={a} type="button" onClick={() => setAge(a)} className="rounded-2xl bg-primary p-4 text-lg font-bold text-primary-foreground">{a} years</button>
-          ))}
-        </div>
-        <p className="text-sm text-muted-foreground">Your answers stay on this screen only. Nothing is saved or sent.</p>
-      </section>
-    );
-  }
-
-  const list = scenariosFor(age);
+  const list: Scenario[] = scenarios;
   const scenario: Scenario = list[index % list.length] ?? list[0]!;
   const toggle = (arr: OptionId[], set: (v: OptionId[]) => void, id: OptionId, max?: number) =>
     set(arr.includes(id) ? arr.filter((x) => x !== id) : max && arr.length >= max ? arr : [...arr, id]);
@@ -95,8 +79,8 @@ export function PossibilitiesGame() {
 
       {stage === 1 && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">What are some things you could do in this situation?</h2>
-          <p className="text-sm text-muted-foreground">Choose as many as you like.</p>
+          <h2 className="text-xl font-semibold">What could you do here?</h2>
+          <p className="text-sm text-muted-foreground">Pick as many as you like. Nothing is saved or sent.</p>
           {scenario.options.map((o) => <OptionCard key={o.id} text={o.text} selected={first.includes(o.id)} onToggle={() => toggle(first, setFirst, o.id)} />)}
           <button type="button" disabled={first.length === 0} onClick={() => { setPicks(first); setStage(2); }} className="w-full rounded-full bg-primary py-3 font-semibold text-primary-foreground disabled:opacity-50">Continue</button>
         </section>
@@ -104,9 +88,9 @@ export function PossibilitiesGame() {
 
       {stage === 2 && (
         <section className="animate-in fade-in space-y-3">
-          <p className="rounded-2xl bg-secondary p-3 text-secondary-foreground">{hasStuckThought(scenario, first) && categoriesOf(scenario, first).length === 0 ? stuckThoughtFeedback : feedbackFor(scenario, first, age)}</p>
+          <p className="rounded-2xl bg-secondary p-3 text-secondary-foreground">{hasStuckThought(scenario, first) && categoriesOf(scenario, first).length === 0 ? stuckThoughtFeedback : feedbackFor(scenario, first)}</p>
           {hasStuckThought(scenario, first) && categoriesOf(scenario, first).length > 0 && <p className="rounded-2xl bg-muted p-3">{stuckThoughtFeedback}</p>}
-          <h2 className="text-xl font-semibold">Nice start! Can you think of another possibility?</h2>
+          <h2 className="text-xl font-semibold">Can you find one more possibility?</h2>
           <button type="button" onClick={() => setShowHints((v) => !v)} className="inline-flex items-center gap-2 text-primary underline"><Lightbulb className="h-4 w-4" aria-hidden />{showHints ? "Hide hints" : "Need a hint?"}</button>
           {showHints && <ul className="list-disc space-y-1 rounded-2xl bg-muted p-3 pl-8">{hints.map((h) => <li key={h}>{h}</li>)}</ul>}
           {scenario.options.filter((o) => !first.includes(o.id)).map((o) => <OptionCard key={o.id} text={o.text} selected={picks.includes(o.id)} onToggle={() => toggle(picks, setPicks, o.id)} />)}
@@ -124,15 +108,15 @@ export function PossibilitiesGame() {
               return <li key={c} className={`rounded-2xl border-2 p-3 text-sm ${found ? "border-primary bg-primary/10 font-semibold" : "border-dashed border-border text-muted-foreground"}`}>{found ? "✓ " : "○ "}{categoryLabels[c]}</li>;
             })}
           </ul>
-          <p className="rounded-2xl bg-secondary p-3 text-secondary-foreground">{feedbackFor(scenario, picks, age)} Dashed paths are other directions you could explore later — you don't need all of them.</p>
+          <p className="rounded-2xl bg-secondary p-3 text-secondary-foreground">{feedbackFor(scenario, picks)} Dashed paths are directions you could explore later — you don't need all of them.</p>
           <button type="button" onClick={() => setStage(4)} className="w-full rounded-full bg-primary py-3 font-semibold text-primary-foreground">Choose my next move</button>
         </section>
       )}
 
       {stage === 4 && (
         <section className="animate-in fade-in space-y-3">
-          <h2 className="text-xl font-semibold">Which option feels most helpful or realistic for you right now?</h2>
-          <p className="text-sm text-muted-foreground">Pick one or two. Taking a break or asking for help are valid choices too.</p>
+          <h2 className="text-xl font-semibold">Which one feels most helpful right now?</h2>
+          <p className="text-sm text-muted-foreground">Pick one or two. A break or asking for help are valid too.</p>
           {[...scenario.options.filter((o) => picks.includes(o.id) && !o.stuckThought), pauseOption].map((o) => (
             <OptionCard key={o.id} text={o.text} selected={next.includes(o.id)} disabled={!next.includes(o.id) && next.length >= MAX_NEXT_STEPS} onToggle={() => toggle(next, setNext, o.id, MAX_NEXT_STEPS)} />
           ))}
@@ -147,10 +131,10 @@ export function PossibilitiesGame() {
             <ul className="space-y-2">{achievements.map((a) => <li key={a} className="flex gap-2 rounded-2xl bg-secondary p-3 text-secondary-foreground"><Sparkles className="h-5 w-5 shrink-0" aria-hidden /><span><b>{achievementLabels[a].title}:</b> {achievementLabels[a].text}</span></li>)}</ul>
           )}
           <p className="text-sm text-muted-foreground">Total badges this session: {earned}. Badges show game progress only — not how you are doing emotionally.</p>
-          <p className="text-lg font-semibold">You don't have to figure everything out at once. Sometimes, finding one more possibility is a great place to start.</p>
+          <p className="text-lg font-semibold">You don't have to figure everything out at once. One more possibility is a great place to start.</p>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => { setIndex((i) => i + 1); resetRound(); }} className="rounded-full bg-primary px-4 py-2 font-semibold text-primary-foreground">Next scenario</button>
-            <button type="button" onClick={() => { setAge(null); setIndex(0); setEarned(0); resetRound(); }} className="inline-flex items-center gap-1 rounded-full border px-4 py-2"><RotateCcw className="h-4 w-4" aria-hidden />Start over</button>
+            <button type="button" onClick={() => { setIndex(0); setEarned(0); resetRound(); }} className="inline-flex items-center gap-1 rounded-full border px-4 py-2"><RotateCcw className="h-4 w-4" aria-hidden />Start over</button>
           </div>
         </section>
       )}
