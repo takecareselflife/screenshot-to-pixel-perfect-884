@@ -71,7 +71,7 @@ export function PossibilitiesGame() {
   }
 
   const list = scenariosFor(age);
-  const scenario: Scenario = list[index % list.length];
+  const scenario: Scenario = list[index % list.length] ?? list[0]!;
   const toggle = (arr: OptionId[], set: (v: OptionId[]) => void, id: OptionId, max?: number) =>
     set(arr.includes(id) ? arr.filter((x) => x !== id) : max && arr.length >= max ? arr : [...arr, id]);
   const resetRound = () => { setStage(1); setFirst([]); setPicks([]); setNext([]); setShowHints(false); };
